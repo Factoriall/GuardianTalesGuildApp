@@ -20,6 +20,9 @@ public class GuildMember implements Serializable {
     @ColumnInfo(name = "remark")
     private String remark;
 
+    @ColumnInfo(name = "isMe")
+    private Boolean isMe;
+
     @ColumnInfo(name = "isResigned")
     private Boolean isResigned;
 
@@ -46,6 +49,14 @@ public class GuildMember implements Serializable {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public Boolean getMe() {
+        return isMe;
+    }
+
+    public void setMe(Boolean me) {
+        isMe = me;
     }
 
     public Boolean getResigned() {

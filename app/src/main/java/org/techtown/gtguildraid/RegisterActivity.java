@@ -34,6 +34,15 @@ public class RegisterActivity extends AppCompatActivity {
                 SharedPreferences pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
                 SharedPreferences.Editor editor = pref.edit();
 
+
+                RoomDB database = RoomDB.getInstance(RegisterActivity.this);
+                GuildMember member = new GuildMember();
+                member.setName(cNickname);
+                member.setRemark(cGuildName);
+                member.setResigned(false);
+                member.setMe(true);
+                database.memberDao().insert(member);
+
                 editor.putString("nickname", cNickname);
                 editor.putString("guildName", cGuildName);
                 editor.putBoolean("isRegistered", true);

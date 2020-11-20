@@ -24,9 +24,12 @@ public interface MainDao {
     @Query("UPDATE member SET name = :sName, remark = :sRemark WHERE ID = :sID")
     void update(int sID, String sName, String sRemark);
 
-    @Query("SELECT * FROM member WHERE isResigned = 0")
+    @Query("UPDATE member SET isResigned = :flag WHERE ID = :sID")
+    void setIsResigned(int sID, boolean flag);
+
+    @Query("SELECT * FROM member WHERE isResigned = 0 AND isMe = 0")
     List<GuildMember> getCurrentMembers();
 
-    @Query("SELECT * FROM member WHERE isResigned = 1")
+    @Query("SELECT * FROM member WHERE isResigned = 1 AND isMe = 0")
     List<GuildMember> getResignedMembers();
 }
