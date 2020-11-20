@@ -18,9 +18,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.ViewHolder> {
-    private List<GuildMember> memberList = new ArrayList<>();
+    private List<GuildMember> memberList;
     private Activity context;
     private RoomDB database;
+
 
     public MemberAdapter(Activity context, List<GuildMember> memberList){
         this.context = context;
@@ -76,7 +77,9 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.ViewHolder
                         database.memberDao().update(sID, uName, uRemark);
 
                         memberList.clear();
-                        memberList.addAll(database.memberDao().getAll());
+                        memberList.addAll(database.memberDao().getCurrentMembers());
+
+
                         notifyDataSetChanged();
                     }
                 });
@@ -91,13 +94,17 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.ViewHolder
 
                 database.memberDao().delete(m);
 
+
                 int position = holder.getAdapterPosition();
                 memberList.remove(position);
+
+                TextView currentCnt = context.findViewById(R.id.currentCnt);
+                currentCnt.setText((memberList.size() + 1) + "/30");
+
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position, memberList.size());
             }
         });
-
     }
 
     @Override

@@ -21,11 +21,18 @@ import java.util.List;
 
 public class MemberActivity extends AppCompatActivity {
     RecyclerView cRecyclerView;
+    RecyclerView rRecyclerView;
 
-    List<GuildMember> memberList = new ArrayList<>();
-    LinearLayoutManager linearLayoutManager;
+    List<GuildMember> cMemberList = new ArrayList<>();
+    List<GuildMember> rMemberList = new ArrayList<>();
+    LinearLayoutManager cLinearLayoutManager;
+    LinearLayoutManager rLinearLayoutManager;
     RoomDB database;
-    MemberAdapter adapter;
+    MemberAdapter cAdapter;
+    MemberAdapter rAdapter;
+    TextView currentCnt;
+
+    final int MAX_MEMBER = 29;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -38,21 +45,26 @@ public class MemberActivity extends AppCompatActivity {
         myName.setText(nickname);
 
         Button createButton = findViewById(R.id.createButton);
-        cRecyclerView = findViewById(R.id.currentRecyclerView);
-
+        currentCnt = findViewById(R.id.currentCnt);
         database = RoomDB.getInstance(this);
+        cLinearLayoutManager = new LinearLayoutManager(this);
 
-        memberList = database.memberDao().getAll();
+        cRecyclerView = findViewById(R.id.currentRecyclerView);
+        cMemberList = database.memberDao().getCurrentMembers();
+        currentCnt.setText((cMemberList.size() + 1) + "/30");
 
-        linearLayoutManager = new LinearLayoutManager(this);
-        cRecyclerView.setLayoutManager(linearLayoutManager);
-        adapter = new MemberAdapter(MemberActivity.this, memberList);
+        cRecyclerView.setLayoutManager(cLinearLayoutManager);
+        cAdapter = new MemberAdapter(MemberActivity.this, cMemberList);
 
-        cRecyclerView.setAdapter(adapter);
+        cRecyclerView.setAdapter(cAdapter);
 
         createButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(cMemberList.size() == MAX_MEMBER){
+                    showToast("멤버 인원이 가득찼습니다.");
+                    return;
+                }
                 final Dialog dialog = new Dialog(MemberActivity.this);
 
                 dialog.setContentView(R.layout.dialog_update);
@@ -75,20 +87,34 @@ public class MemberActivity extends AppCompatActivity {
                             GuildMember member = new GuildMember();
                             member.setName(sName);
                             member.setRemark(sRemark);
+                            member.setResigned(false);
 
                             database.memberDao().insert(member);
 
-                            memberList.clear();
-                            memberList.addAll(database.memberDao().getAll());
-                            adapter.notifyDataSetChanged();
+                            cMemberList.clear();
+                            cMemberList.addAll(database.memberDao().getCurrentMembers());
+                            currentCnt.setText((cMemberList.size() + 1) + "/30");
+
+                            cAdapter.notifyDataSetChanged();
                         }
                         else{
-                            Toast.makeText(MemberActivity.this, "이름을 입력하세요", Toast.LENGTH_LONG).show();
+                            showToast("이름을 입력하세요");
                         }
                     }
                 });
             }
         });
 
+        rRecyclerView = findViewById(R.id.resignedRecyclerView);
+        rMemberList = database.memberDao().getResignedMembers();
+
+        rRecyclerView.setLayoutManager(rLinearLayoutManager);
+        rAdapter = new MemberAdapter(MemberActivity.this, rMemberList);
+
+        rRecyclerView.setAdapter(rAdapter);
+    }
+
+    private void showToast(String msg){
+        Toast.makeText(MemberActivity.this, msg, Toast.LENGTH_LONG).show();
     }
 }
