@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/currentTab"
+        android:icon="@drawable/people_icon"
+        android:title="현재 멤버"/>
+    <item
+        android:id="@+id/resignedTab"
+        android:icon="@drawable/resign_icon"
+        android:title="탈퇴 멤버"/>
+</menu>
