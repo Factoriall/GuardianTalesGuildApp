@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -11,29 +12,30 @@
         android:background="#787878"
         android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/current"
+        <ImageView
+            android:id="@+id/imageView4"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:text="현재 길드원"
-            android:textSize="20sp" />
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            app:srcCompat="@drawable/people_icon"
+            tools:ignore="VectorDrawableCompat" />
 
         <TextView
             android:id="@+id/currentCnt"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="bottom"
             android:layout_weight="2"
-            android:gravity="right"
+            android:gravity="center_vertical"
             android:text="1/30"
-            android:textSize="16sp" />
+            android:textSize="24sp" />
 
         <Button
             android:id="@+id/createButton"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1.5"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#D8B38E"
             android:text="생성" />
 
     </LinearLayout>
@@ -42,7 +44,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/currentRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="682dp"
         android:layout_weight="1"
         tools:listitem="@layout/list_member" />
 

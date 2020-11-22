@@ -1,4 +1,4 @@
-package org.techtown.gtguildraid;
+package org.techtown.gtguildraid.Fragments;
 
 import android.app.Dialog;
 import android.graphics.Color;
@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -18,8 +17,12 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.techtown.gtguildraid.Helper.MyButtonClickListener;
-import org.techtown.gtguildraid.Helper.MySwipeHelper;
+import org.techtown.gtguildraid.Models.GuildMember;
+import org.techtown.gtguildraid.Interfaces.MyButtonClickListener;
+import org.techtown.gtguildraid.Utils.MySwipeHelper;
+import org.techtown.gtguildraid.Adapters.MemberAdapter;
+import org.techtown.gtguildraid.R;
+import org.techtown.gtguildraid.Utils.RoomDB;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +33,6 @@ public class ResMemberFragment extends Fragment {
     LinearLayoutManager linearLayoutManager;
     RoomDB database;
     MemberAdapter adapter;
-    TextView resignedCnt;
     final int MAX_MEMBER = 29;
 
     @Nullable
@@ -38,15 +40,11 @@ public class ResMemberFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         ViewGroup view = (ViewGroup) inflater.inflate(R.layout.fragment_res_member, container, false);
 
-        resignedCnt = view.findViewById(R.id.resignedCnt);
-
         database = RoomDB.getInstance(getActivity());
 
         linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView = view.findViewById(R.id.resignedRecyclerView);
         memberList = database.memberDao().getResignedMembers();
-        resignedCnt.setText((memberList.size() + 1) + "/30");
-
         recyclerView.setLayoutManager(linearLayoutManager);
         adapter = new MemberAdapter(getActivity(), memberList);
         recyclerView.setAdapter(adapter);
@@ -63,11 +61,10 @@ public class ResMemberFragment extends Fragment {
                             @Override
                             public void onClick(int pos) {
                                 deleteMember(pos);
-                                resignedCnt.setText(memberList.size() + "명");
                             }
                         }));
                 buffer.add(new MyButton(getActivity(),
-                        "탈퇴",
+                        "복귀",
                         50,
                         0,
                         Color.parseColor("#FFFF00"),
@@ -145,8 +142,6 @@ public class ResMemberFragment extends Fragment {
         database.memberDao().setIsResigned(m.getID(), false);
 
         memberList.remove(pos);
-
-        resignedCnt.setText(memberList.size() + "명");
 
         adapter.notifyItemRemoved(pos);
         adapter.notifyItemRangeChanged(pos, memberList.size());

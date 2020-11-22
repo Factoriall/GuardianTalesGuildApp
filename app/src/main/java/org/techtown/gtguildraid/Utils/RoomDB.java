@@ -1,18 +1,19 @@
-package org.techtown.gtguildraid;
+package org.techtown.gtguildraid.Utils;
 
 
 import android.content.Context;
 
-import androidx.annotation.NonNull;
 import androidx.room.Database;
-import androidx.room.DatabaseConfiguration;
-import androidx.room.InvalidationTracker;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
-import androidx.sqlite.db.SupportSQLiteOpenHelper;
+
+import org.techtown.gtguildraid.Interfaces.BossDao;
+import org.techtown.gtguildraid.Interfaces.MainDao;
+import org.techtown.gtguildraid.Models.Boss;
+import org.techtown.gtguildraid.Models.GuildMember;
 
 //Add database entities
-@Database(entities = {GuildMember.class}, version = 1, exportSchema = false)
+@Database(entities = {GuildMember.class, Boss.class}, version = 2, exportSchema = false)
 public abstract class RoomDB extends RoomDatabase {
     private static RoomDB database;
 
@@ -31,4 +32,5 @@ public abstract class RoomDB extends RoomDatabase {
 
     //Create Dao
     public abstract MainDao memberDao();
+    public abstract BossDao bossDao();
 }

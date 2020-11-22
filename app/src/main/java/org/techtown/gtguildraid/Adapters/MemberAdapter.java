@@ -1,4 +1,4 @@
-package org.techtown.gtguildraid;
+package org.techtown.gtguildraid.Adapters;
 
 import android.app.Activity;
 import android.view.LayoutInflater;
@@ -10,7 +10,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
+import org.techtown.gtguildraid.Models.GuildMember;
+import org.techtown.gtguildraid.R;
+import org.techtown.gtguildraid.Utils.RoomDB;
+
 import java.util.List;
 
 public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.ViewHolder> {

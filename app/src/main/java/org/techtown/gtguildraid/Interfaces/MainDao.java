@@ -1,9 +1,11 @@
-package org.techtown.gtguildraid;
+package org.techtown.gtguildraid.Interfaces;
 
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+
+import org.techtown.gtguildraid.Models.GuildMember;
 
 import java.util.List;
 

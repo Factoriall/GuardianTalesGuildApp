@@ -1,4 +1,4 @@
-package org.techtown.gtguildraid;
+package org.techtown.gtguildraid.Fragments;
 
 import android.app.Dialog;
 import android.graphics.Color;
@@ -18,8 +18,12 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.techtown.gtguildraid.Helper.MyButtonClickListener;
-import org.techtown.gtguildraid.Helper.MySwipeHelper;
+import org.techtown.gtguildraid.Models.GuildMember;
+import org.techtown.gtguildraid.Interfaces.MyButtonClickListener;
+import org.techtown.gtguildraid.Utils.MySwipeHelper;
+import org.techtown.gtguildraid.Adapters.MemberAdapter;
+import org.techtown.gtguildraid.R;
+import org.techtown.gtguildraid.Utils.RoomDB;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +35,7 @@ public class CurMemberFragment extends Fragment {
     RoomDB database;
     MemberAdapter adapter;
     TextView currentCnt;
+    MemberFragment parentFragment;
     final int MAX_MEMBER = 29;
 
     @Nullable
@@ -40,6 +45,7 @@ public class CurMemberFragment extends Fragment {
 
         Button createButton = view.findViewById(R.id.createButton);
         currentCnt = view.findViewById(R.id.currentCnt);
+        parentFragment = (MemberFragment) getParentFragment();
 
         database = RoomDB.getInstance(getActivity());
 
@@ -101,6 +107,7 @@ public class CurMemberFragment extends Fragment {
 
         return view;
     }
+
 
     private void createMember() {
         if(memberList.size() == MAX_MEMBER){

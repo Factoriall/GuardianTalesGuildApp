@@ -1,4 +1,4 @@
-package org.techtown.gtguildraid;
+package org.techtown.gtguildraid.Activities;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
@@ -10,6 +10,10 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import org.techtown.gtguildraid.Models.GuildMember;
+import org.techtown.gtguildraid.R;
+import org.techtown.gtguildraid.Utils.RoomDB;
 
 public class RegisterActivity extends AppCompatActivity {
     @Override

@@ -1,10 +1,12 @@
-package org.techtown.gtguildraid;
+package org.techtown.gtguildraid.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import org.techtown.gtguildraid.R;
 
 public class FirstActivity extends AppCompatActivity {
     @Override

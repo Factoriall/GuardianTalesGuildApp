@@ -1,4 +1,4 @@
-package org.techtown.gtguildraid.Helper;
+package org.techtown.gtguildraid.Utils;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -16,12 +16,11 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.techtown.gtguildraid.R;
+import org.techtown.gtguildraid.Interfaces.MyButtonClickListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
