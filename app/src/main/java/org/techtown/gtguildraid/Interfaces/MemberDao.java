@@ -12,7 +12,7 @@ import java.util.List;
 import static androidx.room.OnConflictStrategy.REPLACE;
 
 @Dao
-public interface MainDao {
+public interface MemberDao {
     //Insert query
     @Insert(onConflict = REPLACE)
     void insert(GuildMember member);

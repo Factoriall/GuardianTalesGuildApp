@@ -9,7 +9,10 @@ import java.io.Serializable;
 @Entity(tableName = "boss")
 public class Boss implements Serializable {
     @PrimaryKey(autoGenerate = true)
-    private int ID;
+    private int bossId;
+
+    @ColumnInfo(name = "raidId")
+    private int raidId;
 
     //Create name column
     @ColumnInfo(name = "name")
@@ -19,12 +22,20 @@ public class Boss implements Serializable {
     @ColumnInfo(name = "hardness")
     private double hardness;
 
-    public int getID() {
-        return ID;
+    public int getBossId() {
+        return bossId;
     }
 
-    public void setID(int ID) {
-        this.ID = ID;
+    public void setBossId(int bossId) {
+        this.bossId = bossId;
+    }
+
+    public int getRaidId() {
+        return raidId;
+    }
+
+    public void setRaidId(int raidId) {
+        this.raidId = raidId;
     }
 
     public String getName() {

@@ -9,7 +9,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:background="#787878"
+        android:background="#00000000"
         android:orientation="horizontal">
 
         <ImageView
@@ -28,6 +28,7 @@
             android:layout_weight="2"
             android:gravity="center_vertical"
             android:text="1/30"
+            android:textColor="#FFFFFF"
             android:textSize="24sp" />
 
         <Button
