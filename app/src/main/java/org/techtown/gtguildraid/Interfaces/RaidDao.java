@@ -1,5 +1,7 @@
 package org.techtown.gtguildraid.Interfaces;
 
+import android.util.Log;
+
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
@@ -13,7 +15,7 @@ import java.util.List;
 @Dao
 public abstract class RaidDao {
     @Insert
-    public abstract void insertRaid(Raid raid);
+    public abstract long insertRaid(Raid raid);
 
     @Insert
     public abstract void insertBossList(List<Boss> bosses);
@@ -30,23 +32,27 @@ public abstract class RaidDao {
     @Query("SELECT * FROM Raid WHERE endDay > :today")
     public abstract Raid getCurrentRaid(Date today);
 
-    @Query("SELECT * FROM Boss WHERE bossId =:raidId")
-    public abstract List<Boss> getBossList(int raidId);
+    @Query("SELECT * FROM Boss WHERE raidId =:raidId")
+    public abstract List<Boss> getBossesList(int raidId);
 
     @Query("UPDATE raid SET name = :sName, startDay = :startDate, endDay = :endDate WHERE raidId = :sID")
     public abstract void update(int sID, String sName, Date startDate, Date endDate);
 
     public void insertRaidWithBosses(Raid raid, List<Boss> bosses) {
+        int id = (int)insertRaid(raid);
         for (int i = 0; i < bosses.size(); i++) {
-            bosses.get(i).setRaidId(raid.getRaidId());
+            Log.d("InsertRaidId", id + "");
+            bosses.get(i).setRaidId(id);
         }
         insertBossList(bosses);
-        insertRaid(raid);
     }
 
-    public Raid getRaidWithBosses(int id) {
-        Raid raid = getRaid(id);
-        List<Boss> bosses = getBossList(id);
+    public Raid getCurrentRaidWithBosses(Date date) {
+        Raid raid = getCurrentRaid(date);
+        Log.d("CurrentRaidId", Integer.toString(raid.getRaidId()));
+        Log.d("raidInfo", raid.getName());
+        List<Boss> bosses = getBossesList(raid.getRaidId());
+
         raid.setBossList(bosses);
         return raid;
     }
