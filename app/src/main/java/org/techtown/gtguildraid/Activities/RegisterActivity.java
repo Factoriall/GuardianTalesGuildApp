@@ -21,7 +21,7 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        final EditText nickname = findViewById(R.id.myName);
+        final EditText nickname = findViewById(R.id.raidName);
         final EditText guildName = findViewById(R.id.guildName);
 
         Button button = findViewById(R.id.button);

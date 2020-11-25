@@ -44,7 +44,7 @@
                         tools:ignore="VectorDrawableCompat" />
 
                     <TextView
-                        android:id="@+id/myGuildName"
+                        android:id="@+id/raidTerm"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="3"
@@ -72,7 +72,7 @@
                         tools:ignore="VectorDrawableCompat" />
 
                     <TextView
-                        android:id="@+id/myName"
+                        android:id="@+id/raidName"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="3"

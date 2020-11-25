@@ -56,7 +56,7 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.ViewHolder
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            nickname = itemView.findViewById(R.id.myName);
+            nickname = itemView.findViewById(R.id.raidName);
             remark = itemView.findViewById(R.id.remark);
             //editButton = itemView.findViewById(R.id.editButton);
             //deleteButton = itemView.findViewById(R.id.deleteButton);

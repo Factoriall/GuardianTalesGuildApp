@@ -2,16 +2,14 @@ package org.techtown.gtguildraid.Models;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
-import androidx.room.TypeConverters;
-
-import org.techtown.gtguildraid.Utils.DateConverter;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Entity(tableName = "raid")
-@TypeConverters(DateConverter.class)
 public class Raid implements Serializable {
     @PrimaryKey(autoGenerate = true)
     private int raidId;
@@ -25,6 +23,9 @@ public class Raid implements Serializable {
 
     @ColumnInfo(name = "endDay")
     private Date endDay;
+
+    @Ignore
+    public List<Boss> bossList;
 
     public int getRaidId() {
         return raidId;
@@ -56,5 +57,13 @@ public class Raid implements Serializable {
 
     public void setEndDay(Date endDay) {
         this.endDay = endDay;
+    }
+
+    public List<Boss> getBossList() {
+        return bossList;
+    }
+
+    public void setBossList(List<Boss> bossList) {
+        this.bossList = bossList;
     }
 }

@@ -6,9 +6,10 @@ import android.content.Context;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.room.TypeConverters;
 
-import org.techtown.gtguildraid.Interfaces.BossDao;
 import org.techtown.gtguildraid.Interfaces.MemberDao;
+import org.techtown.gtguildraid.Interfaces.RaidDao;
 import org.techtown.gtguildraid.Models.Boss;
 import org.techtown.gtguildraid.Models.GuildMember;
 import org.techtown.gtguildraid.Models.Hero;
@@ -16,6 +17,7 @@ import org.techtown.gtguildraid.Models.Raid;
 
 //Add database entities
 @Database(entities = {GuildMember.class, Boss.class, Raid.class, Hero.class}, version = 3, exportSchema = false)
+@TypeConverters(DateConverter.class)
 public abstract class RoomDB extends RoomDatabase {
     private static RoomDB database;
 
@@ -34,5 +36,5 @@ public abstract class RoomDB extends RoomDatabase {
 
     //Create Dao
     public abstract MemberDao memberDao();
-    public abstract BossDao bossDao();
+    public abstract RaidDao raidDao();
 }

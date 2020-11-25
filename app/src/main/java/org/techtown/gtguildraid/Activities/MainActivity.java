@@ -1,27 +1,27 @@
 package org.techtown.gtguildraid.Activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import org.techtown.gtguildraid.Fragments.BossFragment;
 import org.techtown.gtguildraid.Fragments.MemberFragment;
-import org.techtown.gtguildraid.R;
+import org.techtown.gtguildraid.Fragments.RaidFragment;
 import org.techtown.gtguildraid.Fragments.RecordFragment;
 import org.techtown.gtguildraid.Fragments.StatisticFragment;
+import org.techtown.gtguildraid.R;
 
 public class MainActivity extends AppCompatActivity {
 
     RecordFragment recordFragment;
     MemberFragment memberFragment;
-    BossFragment bossFragment;
+    RaidFragment raidFragment;
     StatisticFragment statisticFragment;
 
     @Override
@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
         recordFragment = new RecordFragment();
         memberFragment = new MemberFragment();
-        bossFragment = new BossFragment();
+        raidFragment = new RaidFragment();
         statisticFragment = new StatisticFragment();
 
         getSupportFragmentManager().beginTransaction().replace(R.id.container, memberFragment).commit();
@@ -58,8 +58,8 @@ public class MainActivity extends AppCompatActivity {
                             case R.id.memberTab:
                                 getSupportFragmentManager().beginTransaction().replace(R.id.container, memberFragment).commit();
                                 return true;
-                            case R.id.bossTab:
-                                getSupportFragmentManager().beginTransaction().replace(R.id.container, bossFragment).commit();
+                            case R.id.raidTab:
+                                getSupportFragmentManager().beginTransaction().replace(R.id.container, raidFragment).commit();
                                 return true;
                         }
                         return false;

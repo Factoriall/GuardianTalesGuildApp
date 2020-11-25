@@ -31,8 +31,8 @@ public class MemberFragment extends Fragment {
         String nickname = pref.getString("nickname", "");
         String guildName = pref.getString("guildName", "");
 
-        TextView myName = view.findViewById(R.id.myName);
-        TextView myGuildName = view.findViewById(R.id.myGuildName);
+        TextView myName = view.findViewById(R.id.raidName);
+        TextView myGuildName = view.findViewById(R.id.raidTerm);
 
         myName.setText(nickname);
         myGuildName.setText(guildName);

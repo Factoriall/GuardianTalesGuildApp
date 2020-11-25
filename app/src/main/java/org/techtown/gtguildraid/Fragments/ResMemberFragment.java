@@ -17,11 +17,11 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.techtown.gtguildraid.Models.GuildMember;
-import org.techtown.gtguildraid.Interfaces.MyButtonClickListener;
-import org.techtown.gtguildraid.Utils.MySwipeHelper;
 import org.techtown.gtguildraid.Adapters.MemberAdapter;
+import org.techtown.gtguildraid.Interfaces.MyButtonClickListener;
+import org.techtown.gtguildraid.Models.GuildMember;
 import org.techtown.gtguildraid.R;
+import org.techtown.gtguildraid.Utils.MySwipeHelper;
 import org.techtown.gtguildraid.Utils.RoomDB;
 
 import java.util.ArrayList;
