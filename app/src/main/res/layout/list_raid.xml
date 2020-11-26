@@ -94,7 +94,7 @@
         </androidx.cardview.widget.CardView>
 
         <ImageView
-            android:id="@+id/imageView6"
+            android:id="@+id/currentArrow"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -105,11 +105,11 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/BossInfo"
+        android:id="@+id/bossInfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/Boss1Info"
@@ -135,12 +135,12 @@
                 style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="150dp"
                 android:layout_height="16dp"
-                android:layout_marginEnd="50dp"
-                android:layout_marginRight="50dp"
+                android:layout_marginEnd="80dp"
+                android:layout_marginRight="80dp"
                 android:max="20"
-                android:min="1"
+                android:min="0"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/editButton1"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
@@ -161,17 +161,6 @@
                 android:layout_marginTop="5dp"
                 android:text="보스1"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <ImageView
-                android:id="@+id/editButton1"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginEnd="30dp"
-                android:layout_marginRight="30dp"
-                android:src="@drawable/create_icon"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -202,12 +191,12 @@
                 style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="150dp"
                 android:layout_height="16dp"
-                android:layout_marginEnd="50dp"
-                android:layout_marginRight="50dp"
+                android:layout_marginEnd="80dp"
+                android:layout_marginRight="80dp"
                 android:max="20"
-                android:min="1"
+                android:min="0"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/editButton2"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
@@ -229,17 +218,6 @@
                 android:layout_marginTop="5dp"
                 android:text="보스2"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <ImageView
-                android:id="@+id/editButton2"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginEnd="30dp"
-                android:layout_marginRight="30dp"
-                android:src="@drawable/create_icon"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -268,12 +246,12 @@
                 style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="150dp"
                 android:layout_height="16dp"
-                android:layout_marginEnd="50dp"
-                android:layout_marginRight="50dp"
+                android:layout_marginEnd="80dp"
+                android:layout_marginRight="80dp"
                 android:max="20"
-                android:min="1"
+                android:min="0"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/editButton3"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
@@ -294,17 +272,6 @@
                 android:layout_marginTop="5dp"
                 android:text="보스3"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <ImageView
-                android:id="@+id/editButton3"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginEnd="30dp"
-                android:layout_marginRight="30dp"
-                android:src="@drawable/create_icon"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -335,12 +302,12 @@
                 style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="150dp"
                 android:layout_height="16dp"
-                android:layout_marginEnd="50dp"
-                android:layout_marginRight="50dp"
+                android:layout_marginEnd="80dp"
+                android:layout_marginRight="80dp"
                 android:max="20"
-                android:min="1"
+                android:min="0"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/editButton4"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
@@ -362,17 +329,6 @@
                 android:layout_marginTop="5dp"
                 android:text="보스4"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <ImageView
-                android:id="@+id/editButton4"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginEnd="30dp"
-                android:layout_marginRight="30dp"
-                android:src="@drawable/create_icon"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

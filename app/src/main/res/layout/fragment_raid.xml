@@ -142,7 +142,7 @@
                                     android:gravity="center"
                                     android:text="기간"
                                     android:textColor="#FFFFFF"
-                                    android:textSize="20sp"
+                                    android:textSize="16sp"
                                     android:textStyle="bold" />
                             </LinearLayout>
 
@@ -154,7 +154,7 @@
                 </androidx.cardview.widget.CardView>
 
                 <ImageView
-                    android:id="@+id/imageView6"
+                    android:id="@+id/currentArrow"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -165,7 +165,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/BossInfo"
+                android:id="@+id/bossInfo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -184,7 +184,6 @@
                         android:layout_marginStart="50dp"
                         android:layout_marginLeft="50dp"
                         android:hint="이름"
-                        android:textSize="20sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -197,7 +196,7 @@
                         android:layout_marginEnd="50dp"
                         android:layout_marginRight="50dp"
                         android:max="20"
-                        android:min="1"
+                        android:min="0"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/editButton1"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -251,7 +250,7 @@
                         android:hint="이름"
                         android:textColor="#FFFFFF"
                         android:textColorHint="#FFFFFF"
-                        android:textSize="20sp"
+                        android:textStyle="bold"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -264,7 +263,7 @@
                         android:layout_marginEnd="50dp"
                         android:layout_marginRight="50dp"
                         android:max="20"
-                        android:min="1"
+                        android:min="0"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/editButton2"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -317,7 +316,7 @@
                         android:layout_marginStart="50dp"
                         android:layout_marginLeft="50dp"
                         android:hint="이름"
-                        android:textSize="20sp"
+                        android:textStyle="bold"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -330,7 +329,7 @@
                         android:layout_marginEnd="50dp"
                         android:layout_marginRight="50dp"
                         android:max="20"
-                        android:min="1"
+                        android:min="0"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/editButton3"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -384,7 +383,7 @@
                         android:hint="이름"
                         android:textColor="#FFFFFF"
                         android:textColorHint="#FFFFFF"
-                        android:textSize="20sp"
+                        android:textStyle="bold"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -397,7 +396,7 @@
                         android:layout_marginEnd="50dp"
                         android:layout_marginRight="50dp"
                         android:max="20"
-                        android:min="1"
+                        android:min="0"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/editButton4"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -465,12 +464,24 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/tabArrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="20dp"
+                android:layout_marginRight="20dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:src="@drawable/arrow_down_icon" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/raidRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:visibility="gone"
             tools:listitem="@layout/list_raid">
 
         </androidx.recyclerview.widget.RecyclerView>

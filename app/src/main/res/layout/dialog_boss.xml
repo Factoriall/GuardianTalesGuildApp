@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="8dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/bossText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="보스 이름:"
+        android:textSize="20sp" />
+
+    <EditText
+        android:id="@+id/bossName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:drawable/editbox_background"
+        android:gravity="top"
+        android:hint="보스 이름"
+        android:padding="12dp" />
+
+    <TextView
+        android:id="@+id/barText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="난이도 배율:"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/hardness"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:gravity="center"
+        android:text="1.0"
+        android:textSize="30sp" />
+
+    <SeekBar
+        android:id="@+id/seekBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:progress="10"
+        android:min="0"
+        android:max="20"/>
+
+    <Button
+        android:id="@+id/updateButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="입력" />
+
+
+</LinearLayout>

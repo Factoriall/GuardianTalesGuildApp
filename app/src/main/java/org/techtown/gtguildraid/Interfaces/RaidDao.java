@@ -32,11 +32,17 @@ public abstract class RaidDao {
     @Query("SELECT * FROM Raid WHERE endDay > :today")
     public abstract Raid getCurrentRaid(Date today);
 
+    @Query("SELECT * FROM Raid WHERE endDay <= :today")
+    public abstract List<Raid> getPastRaids(Date today);
+
     @Query("SELECT * FROM Boss WHERE raidId =:raidId")
     public abstract List<Boss> getBossesList(int raidId);
 
     @Query("UPDATE raid SET name = :sName, startDay = :startDate, endDay = :endDate WHERE raidId = :sID")
-    public abstract void update(int sID, String sName, Date startDate, Date endDate);
+    public abstract void updateRaid(int sID, String sName, Date startDate, Date endDate);
+
+    @Query("UPDATE boss SET name = :sName, hardness = :hardness WHERE bossId = :sID")
+    public abstract void updateBoss(int sID, String sName, double hardness);
 
     public void insertRaidWithBosses(Raid raid, List<Boss> bosses) {
         int id = (int)insertRaid(raid);

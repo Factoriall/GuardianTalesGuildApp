@@ -12,20 +12,25 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import org.techtown.gtguildraid.Adapters.RaidAdapter;
 import org.techtown.gtguildraid.Models.Boss;
 import org.techtown.gtguildraid.Models.Raid;
 import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.Utils.RoomDB;
-import org.w3c.dom.Text;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -37,13 +42,24 @@ import java.util.List;
 public class RaidFragment extends Fragment {
     final String dateFormat = "yyyy-MM-dd";
 
-    List<Raid> raidList = new ArrayList<>();
+    ViewGroup view;
     RoomDB database;
     Raid currentRaid;
     TextView isNotFound;
+
     TextView raidName;
     TextView raidTerm;
     LinearLayout raidInfo;
+    LinearLayoutManager linearLayoutManager;
+    RecyclerView recyclerView;
+    RaidAdapter adapter;
+
+    TextView[] bossNameList;
+    TextView[] bossHardnessList;
+    ProgressBar[] bossBarList;
+    ImageView[] bossBtnList;
+    LinearLayout bossInfo;
+
     Date today;
     Boolean isCurrentExist;
     Button raidButton;
@@ -51,9 +67,10 @@ public class RaidFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        ViewGroup view = (ViewGroup) inflater.inflate(R.layout.fragment_raid, container, false);
+        view = (ViewGroup) inflater.inflate(R.layout.fragment_raid, container, false);
         isNotFound = view.findViewById(R.id.notFound);
         raidInfo = view.findViewById(R.id.raidInfo);
+        bossInfo = view.findViewById(R.id.bossInfo);
         raidName = view.findViewById(R.id.raidName);
         raidTerm = view.findViewById(R.id.raidTerm);
 
@@ -64,36 +81,7 @@ public class RaidFragment extends Fragment {
         raidButton = view.findViewById(R.id.raidButton);
 
         if(isCurrentExist) {
-            currentRaid = database.raidDao().getCurrentRaidWithBosses(today);
-            isNotFound.setVisibility(View.GONE);
-            raidInfo.setVisibility(View.VISIBLE);
-
-            raidName.setText(currentRaid.getName());
-            Date aEnd = adjustEndTime(currentRaid.getEndDay());
-
-            List<Boss> bosses = currentRaid.getBossList();
-            for(int i=0; i<bosses.size(); i++){
-                Log.d("bossName", bosses.get(i).getName());
-            }
-            for(int i=1; i<=4; i++){
-                Resources res = getResources();
-                int nameId = res.getIdentifier("boss" + i, "id", getContext().getPackageName());
-                int barId = res.getIdentifier("progressBar" + i, "id", getContext().getPackageName());
-                int hardnessId = res.getIdentifier("hardness" + i, "id", getContext().getPackageName());
-
-                TextView bossName = view.findViewById(nameId);
-                TextView hardness = view.findViewById(hardnessId);
-                ProgressBar progressBar = view.findViewById(barId);
-
-                bossName.setText(bosses.get(i-1).getName());
-                hardness.setText("배율: " + bosses.get(i-1).getHardness());
-                progressBar.setProgress((int)bosses.get(i-1).getHardness() * 10);
-            }
-
-
-            raidTerm.setText(new SimpleDateFormat(dateFormat).format(currentRaid.getStartDay()) +"~" +
-                    new SimpleDateFormat(dateFormat).format(aEnd));
-            raidButton.setText("수정");
+            refreshView();
         }
         else{
             isNotFound.setVisibility(View.VISIBLE);
@@ -108,7 +96,128 @@ public class RaidFragment extends Fragment {
             }
         });
 
+        final ImageView arrow = view.findViewById(R.id.currentArrow);
+
+        arrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(bossInfo.getVisibility() == View.VISIBLE){
+                    bossInfo.setVisibility(View.GONE);
+                    arrow.setImageResource(R.drawable.arrow_down_icon);
+                }
+                else{
+                    bossInfo.setVisibility(View.VISIBLE);
+                    arrow.setImageResource(R.drawable.arrow_up_icon);
+                }
+            }
+        });
+
+        bossNameList = new TextView[4];
+        bossHardnessList = new TextView[4];
+        bossBarList = new ProgressBar[4];
+        bossBtnList = new ImageView[4];
+
+        for(int i=1; i<=4; i++){
+            Resources res = getResources();
+            int nameId = res.getIdentifier("boss" + i, "id", getContext().getPackageName());
+            int barId = res.getIdentifier("progressBar" + i, "id", getContext().getPackageName());
+            int hardnessId = res.getIdentifier("hardness" + i, "id", getContext().getPackageName());
+            int buttonId = res.getIdentifier("editButton" + i, "id", getContext().getPackageName());
+
+            bossNameList[i-1] = view.findViewById(nameId);
+            bossHardnessList[i-1] = view.findViewById(hardnessId);
+            bossBarList[i-1] = view.findViewById(barId);
+            bossBtnList[i-1] = view.findViewById(buttonId);
+
+            final int finalI = i;
+            bossBtnList[i-1].setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    updateBoss(finalI -1);
+                }
+            });
+        }
+
+        List<Raid> pastRaids = database.raidDao().getPastRaids(today);
+
+        linearLayoutManager = new LinearLayoutManager(getActivity());
+        recyclerView = view.findViewById(R.id.raidRecyclerView);
+        recyclerView.setLayoutManager(linearLayoutManager);
+
+        adapter = new RaidAdapter(getActivity(), pastRaids);
+        recyclerView.setAdapter(adapter);
+
+        ConstraintLayout pastTab = view.findViewById(R.id.pastTab);
+        final ImageView tabArrow = view.findViewById(R.id.tabArrow);
+        pastTab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(recyclerView.getVisibility() == View.VISIBLE){
+                    tabArrow.setImageResource(R.drawable.arrow_down_icon);
+                    recyclerView.setVisibility(View.GONE);
+                }
+                else{
+                    tabArrow.setImageResource(R.drawable.arrow_up_icon);
+                    recyclerView.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
         return view;
+    }
+
+    private void updateBoss(int idx) {
+        final Dialog dialog = new Dialog(getActivity());
+
+        dialog.setContentView(R.layout.dialog_boss);
+        int width = WindowManager.LayoutParams.MATCH_PARENT;
+        int height = WindowManager.LayoutParams.WRAP_CONTENT;
+        dialog.getWindow().setLayout(width, height);
+        dialog.show();
+
+        final EditText name = dialog.findViewById(R.id.bossName);
+        final SeekBar bar = dialog.findViewById(R.id.seekBar);
+        final TextView hardness = dialog.findViewById(R.id.hardness);
+
+        final Boss boss = database.raidDao().getBossesList(currentRaid.getRaidId()).get(idx);
+        name.setText(boss.getName());
+        hardness.setText(Double.toString(boss.getHardness()));
+        bar.setProgress((int)(boss.getHardness() * 10));
+
+        bar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
+                if(progress < 1) {
+                    bar.setProgress(1);
+                    hardness.setText((Double.toString(0.1)));
+                }
+                else
+                    hardness.setText(Double.toString(progress / 10.0));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) { }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) { }
+        });
+
+        Button updateButton = dialog.findViewById(R.id.updateButton);
+
+        updateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String sName = name.getText().toString().trim();
+                Double dHardness = bar.getProgress() / 10.0;
+                if(!sName.equals("")) {
+                    database.raidDao().updateBoss(boss.getBossId(), sName, dHardness);
+                    refreshView();
+                    dialog.dismiss();
+                }
+                else
+                    showToast("이름을 입력하세요.");
+            }
+        });
     }
 
     private void updateRaid() {
@@ -122,20 +231,24 @@ public class RaidFragment extends Fragment {
 
         final EditText name = dialog.findViewById(R.id.raidName);
         final EditText startDate = dialog.findViewById(R.id.startDate);
+        Date defaultDate;
 
         if(isCurrentExist){
             name.setText(currentRaid.getName());
-            startDate.setText(new SimpleDateFormat(dateFormat).format(currentRaid.getStartDay()));
+            defaultDate = currentRaid.getStartDay();
         }
         else{
-            startDate.setText(new SimpleDateFormat(dateFormat).format(today));
+            defaultDate = today;
         }
+        startDate.setText(new SimpleDateFormat(dateFormat).format(defaultDate));
 
-        String[] sDate = startDate.getText().toString().trim().split("-");
+        Calendar defaultCal = Calendar.getInstance();
+        defaultCal.setTime(defaultDate);
+
         final Calendar myCalendar = Calendar.getInstance();
-        myCalendar.set(Calendar.YEAR, Integer.parseInt(sDate[0]));
-        myCalendar.set(Calendar.MONTH, Integer.parseInt(sDate[1])-1);
-        myCalendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(sDate[2]));
+        myCalendar.set(Calendar.YEAR, defaultCal.get(Calendar.YEAR));
+        myCalendar.set(Calendar.MONTH, defaultCal.get(Calendar.MONTH));
+        myCalendar.set(Calendar.DAY_OF_MONTH, defaultCal.get(Calendar.DAY_OF_MONTH));
 
         final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
 
@@ -147,8 +260,7 @@ public class RaidFragment extends Fragment {
                 myCalendar.set(Calendar.MONTH, monthOfYear);
                 myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
-                SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
-                startDate.setText(sdf.format(myCalendar.getTime()));
+                startDate.setText(new SimpleDateFormat(dateFormat).format(myCalendar.getTime()));
             }
         };
 
@@ -165,8 +277,6 @@ public class RaidFragment extends Fragment {
                 dialog.show();
             }
         });
-
-
 
         Button updateButton = dialog.findViewById(R.id.updateButton);
 
@@ -203,25 +313,12 @@ public class RaidFragment extends Fragment {
                                 bosses.add(boss);
                             }
                             database.raidDao().insertRaidWithBosses(raid, bosses);
-
-                            isNotFound.setVisibility(View.GONE);
-                            raidInfo.setVisibility(View.VISIBLE);
-                            raidButton.setText("수정");
-                            raidName.setText(sName);
-                            raidTerm.setText(new SimpleDateFormat(dateFormat).format(sDate) +"~" +
-                                    new SimpleDateFormat(dateFormat).format(aEnd));
                         }
                         else{//업데이트
-                            database.raidDao().update(currentRaid.getRaidId(), sName, sDate, eDate);
+                            database.raidDao().updateRaid(currentRaid.getRaidId(), sName, sDate, eDate);
                         }
-                        raidName.setText(sName);
-                        raidTerm.setText(new SimpleDateFormat(dateFormat).format(sDate) +"~" +
-                                new SimpleDateFormat(dateFormat).format(aEnd));
-                        //새로고침
-                        currentRaid = database.raidDao().getCurrentRaidWithBosses(today);
 
-                        raidList.clear();
-                        raidList.addAll(database.raidDao().getAllRaids());
+                        refreshView();
                     }
                     else{
                         showToast("이름을 입력하세요");
@@ -231,6 +328,39 @@ public class RaidFragment extends Fragment {
                 }
             }
         });
+    }
+
+    private void refreshView() {
+        currentRaid = database.raidDao().getCurrentRaidWithBosses(today);
+        isNotFound.setVisibility(View.GONE);
+        raidInfo.setVisibility(View.VISIBLE);
+
+        raidName.setText(currentRaid.getName());
+        Date aEnd = adjustEndTime(currentRaid.getEndDay());
+
+        List<Boss> bosses = currentRaid.getBossList();
+        for(int i=0; i<bosses.size(); i++){
+            Log.d("bossName", bosses.get(i).getName());
+        }
+
+        for(int i=1; i<=4; i++){
+            Resources res = getResources();
+            int nameId = res.getIdentifier("boss" + i, "id", getContext().getPackageName());
+            int barId = res.getIdentifier("progressBar" + i, "id", getContext().getPackageName());
+            int hardnessId = res.getIdentifier("hardness" + i, "id", getContext().getPackageName());
+
+            TextView bossName = view.findViewById(nameId);
+            TextView hardness = view.findViewById(hardnessId);
+            ProgressBar progressBar = view.findViewById(barId);
+
+            bossName.setText(bosses.get(i-1).getName());
+            hardness.setText("배율: " + String.format("%.1f", bosses.get(i-1).getHardness()));
+            progressBar.setProgress((int)(bosses.get(i-1).getHardness() * 10));
+        }
+
+        raidTerm.setText(new SimpleDateFormat(dateFormat).format(currentRaid.getStartDay()) +"~" +
+                new SimpleDateFormat(dateFormat).format(aEnd));
+        raidButton.setText("수정");
     }
 
     private Date adjustEndTime(Date eDate) {
