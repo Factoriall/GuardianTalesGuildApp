@@ -32,6 +32,9 @@ public interface MemberDao {
     @Query("SELECT * FROM member WHERE isResigned = 0 AND isMe = 0")
     List<GuildMember> getCurrentMembers();
 
+    @Query("SELECT * FROM member WHERE isMe = 1")
+    GuildMember getMe();
+
     @Query("SELECT * FROM member WHERE isResigned = 1 AND isMe = 0")
     List<GuildMember> getResignedMembers();
 }
