@@ -120,11 +120,15 @@
 
                     <Spinner
                         android:id="@+id/nickname"
+                        style="@style/Widget.AppCompat.Spinner"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
+
                         android:layout_weight="3"
-                        android:background="#222C63"
+                        android:background="@drawable/spinner_bg"
+                        android:stateListAnimator="@drawable/spinner_sla"
                         android:gravity="center"
+                        android:dropDownWidth="300dp"
                         android:text="닉네임"
                         android:textColor="#FFFFFF"
                         android:textSize="20sp"

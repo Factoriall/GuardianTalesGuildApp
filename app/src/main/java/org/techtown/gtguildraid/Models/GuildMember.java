@@ -1,5 +1,6 @@
 package org.techtown.gtguildraid.Models;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -65,5 +66,12 @@ public class GuildMember implements Serializable {
 
     public void setResigned(Boolean resigned) {
         isResigned = resigned;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        // A value you want to be displayed in the spinner item.
+        return name;
     }
 }

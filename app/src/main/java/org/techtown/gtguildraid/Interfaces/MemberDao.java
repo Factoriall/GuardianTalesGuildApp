@@ -37,4 +37,5 @@ public interface MemberDao {
 
     @Query("SELECT * FROM member WHERE isResigned = 1 AND isMe = 0")
     List<GuildMember> getResignedMembers();
+
 }
