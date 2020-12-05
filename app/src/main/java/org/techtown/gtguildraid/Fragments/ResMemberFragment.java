@@ -132,7 +132,7 @@ public class ResMemberFragment extends Fragment {
     }
 
     private void recoverMember(int pos) {
-        int memberNum = database.memberDao().getCurrentMembers().size();
+        int memberNum = database.memberDao().getCurrentMembersWithoutMe().size();
         if(memberNum == MAX_MEMBER){
             showToast("인원이 가득찼습니다!");
             return;

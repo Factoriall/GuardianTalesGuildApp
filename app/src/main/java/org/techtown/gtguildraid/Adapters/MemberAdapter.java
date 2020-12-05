@@ -26,7 +26,7 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.ViewHolder
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.list_member, parent, false);
+                .inflate(R.layout.card_member, parent, false);
 
         return new ViewHolder(view);
     }

@@ -103,11 +103,11 @@ public class RaidFragment extends Fragment {
             public void onClick(View view) {
                 if(bossInfo.getVisibility() == View.VISIBLE){
                     bossInfo.setVisibility(View.GONE);
-                    arrow.setImageResource(R.drawable.arrow_down_icon);
+                    arrow.setImageResource(R.drawable.icon_arrow_down);
                 }
                 else{
                     bossInfo.setVisibility(View.VISIBLE);
-                    arrow.setImageResource(R.drawable.arrow_up_icon);
+                    arrow.setImageResource(R.drawable.icon_arrow_up);
                 }
             }
         });
@@ -153,11 +153,11 @@ public class RaidFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if(recyclerView.getVisibility() == View.VISIBLE){
-                    tabArrow.setImageResource(R.drawable.arrow_down_icon);
+                    tabArrow.setImageResource(R.drawable.icon_arrow_down);
                     recyclerView.setVisibility(View.GONE);
                 }
                 else{
-                    tabArrow.setImageResource(R.drawable.arrow_up_icon);
+                    tabArrow.setImageResource(R.drawable.icon_arrow_up);
                     recyclerView.setVisibility(View.VISIBLE);
                 }
             }

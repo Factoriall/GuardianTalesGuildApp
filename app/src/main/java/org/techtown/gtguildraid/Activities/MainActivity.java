@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,6 +17,9 @@ import org.techtown.gtguildraid.Fragments.RaidFragment;
 import org.techtown.gtguildraid.Fragments.RecordFragment;
 import org.techtown.gtguildraid.Fragments.StatisticFragment;
 import org.techtown.gtguildraid.R;
+import org.techtown.gtguildraid.Utils.RoomDB;
+
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -41,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
         raidFragment = new RaidFragment();
         statisticFragment = new StatisticFragment();
 
+        RoomDB database = RoomDB.getInstance(this);
+
         getSupportFragmentManager().beginTransaction().replace(R.id.container, memberFragment).commit();
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
@@ -50,7 +56,11 @@ public class MainActivity extends AppCompatActivity {
                     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                         switch(item.getItemId()) {
                             case R.id.recordTab:
-                                getSupportFragmentManager().beginTransaction().replace(R.id.container, recordFragment).commit();
+                                Boolean isExist = database.raidDao().isCurrentRaidExist(new Date());
+                                if(isExist)
+                                    getSupportFragmentManager().beginTransaction().replace(R.id.container, recordFragment).commit();
+                                else
+                                    Toast.makeText(MainActivity.this, "레이드 정보를 입력하세요!", Toast.LENGTH_LONG).show();
                                 return true;
                             case R.id.statisticTab:
                                 getSupportFragmentManager().beginTransaction().replace(R.id.container, statisticFragment).commit();
@@ -66,57 +76,5 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         );
-        /*
-        SharedPreferences pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
-        Boolean isRegistered = pref.getBoolean("isRegistered", false);
-        String nickname = pref.getString("nickname", "");
-        String guildName = pref.getString("guildName", "");
-
-        TextView nNameText = findViewById(R.id.myName);
-        TextView gNameText = findViewById(R.id.guildName);
-
-        if(!isRegistered){
-            startActivity(new Intent(MainActivity.this, RegisterActivity.class));
-            overridePendingTransition( R.anim.slide_in_up, R.anim.slide_out_down );
-        }
-
-        nNameText.setText("닉네임: " + nickname);
-        gNameText.setText("길드 이름: " + guildName);
-
-        Button memberButton = findViewById(R.id.memberButton);
-        memberButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, MemberActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        Button bossButton = findViewById(R.id.bossButton);
-        bossButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, BossActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        Button recordButton = findViewById(R.id.recordButton);
-        recordButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, RecordActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        Button statisticButton = findViewById(R.id.statisticButton);
-        statisticButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, StatisticActivity.class);
-                startActivity(intent);
-            }
-        });*/
     }
 }

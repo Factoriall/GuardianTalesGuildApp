@@ -9,13 +9,29 @@ import org.techtown.gtguildraid.Fragments.CardFragment;
 
 public class ViewPagerAdapter extends FragmentStateAdapter {
     private static final int CARD_ITEM_SIZE = 14;
+    private int memberId;
+    private int raidId;
+    private int day;
+
+    public void setData(int memberId, int raidId, int day){
+        this.memberId = memberId;
+        this.raidId = raidId;
+        this.day = day;
+    }
+
     public ViewPagerAdapter(@NonNull FragmentActivity fragmentActivity) {
         super(fragmentActivity);
     }
-    @NonNull @Override public Fragment createFragment(int position) {
-        return CardFragment.newInstance(position);
+
+    @NonNull
+    @Override
+    public Fragment createFragment(int position) {
+        return CardFragment.newInstance(position, memberId, raidId, day);
     }
-    @Override public int getItemCount() {
+
+    @Override
+    public int getItemCount() {
         return CARD_ITEM_SIZE;
     }
+
 }

@@ -1,5 +1,6 @@
 package org.techtown.gtguildraid.Models;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -9,20 +10,32 @@ import java.io.Serializable;
 @Entity (tableName = "hero")
 public class Hero implements Serializable {
     @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "heroId")
     private int heroId;
 
-    private String name;
+    @NonNull
+    @ColumnInfo(name = "koreanName")
+    private String koreanName;
+
+    @NonNull
+    @ColumnInfo(name = "englishName")
+    private String englishName;
+
+    @ColumnInfo(name = "element")
     private int element;
 
-    @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
-    private byte[] image;
+    @ColumnInfo(name = "star")
+    private int star;
 
-    public byte[] getImage() {
-        return image;
+    @ColumnInfo(name = "role")
+    private int role;
+
+    public int getElement() {
+        return element;
     }
 
-    public void setImage(byte[] image) {
-        this.image = image;
+    public void setElement(int element) {
+        this.element = element;
     }
 
     public int getHeroId() {
@@ -33,19 +46,35 @@ public class Hero implements Serializable {
         this.heroId = heroId;
     }
 
-    public String getName() {
-        return name;
+    public String getKoreanName() {
+        return koreanName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setKoreanName(String koreanName) {
+        this.koreanName = koreanName;
     }
 
-    public int getElement() {
-        return element;
+    public String getEnglishName() {
+        return englishName;
     }
 
-    public void setElement(int element) {
-        this.element = element;
+    public void setEnglishName(String englishName) {
+        this.englishName = englishName;
+    }
+
+    public int getStar() {
+        return star;
+    }
+
+    public void setStar(int star) {
+        this.star = star;
+    }
+
+    public int getRole() {
+        return role;
+    }
+
+    public void setRole(int role) {
+        this.role = role;
     }
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,10 +9,14 @@
 
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         app:cardBackgroundColor="#000000"
-        app:cardCornerRadius="0dp">
+        app:cardCornerRadius="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
@@ -37,7 +41,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:background="#D8B38E"
-                        android:src="@drawable/raid_icon" />
+                        android:src="@drawable/icon_raid" />
 
                     <TextView
                         android:id="@+id/raidName"
@@ -66,7 +70,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:background="#D8B38E"
-                        app:srcCompat="@drawable/time_icon"
+                        app:srcCompat="@drawable/icon_time"
                         tools:ignore="VectorDrawableCompat" />
 
                     <TextView
@@ -91,7 +95,10 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         app:cardBackgroundColor="#000000"
-        app:cardCornerRadius="0dp">
+        app:cardCornerRadius="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardView">
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
@@ -116,7 +123,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:background="#95DEFF"
-                        android:src="@drawable/profile_icon" />
+                        android:src="@drawable/icon_profile" />
 
                     <Spinner
                         android:id="@+id/nickname"
@@ -125,10 +132,10 @@
                         android:layout_height="match_parent"
 
                         android:layout_weight="3"
-                        android:background="@drawable/spinner_bg"
-                        android:stateListAnimator="@drawable/spinner_sla"
-                        android:gravity="center"
+                        android:background="@drawable/bg_spinner"
                         android:dropDownWidth="300dp"
+                        android:gravity="center"
+                        android:stateListAnimator="@drawable/sla_spinner"
                         android:text="닉네임"
                         android:textColor="#FFFFFF"
                         android:textSize="20sp"
@@ -145,11 +152,20 @@
         android:id="@+id/tabs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/my_card"
         app:tabMode="scrollable" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
-</LinearLayout>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tabs">
+
+    </androidx.viewpager2.widget.ViewPager2>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -51,7 +51,7 @@ public class CurMemberFragment extends Fragment {
 
         linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView = view.findViewById(R.id.currentRecyclerView);
-        memberList = database.memberDao().getCurrentMembers();
+        memberList = database.memberDao().getCurrentMembersWithoutMe();
         currentCnt.setText((memberList.size() + 1) + "/30");
 
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -142,7 +142,7 @@ public class CurMemberFragment extends Fragment {
                     database.memberDao().insert(member);
 
                     memberList.clear();
-                    memberList.addAll(database.memberDao().getCurrentMembers());
+                    memberList.addAll(database.memberDao().getCurrentMembersWithoutMe());
                     currentCnt.setText((memberList.size() + 1) + "/30");
 
                     adapter.notifyDataSetChanged();

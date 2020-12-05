@@ -43,7 +43,7 @@
                 android:layout_marginEnd="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_weight="1"
-                android:background="@drawable/login_button_bg"
+                android:background="@drawable/bg_login_button"
                 android:text="생성"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -102,7 +102,7 @@
                                     android:layout_height="match_parent"
                                     android:layout_weight="1"
                                     android:background="#D8B38E"
-                                    app:srcCompat="@drawable/raid_icon"
+                                    app:srcCompat="@drawable/icon_raid"
                                     tools:ignore="VectorDrawableCompat" />
 
                                 <TextView
@@ -130,7 +130,7 @@
                                     android:layout_height="match_parent"
                                     android:layout_weight="1"
                                     android:background="#D8B38E"
-                                    app:srcCompat="@drawable/time_icon"
+                                    app:srcCompat="@drawable/icon_time"
                                     tools:ignore="VectorDrawableCompat" />
 
                                 <TextView
@@ -159,7 +159,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:background="#555555"
-                    app:srcCompat="@drawable/arrow_up_icon"
+                    app:srcCompat="@drawable/icon_arrow_up"
                     tools:ignore="VectorDrawableCompat" />
 
             </LinearLayout>
@@ -227,7 +227,7 @@
                         android:layout_height="30dp"
                         android:layout_marginEnd="30dp"
                         android:layout_marginRight="30dp"
-                        android:src="@drawable/create_icon"
+                        android:src="@drawable/icon_create"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -295,7 +295,7 @@
                         android:layout_height="30dp"
                         android:layout_marginEnd="30dp"
                         android:layout_marginRight="30dp"
-                        android:src="@drawable/create_icon"
+                        android:src="@drawable/icon_create"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -360,7 +360,7 @@
                         android:layout_height="30dp"
                         android:layout_marginEnd="30dp"
                         android:layout_marginRight="30dp"
-                        android:src="@drawable/create_icon"
+                        android:src="@drawable/icon_create"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -428,7 +428,7 @@
                         android:layout_height="30dp"
                         android:layout_marginEnd="30dp"
                         android:layout_marginRight="30dp"
-                        android:src="@drawable/create_icon"
+                        android:src="@drawable/icon_create"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -474,7 +474,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:src="@drawable/arrow_down_icon" />
+                android:src="@drawable/icon_arrow_down" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.recyclerview.widget.RecyclerView
@@ -482,7 +482,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="gone"
-            tools:listitem="@layout/list_raid">
+            tools:listitem="@layout/card_raid">
 
         </androidx.recyclerview.widget.RecyclerView>
     </LinearLayout>

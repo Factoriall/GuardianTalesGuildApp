@@ -8,15 +8,18 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
+import org.techtown.gtguildraid.Interfaces.HeroDao;
 import org.techtown.gtguildraid.Interfaces.MemberDao;
 import org.techtown.gtguildraid.Interfaces.RaidDao;
+import org.techtown.gtguildraid.Interfaces.RecordDao;
 import org.techtown.gtguildraid.Models.Boss;
 import org.techtown.gtguildraid.Models.GuildMember;
 import org.techtown.gtguildraid.Models.Hero;
 import org.techtown.gtguildraid.Models.Raid;
+import org.techtown.gtguildraid.Models.Record;
 
 //Add database entities
-@Database(entities = {GuildMember.class, Boss.class, Raid.class, Hero.class}, version = 3, exportSchema = false)
+@Database(entities = {GuildMember.class, Boss.class, Raid.class, Hero.class, Record.class}, version = 4, exportSchema = false)
 @TypeConverters(DateConverter.class)
 public abstract class RoomDB extends RoomDatabase {
     private static RoomDB database;
@@ -27,6 +30,7 @@ public abstract class RoomDB extends RoomDatabase {
         if(database == null){//initialize
             database = Room.databaseBuilder(context.getApplicationContext()
             , RoomDB.class, DATABASE_NAME)
+                    .createFromAsset("database/database.db")
                     .allowMainThreadQueries()
                     .fallbackToDestructiveMigration()
                     .build();
@@ -37,4 +41,6 @@ public abstract class RoomDB extends RoomDatabase {
     //Create Dao
     public abstract MemberDao memberDao();
     public abstract RaidDao raidDao();
+    public abstract RecordDao recordDao();
+    public abstract HeroDao heroDao();
 }

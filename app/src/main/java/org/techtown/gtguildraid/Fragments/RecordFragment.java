@@ -24,6 +24,8 @@ import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.Utils.RoomDB;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -31,9 +33,17 @@ public class RecordFragment extends Fragment {
     final private String dateFormat = "yyyy-MM-dd";
     Raid raid;
     List<GuildMember> members;
+    List<String> memberSpinner = new ArrayList<>();
+    List<Integer> memberId = new ArrayList<>();
     RoomDB database;
     TabLayout tabLayout;
     ViewPager2 viewPager;
+    ViewPagerAdapter vAdapter;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
     @Nullable
     @Override
@@ -47,24 +57,33 @@ public class RecordFragment extends Fragment {
 
         raid = database.raidDao().getCurrentRaid(new Date());
         members = database.memberDao().getCurrentMembers();
-        members.add(database.memberDao().getMe());
 
         raidName.setText(raid.getName());
         raidTerm.setText((new SimpleDateFormat(dateFormat).format(raid.getStartDay()) +"~" +
                 new SimpleDateFormat(dateFormat).format(raid.getEndDay())));
 
-        ArrayAdapter<GuildMember> adapter = new ArrayAdapter<GuildMember>(
-                getContext(), android.R.layout.simple_spinner_item, members);
+        memberSpinner.clear();
+        memberId.clear();
+        for(GuildMember m : members){
+            memberSpinner.add(m.getName());
+            memberId.add(m.getID());
+        }
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                getContext(), android.R.layout.simple_spinner_item, memberSpinner);
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
+        viewPager = view.findViewById(R.id.view_pager);
+        tabLayout = view.findViewById(R.id.tabs);
+
         nSpinner.setAdapter(adapter);
 
-        final int[] memberId = new int[1];
+        vAdapter = createCardAdapter();
         nSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                memberId[0] = i;
+                setViewPager(view, i);
             }
 
             @Override
@@ -73,16 +92,40 @@ public class RecordFragment extends Fragment {
             }
         });
 
-        viewPager = view.findViewById(R.id.view_pager);
-        tabLayout = view.findViewById(R.id.tabs);
-        viewPager.setAdapter(createCardAdapter());
-
+        setViewPager(view, 0);
         new TabLayoutMediator(tabLayout, viewPager,
-                (tab, position) -> tab.setText("Day " + (position + 1) + "\n11/21")).attach();
+                (tab, position) -> tab.setText("Day " + (position + 1) + "\n" + getRaidDate(position))).attach();
 
-        viewPager.setCurrentItem(3, true);
+        viewPager.setUserInputEnabled(false);
 
         return view;
+    }
+
+    private void setViewPager(View view, int i){
+        vAdapter.setData(memberId.get(i), raid.getRaidId(), getIntegerFromToday());
+        viewPager.setAdapter(vAdapter);
+        viewPager.setCurrentItem(getIntegerFromToday(), true);
+    }
+
+    private int getIntegerFromToday() {
+        Date today = new Date();
+        Date startDate = raid.getStartDay();
+
+        int differentDays = (int)((today.getTime() - startDate.getTime()) / (1000 * 3600 * 24));
+
+        if(differentDays < 0)
+            return 0;
+        else
+            return differentDays;
+    }
+
+    private String getRaidDate(int position) {
+        Date startDate = raid.getStartDay();
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(startDate);
+        cal.add(Calendar.DATE, position);
+
+        return new SimpleDateFormat("MM/dd").format(cal.getTime());
     }
 
     private ViewPagerAdapter createCardAdapter() {

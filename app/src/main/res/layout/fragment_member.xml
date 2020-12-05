@@ -68,7 +68,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:background="#95DEFF"
-                        app:srcCompat="@drawable/profile_icon"
+                        app:srcCompat="@drawable/icon_profile"
                         tools:ignore="VectorDrawableCompat" />
 
                     <TextView

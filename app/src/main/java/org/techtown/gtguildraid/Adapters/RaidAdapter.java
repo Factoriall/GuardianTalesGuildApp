@@ -36,7 +36,7 @@ public class RaidAdapter extends RecyclerView.Adapter<RaidAdapter.ViewHolder> {
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.list_raid, parent, false);
+                .inflate(R.layout.card_raid, parent, false);
 
         return new RaidAdapter.ViewHolder(view);
     }

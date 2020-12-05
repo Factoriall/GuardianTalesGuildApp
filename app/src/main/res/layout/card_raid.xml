@@ -42,7 +42,7 @@
                             android:layout_height="match_parent"
                             android:layout_weight="1"
                             android:background="#D8B38E"
-                            app:srcCompat="@drawable/raid_icon"
+                            app:srcCompat="@drawable/icon_raid"
                             tools:ignore="VectorDrawableCompat" />
 
                         <TextView
@@ -70,7 +70,7 @@
                             android:layout_height="match_parent"
                             android:layout_weight="1"
                             android:background="#D8B38E"
-                            app:srcCompat="@drawable/time_icon"
+                            app:srcCompat="@drawable/icon_time"
                             tools:ignore="VectorDrawableCompat" />
 
                         <TextView
@@ -99,7 +99,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="#555555"
-            app:srcCompat="@drawable/arrow_down_icon"
+            app:srcCompat="@drawable/icon_arrow_down"
             tools:ignore="VectorDrawableCompat" />
 
     </LinearLayout>
