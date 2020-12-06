@@ -11,12 +11,10 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
     private static final int CARD_ITEM_SIZE = 14;
     private int memberId;
     private int raidId;
-    private int day;
 
-    public void setData(int memberId, int raidId, int day){
+    public void setData(int memberId, int raidId){
         this.memberId = memberId;
         this.raidId = raidId;
-        this.day = day;
     }
 
     public ViewPagerAdapter(@NonNull FragmentActivity fragmentActivity) {
@@ -26,7 +24,7 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-        return CardFragment.newInstance(position, memberId, raidId, day);
+        return CardFragment.newInstance(position, memberId, raidId);
     }
 
     @Override

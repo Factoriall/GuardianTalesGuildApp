@@ -3,10 +3,10 @@ package org.techtown.gtguildraid.Adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -33,7 +33,7 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder
     @Override
     public RecordAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View itemView = inflater.inflate(R.layout.fragment_record_recycler, parent, false);
+        View itemView = inflater.inflate(R.layout.card_record, parent, false);
 
         return new RecordAdapter.ViewHolder(itemView);
     }
@@ -54,7 +54,7 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        EditText damage;
+        TextView damage;
         ImageView[] heroes;
         TextView bossName;
         RoomDB database;
@@ -84,15 +84,16 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder
             bossName.setText(record.getBoss().getName());
 
             List<Hero> heroList = new ArrayList<>();
-            List<Integer> heroIds = record.getHeroIds();
-            for(int heroId : heroIds){
-                heroList.add(database.heroDao().getHero(heroId));
-            }
+            heroList.add(record.getHero1());
+            heroList.add(record.getHero2());
+            heroList.add(record.getHero3());
+            heroList.add(record.getHero4());
 
             for (int i = 0; i < 4; i++) {
                 String name = heroList.get(i).getEnglishName();
+                Log.d("heroName", name);
 
-                int imageId = context.getResources().getIdentifier("character_" + name, "id", context.getPackageName());
+                int imageId = context.getResources().getIdentifier("character_" + name, "drawable", context.getPackageName());
                 heroes[i].setImageResource(imageId);
             }
         }

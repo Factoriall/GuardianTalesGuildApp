@@ -28,7 +28,6 @@ public interface HeroDao {
     @Query("SELECT * FROM Hero WHERE heroId = :heroId")
     Hero getHero(int heroId);
 
-
-    @Query("SELECT koreanName FROM Hero")
-    List<String> getAllHeroesNames();
+    @Query("SELECT * FROM Hero WHERE element = :element")
+    List<Hero> getHeroesWithElement(int element);
 }

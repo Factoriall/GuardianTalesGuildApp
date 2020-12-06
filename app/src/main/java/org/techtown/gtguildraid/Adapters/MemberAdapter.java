@@ -48,7 +48,7 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.ViewHolder
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            nickname = itemView.findViewById(R.id.raidName);
+            nickname = itemView.findViewById(R.id.nickname);
             remark = itemView.findViewById(R.id.remark);
         }
 

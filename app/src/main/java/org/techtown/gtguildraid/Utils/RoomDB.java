@@ -2,6 +2,7 @@ package org.techtown.gtguildraid.Utils;
 
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.room.Database;
 import androidx.room.Room;
@@ -32,8 +33,10 @@ public abstract class RoomDB extends RoomDatabase {
             , RoomDB.class, DATABASE_NAME)
                     .createFromAsset("database/database.db")
                     .allowMainThreadQueries()
-                    .fallbackToDestructiveMigration()
                     .build();
+        }
+        else{
+            Log.d("databaseName", database.toString());
         }
         return database;
     }

@@ -80,9 +80,11 @@ public class RecordFragment extends Fragment {
         nSpinner.setAdapter(adapter);
 
         vAdapter = createCardAdapter();
+        final int[] memberIdx = {0};
         nSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                memberIdx[0] = i;
                 setViewPager(view, i);
             }
 
@@ -102,7 +104,7 @@ public class RecordFragment extends Fragment {
     }
 
     private void setViewPager(View view, int i){
-        vAdapter.setData(memberId.get(i), raid.getRaidId(), getIntegerFromToday());
+        vAdapter.setData(memberId.get(i), raid.getRaidId());
         viewPager.setAdapter(vAdapter);
         viewPager.setCurrentItem(getIntegerFromToday(), true);
     }

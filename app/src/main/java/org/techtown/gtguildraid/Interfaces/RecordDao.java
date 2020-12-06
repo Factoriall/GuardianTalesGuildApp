@@ -8,7 +8,6 @@ import org.techtown.gtguildraid.Models.Boss;
 import org.techtown.gtguildraid.Models.Hero;
 import org.techtown.gtguildraid.Models.Record;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Dao
@@ -38,22 +37,18 @@ public abstract class RecordDao {
     public List<Record> getCertainDayRecordsWithHeroes(int memberId, int raidId, int day){
         List<Record> records = getCertainDayRecords(memberId, raidId, day);
         for(Record record: records){
-            List<Integer> heroIds = record.getHeroIds();
-
-            List<Hero> heroes = new ArrayList<>();
-            for(int heroId : heroIds){
-                heroes.add(getHero(heroId));
-            }
-
-            Boss boss;
-            if(record.getBossId() != -1) {
-                boss = getBoss(record.getBossId());
-            }
-            else{
-                boss = new Boss();
-                boss.setName("없음");
-            }
+            Boss boss = getBoss(record.getBossId());
             record.setBoss(boss);
+
+            Hero hero1 = getHero(record.getHero1Id());
+            Hero hero2 = getHero(record.getHero2Id());
+            Hero hero3 = getHero(record.getHero3Id());
+            Hero hero4 = getHero(record.getHero4Id());
+
+            record.setHero1(hero1);
+            record.setHero2(hero2);
+            record.setHero3(hero3);
+            record.setHero4(hero4);
         }
 
         return records;

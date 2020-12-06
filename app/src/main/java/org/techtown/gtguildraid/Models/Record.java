@@ -8,7 +8,6 @@ import androidx.room.TypeConverters;
 import org.techtown.gtguildraid.Utils.DateConverter;
 
 import java.io.Serializable;
-import java.util.List;
 
 @Entity(tableName = "record")
 @TypeConverters(DateConverter.class)
@@ -23,17 +22,31 @@ public class Record implements Serializable {
     private int bossId;
     private int damage;
 
-    @Ignore
-    public List<Integer> heroIds;
+    private int hero1Id;
+    private int hero2Id;
+    private int hero3Id;
+    private int hero4Id;
 
     @Ignore
     public Boss boss;
+
+    @Ignore
+    public Hero hero1;
+
+    @Ignore
+    public Hero hero2;
+
+    @Ignore
+    public Hero hero3;
+
+    @Ignore
+    public Hero hero4;
+
 
     public Record(int memberId, int raidId, int day) {
         this.memberId = memberId;
         this.raidId = raidId;
         this.day = day;
-        this.bossId = -1;
         this.damage = 0;
     }
 
@@ -69,14 +82,6 @@ public class Record implements Serializable {
         this.day = day;
     }
 
-    public List<Integer> getHeroIds() {
-        return heroIds;
-    }
-
-    public void setHeroIds(List<Integer> heroIds) {
-        this.heroIds = heroIds;
-    }
-
     public Boss getBoss() {
         return boss;
     }
@@ -99,5 +104,69 @@ public class Record implements Serializable {
 
     public void setDamage(int damage) {
         this.damage = damage;
+    }
+
+    public int getHero1Id() {
+        return hero1Id;
+    }
+
+    public void setHero1Id(int hero1Id) {
+        this.hero1Id = hero1Id;
+    }
+
+    public int getHero2Id() {
+        return hero2Id;
+    }
+
+    public void setHero2Id(int hero2Id) {
+        this.hero2Id = hero2Id;
+    }
+
+    public int getHero3Id() {
+        return hero3Id;
+    }
+
+    public void setHero3Id(int hero3Id) {
+        this.hero3Id = hero3Id;
+    }
+
+    public int getHero4Id() {
+        return hero4Id;
+    }
+
+    public void setHero4Id(int hero4Id) {
+        this.hero4Id = hero4Id;
+    }
+
+    public Hero getHero1() {
+        return hero1;
+    }
+
+    public void setHero1(Hero hero1) {
+        this.hero1 = hero1;
+    }
+
+    public Hero getHero2() {
+        return hero2;
+    }
+
+    public void setHero2(Hero hero2) {
+        this.hero2 = hero2;
+    }
+
+    public Hero getHero3() {
+        return hero3;
+    }
+
+    public void setHero3(Hero hero3) {
+        this.hero3 = hero3;
+    }
+
+    public Hero getHero4() {
+        return hero4;
+    }
+
+    public void setHero4(Hero hero4) {
+        this.hero4 = hero4;
     }
 }

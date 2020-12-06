@@ -22,13 +22,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.techtown.gtguildraid.Adapters.RecordAdapter;
+import org.techtown.gtguildraid.Adapters.SpinnerAdapter;
 import org.techtown.gtguildraid.Models.Boss;
+import org.techtown.gtguildraid.Models.Hero;
 import org.techtown.gtguildraid.Models.Raid;
 import org.techtown.gtguildraid.Models.Record;
 import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.Utils.RoomDB;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -39,6 +42,8 @@ public class CardFragment extends Fragment {
     LinearLayoutManager linearLayoutManager;
     RoomDB database;
     RecordAdapter adapter;
+    final String[] elementArray = new String[]{"화", "수", "지", "광", "암", "무"};
+    final String[] elementEnglishArray = new String[]{"fire", "water", "earth", "light", "dark", "basic"};
 
     FloatingActionButton fab;
 
@@ -52,32 +57,26 @@ public class CardFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static CardFragment newInstance(int counter, int memberId, int raidId, int day) {
+    public static CardFragment newInstance(int counter, int memberId, int raidId) {
         CardFragment fragment = new CardFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_COUNT, counter);
+        args.putInt("day", counter + 1);
         args.putInt("memberId", memberId);
         args.putInt("raidId", raidId);
-        args.putInt("day", day);
 
         fragment.setArguments(args);
         return fragment;
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         if (getArguments() != null) {
-            counter = getArguments().getInt(ARG_COUNT);
             memberId = getArguments().getInt("memberId");
             raidId = getArguments().getInt("raidId");
             day = getArguments().getInt("day");
         }
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+        Log.d("dayInfo", Integer.toString(day));
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_record_recycler, container, false);
 
@@ -121,6 +120,8 @@ public class CardFragment extends Fragment {
         EditText damage = dialog.findViewById(R.id.damage);
 
         Raid raid = database.raidDao().getCurrentRaid(new Date());
+
+        //보스 스피너 생성
         List<Boss> bosses = database.raidDao().getBossesList(raid.getRaidId());
         List<String> bossNames = new ArrayList<>();
         List<Integer> bossIds = new ArrayList<>();
@@ -130,6 +131,7 @@ public class CardFragment extends Fragment {
             bossIds.add(boss.getBossId());
         }
         final int[] selectedBossId = {0};
+        int[] selectedHeroId = new int[4];
 
         ArrayAdapter<String> bossSpinnerAdapter = new ArrayAdapter<String>(
                 getActivity(), android.R.layout.simple_spinner_item, bossNames);
@@ -140,40 +142,118 @@ public class CardFragment extends Fragment {
         bossSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                selectedBossId[0] = i;
+                selectedBossId[0] = bossIds.get(i);
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
+            public void onNothingSelected(AdapterView<?> adapterView) { }
         });
 
+        //원소 및 영웅 스피너 생성
         Spinner[] elements = new Spinner[4];
         Spinner[] heroNames = new Spinner[4];
 
-        List<String> heroNameList = database.heroDao().getAllHeroesNames();
+        List<Hero> heroList = database.heroDao().getAllHeroes();
+
+        List<Integer> heroImageList = new ArrayList<>();
+        List<Integer> heroIds = new ArrayList<>();
+        List<String> heroKoreanNameList = new ArrayList<>();
+        for(Hero hero : heroList){
+            int imageId = getResources().getIdentifier("character_"+hero.getEnglishName(), "drawable", getContext().getPackageName()); // or other resource class
+            heroImageList.add(imageId);
+            heroKoreanNameList.add(hero.getKoreanName());
+            heroIds.add(hero.getHeroId());
+        }
+
+        List<String> elementEnglishList = Arrays.asList(elementEnglishArray);
+        List<Integer> elementImageList = new ArrayList<>();
+        for(String elementName : elementEnglishList){
+            int imageId = getResources().getIdentifier("element_"+elementName, "drawable", getContext().getPackageName()); // or other resource class
+            elementImageList.add(imageId);
+        }
+
+        List<String> elementList = Arrays.asList(elementArray);
         for(int i=1; i<=4; i++){
+            int idx = i;
             Resources res = getResources();
-            int elementId = res.getIdentifier("elementSpinner" + i, "id", getContext().getPackageName());
-            int heroNameId = res.getIdentifier("heroNameSpinner" + i, "id", getContext().getPackageName());
+            int elementId = res.getIdentifier("elementSpinner" + idx, "id", getContext().getPackageName());
+            int heroNameId = res.getIdentifier("heroNameSpinner" + idx, "id", getContext().getPackageName());
 
-            elements[i-1] = dialog.findViewById(elementId);
-            heroNames[i-1] = dialog.findViewById(heroNameId);
+            elements[idx-1] = dialog.findViewById(elementId);
+            heroNames[idx-1] = dialog.findViewById(heroNameId);
 
-            ArrayAdapter<String> heroAdapter = new ArrayAdapter<String>(
+            SpinnerAdapter heroAdapter = new SpinnerAdapter(getContext(), R.layout.spinner_value_layout, heroKoreanNameList, heroImageList);
+            SpinnerAdapter elementAdapter = new SpinnerAdapter(getContext(), R.layout.spinner_value_layout, elementList, elementImageList);
+
+            /*ArrayAdapter<String> heroAdapter = new ArrayAdapter<String>(
                     getActivity(), android.R.layout.simple_spinner_item, heroNameList);
             heroAdapter.setDropDownViewResource(
                     android.R.layout.simple_spinner_dropdown_item);
+               */
 
-            heroNames[i-1].setAdapter(heroAdapter);
+            heroNames[idx-1].setAdapter(heroAdapter);
+
+            heroNames[idx-1].setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    selectedHeroId[idx-1] = heroIds.get(i);
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) { }
+            });
+            elements[idx-1].setAdapter(elementAdapter);
+
+            elements[idx-1].setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    List<Hero> elementHeroes = database.heroDao().getHeroesWithElement(i+1);
+                    List<String> heroList = new ArrayList<>();
+                    List<Integer> imageList = new ArrayList<>();
+
+                    heroIds.clear();
+                    for(Hero hero : elementHeroes){
+                        int imageId = getResources().getIdentifier("character_"+hero.getEnglishName(), "drawable", getContext().getPackageName());
+                        heroList.add(hero.getKoreanName());
+                        heroIds.add(hero.getHeroId());
+                        imageList.add(imageId);
+                    }
+                    SpinnerAdapter adapter = new SpinnerAdapter(getContext(), R.layout.spinner_value_layout, heroList, imageList);
+                    heroNames[idx-1].setAdapter(adapter);
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) { }
+            });
         }
 
         Button createButton = dialog.findViewById(R.id.createButton);
         createButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dialog.dismiss();
+                String sDamage = damage.getText().toString().trim();
+                String sBossName = bossSpinner.getSelectedItem().toString();
+                Integer[] iHeroIds = new Integer[4];
+                for(int i=0; i<4; i++){
+                    iHeroIds[i] = heroIds.get(heroNames[i].getSelectedItemPosition());
+                }
+
+                if(!sDamage.equals("")) {
+                    dialog.dismiss();
+                    Record record = new Record(memberId, raidId, day);
+                    record.setDamage(Integer.parseInt(sDamage));
+                    record.setBossId(selectedBossId[0]);
+                    record.setHero1Id(iHeroIds[0]);
+                    record.setHero2Id(iHeroIds[1]);
+                    record.setHero3Id(iHeroIds[2]);
+                    record.setHero4Id(iHeroIds[3]);
+
+                    database.recordDao().insertRecord(record);
+                    recordList.clear();
+                    recordList.addAll(database.recordDao().getCertainDayRecordsWithHeroes(memberId, raidId, day));
+
+                    adapter.notifyDataSetChanged();
+                }
             }
         });
 
