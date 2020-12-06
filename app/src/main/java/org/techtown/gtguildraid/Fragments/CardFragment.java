@@ -37,18 +37,17 @@ import java.util.List;
 
 public class CardFragment extends Fragment {
     private final int MAX_SIZE = 3;
+
     RecyclerView recyclerView;
     List<Record> recordList = new ArrayList<>();
     LinearLayoutManager linearLayoutManager;
     RoomDB database;
     RecordAdapter adapter;
+    FloatingActionButton fab;
+
     final String[] elementArray = new String[]{"화", "수", "지", "광", "암", "무"};
     final String[] elementEnglishArray = new String[]{"fire", "water", "earth", "light", "dark", "basic"};
 
-    FloatingActionButton fab;
-
-    private static final String ARG_COUNT = "param1";
-    private int counter;
     private int memberId;
     private int raidId;
     private int day;
@@ -86,8 +85,10 @@ public class CardFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recordRecyclerView);
         recordList = database.recordDao().getCertainDayRecordsWithHeroes(memberId, raidId, day);
 
+
         recyclerView.setLayoutManager(linearLayoutManager);
-        adapter = new RecordAdapter(getActivity(), recordList);
+        adapter = new RecordAdapter();
+        adapter.setItems(recordList);
         recyclerView.setAdapter(adapter);
 
         fab = view.findViewById(R.id.fab);
@@ -95,20 +96,15 @@ public class CardFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 createCard();
-                if(recordList.size() == MAX_SIZE)
-                    fab.setVisibility(View.GONE);
             }
         });
+        if(recordList.size() >= MAX_SIZE)
+            fab.setVisibility(View.GONE);
 
         return view;
     }
 
     private void createCard() {
-        if(recordList.size() == MAX_SIZE){
-            showToast("멤버 인원이 가득찼습니다.");
-            return;
-        }
-
         final Dialog dialog = new Dialog(getActivity());
         dialog.setContentView(R.layout.dialog_record);
         int width = WindowManager.LayoutParams.MATCH_PARENT;
@@ -131,7 +127,9 @@ public class CardFragment extends Fragment {
             bossIds.add(boss.getBossId());
         }
         final int[] selectedBossId = {0};
+        int[] selectedHeroElement = new int[4];
         int[] selectedHeroId = new int[4];
+
 
         ArrayAdapter<String> bossSpinnerAdapter = new ArrayAdapter<String>(
                 getActivity(), android.R.layout.simple_spinner_item, bossNames);
@@ -155,16 +153,14 @@ public class CardFragment extends Fragment {
 
         List<Hero> heroList = database.heroDao().getAllHeroes();
 
-        List<Integer> heroImageList = new ArrayList<>();
-        List<Integer> heroIds = new ArrayList<>();
-        List<String> heroKoreanNameList = new ArrayList<>();
-        for(Hero hero : heroList){
-            int imageId = getResources().getIdentifier("character_"+hero.getEnglishName(), "drawable", getContext().getPackageName()); // or other resource class
-            heroImageList.add(imageId);
-            heroKoreanNameList.add(hero.getKoreanName());
-            heroIds.add(hero.getHeroId());
-        }
+        //heroId 정보 생성
+        ArrayList<ArrayList<Integer>> heroIds = new ArrayList<>();
+        for(int i=0; i<7; i++)
+            heroIds.add(new ArrayList<>());
+        for(Hero hero : heroList)
+            heroIds.get(hero.getElement()).add(hero.getHeroId());
 
+        //elementSpinner 정보 생성
         List<String> elementEnglishList = Arrays.asList(elementEnglishArray);
         List<Integer> elementImageList = new ArrayList<>();
         for(String elementName : elementEnglishList){
@@ -182,40 +178,30 @@ public class CardFragment extends Fragment {
             elements[idx-1] = dialog.findViewById(elementId);
             heroNames[idx-1] = dialog.findViewById(heroNameId);
 
-            SpinnerAdapter heroAdapter = new SpinnerAdapter(getContext(), R.layout.spinner_value_layout, heroKoreanNameList, heroImageList);
             SpinnerAdapter elementAdapter = new SpinnerAdapter(getContext(), R.layout.spinner_value_layout, elementList, elementImageList);
-
-            /*ArrayAdapter<String> heroAdapter = new ArrayAdapter<String>(
-                    getActivity(), android.R.layout.simple_spinner_item, heroNameList);
-            heroAdapter.setDropDownViewResource(
-                    android.R.layout.simple_spinner_dropdown_item);
-               */
-
-            heroNames[idx-1].setAdapter(heroAdapter);
 
             heroNames[idx-1].setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                    selectedHeroId[idx-1] = heroIds.get(i);
+                    selectedHeroId[idx-1] = heroIds.get(selectedHeroElement[idx-1]).get(i);
                 }
 
                 @Override
                 public void onNothingSelected(AdapterView<?> adapterView) { }
             });
-            elements[idx-1].setAdapter(elementAdapter);
 
+            elements[idx-1].setAdapter(elementAdapter);
             elements[idx-1].setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    selectedHeroElement[idx-1] = i+1;
                     List<Hero> elementHeroes = database.heroDao().getHeroesWithElement(i+1);
                     List<String> heroList = new ArrayList<>();
                     List<Integer> imageList = new ArrayList<>();
 
-                    heroIds.clear();
                     for(Hero hero : elementHeroes){
                         int imageId = getResources().getIdentifier("character_"+hero.getEnglishName(), "drawable", getContext().getPackageName());
                         heroList.add(hero.getKoreanName());
-                        heroIds.add(hero.getHeroId());
                         imageList.add(imageId);
                     }
                     SpinnerAdapter adapter = new SpinnerAdapter(getContext(), R.layout.spinner_value_layout, heroList, imageList);
@@ -235,7 +221,8 @@ public class CardFragment extends Fragment {
                 String sBossName = bossSpinner.getSelectedItem().toString();
                 Integer[] iHeroIds = new Integer[4];
                 for(int i=0; i<4; i++){
-                    iHeroIds[i] = heroIds.get(heroNames[i].getSelectedItemPosition());
+                    iHeroIds[i] = heroIds.get(elements[i].getSelectedItemPosition() + 1)
+                            .get(heroNames[i].getSelectedItemPosition());
                 }
 
                 if(!sDamage.equals("")) {
@@ -248,9 +235,14 @@ public class CardFragment extends Fragment {
                     record.setHero3Id(iHeroIds[2]);
                     record.setHero4Id(iHeroIds[3]);
 
+                    //recordList 갱신
                     database.recordDao().insertRecord(record);
                     recordList.clear();
                     recordList.addAll(database.recordDao().getCertainDayRecordsWithHeroes(memberId, raidId, day));
+
+                    Log.d("recordListSize", Integer.toString(recordList.size()));
+                    if(recordList.size() >= MAX_SIZE)
+                        fab.setVisibility(View.GONE);
 
                     adapter.notifyDataSetChanged();
                 }

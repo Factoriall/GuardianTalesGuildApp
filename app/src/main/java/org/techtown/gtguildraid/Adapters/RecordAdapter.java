@@ -1,6 +1,5 @@
 package org.techtown.gtguildraid.Adapters;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.util.Log;
@@ -18,22 +17,20 @@ import org.techtown.gtguildraid.Models.Record;
 import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.Utils.RoomDB;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder> {
     private List<Record> recordList;
 
-    public RecordAdapter(Activity context, List<Record> recordList) {
-        this.recordList = recordList;
-        notifyDataSetChanged();
-    }
-
     @NonNull
     @Override
     public RecordAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View itemView = inflater.inflate(R.layout.card_record, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.card_record, parent, false);
 
         return new RecordAdapter.ViewHolder(itemView);
     }
@@ -69,18 +66,16 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder
 
             heroes = new ImageView[4];
             bossName = itemView.findViewById(R.id.bossName);
-
             for (int i = 1; i <= 4; i++) {
                 Resources res = context.getResources();
                 int heroId = res.getIdentifier("hero" + i, "id", context.getPackageName());
 
                 heroes[i - 1] = itemView.findViewById(heroId);
             }
-
         }
 
         public void setItem(Record record) {
-            damage.setText(Integer.toString(record.getDamage()));
+            damage.setText(NumberFormat.getNumberInstance(Locale.US).format(record.getDamage()));
             bossName.setText(record.getBoss().getName());
 
             List<Hero> heroList = new ArrayList<>();
@@ -93,7 +88,8 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder
                 String name = heroList.get(i).getEnglishName();
                 Log.d("heroName", name);
 
-                int imageId = context.getResources().getIdentifier("character_" + name, "drawable", context.getPackageName());
+                int imageId = context.getResources()
+                        .getIdentifier("character_" + name, "drawable", context.getPackageName());
                 heroes[i].setImageResource(imageId);
             }
         }
