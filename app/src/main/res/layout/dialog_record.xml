@@ -59,6 +59,7 @@
             android:background="@android:drawable/editbox_background"
             android:gravity="top"
             android:hint="데미지"
+            android:digits="0123456789,-"
             android:inputType="number"
             android:padding="12dp" />
     </LinearLayout>

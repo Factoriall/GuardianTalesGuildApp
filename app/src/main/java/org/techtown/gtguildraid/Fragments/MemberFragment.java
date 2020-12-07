@@ -3,6 +3,7 @@ package org.techtown.gtguildraid.Fragments;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,7 @@ public class MemberFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
         view = (ViewGroup) inflater.inflate(R.layout.fragment_member, container, false);
 
         SharedPreferences pref = getActivity().getSharedPreferences("pref", Activity.MODE_PRIVATE);

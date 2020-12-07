@@ -17,6 +17,10 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
         this.raidId = raidId;
     }
 
+    public int getMemberId(){
+        return memberId;
+    }
+
     public ViewPagerAdapter(@NonNull FragmentActivity fragmentActivity) {
         super(fragmentActivity);
     }
@@ -31,5 +35,4 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
     public int getItemCount() {
         return CARD_ITEM_SIZE;
     }
-
 }

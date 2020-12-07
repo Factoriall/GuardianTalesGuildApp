@@ -31,6 +31,7 @@ import java.util.List;
 
 public class RecordFragment extends Fragment {
     final private String dateFormat = "yyyy-MM-dd";
+
     Raid raid;
     List<GuildMember> members;
     List<String> memberSpinner = new ArrayList<>();
@@ -39,6 +40,7 @@ public class RecordFragment extends Fragment {
     TabLayout tabLayout;
     ViewPager2 viewPager;
     ViewPagerAdapter vAdapter;
+    private int sMemberIdx = 0;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,7 +50,7 @@ public class RecordFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = (ViewGroup) inflater.inflate(R.layout.fragment_record, container, false);
+        View view = inflater.inflate(R.layout.fragment_record, container, false);
         database = RoomDB.getInstance(getActivity());
 
         TextView raidName = view.findViewById(R.id.raidName);
@@ -79,23 +81,22 @@ public class RecordFragment extends Fragment {
 
         nSpinner.setAdapter(adapter);
 
-        vAdapter = createCardAdapter();
-        final int[] memberIdx = {0};
+        vAdapter = new ViewPagerAdapter(getActivity());
         nSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                memberIdx[0] = i;
-                setViewPager(view, i);
+                if(sMemberIdx != i) {
+                    sMemberIdx = i;
+                    setViewPager();
+                }
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
+            public void onNothingSelected(AdapterView<?> adapterView) { }
         });
+        setViewPager();
 
-        setViewPager(view, 0);
-        new TabLayoutMediator(tabLayout, viewPager,
+        new TabLayoutMediator(tabLayout, viewPager,false, false,
                 (tab, position) -> tab.setText("Day " + (position + 1) + "\n" + getRaidDate(position))).attach();
 
         viewPager.setUserInputEnabled(false);
@@ -103,10 +104,10 @@ public class RecordFragment extends Fragment {
         return view;
     }
 
-    private void setViewPager(View view, int i){
-        vAdapter.setData(memberId.get(i), raid.getRaidId());
+    private void setViewPager(){
+        vAdapter.setData(memberId.get(sMemberIdx), raid.getRaidId());
         viewPager.setAdapter(vAdapter);
-        viewPager.setCurrentItem(getIntegerFromToday(), true);
+        viewPager.setCurrentItem(getIntegerFromToday(), false);
     }
 
     private int getIntegerFromToday() {
@@ -128,10 +129,5 @@ public class RecordFragment extends Fragment {
         cal.add(Calendar.DATE, position);
 
         return new SimpleDateFormat("MM/dd").format(cal.getTime());
-    }
-
-    private ViewPagerAdapter createCardAdapter() {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getActivity());
-        return adapter;
     }
 }
