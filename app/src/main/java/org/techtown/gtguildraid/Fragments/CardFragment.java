@@ -184,6 +184,7 @@ public class CardFragment extends Fragment{
 
         Spinner bossSpinner = dialog.findViewById(R.id.bossSpinner);
         EditText damage = dialog.findViewById(R.id.damage);
+        EditText level = dialog.findViewById(R.id.level);
 
         Raid raid = database.raidDao().getCurrentRaid(new Date());
 
@@ -301,17 +302,18 @@ public class CardFragment extends Fragment{
             @Override
             public void onClick(View view) {
                 String sDamage = damage.getText().toString().trim();
+                String sLevel = level.getText().toString().trim();
                 Integer[] iHeroIds = new Integer[4];
                 for(int i=0; i<4; i++){
                     iHeroIds[i] = heroIds.get(elements[i].getSelectedItemPosition() + 1)
                             .get(heroNames[i].getSelectedItemPosition());
                 }
 
-                if(!sDamage.equals("")) {
+                if(!sDamage.equals("") && !sLevel.equals("")) {
                     dialog.dismiss();
                     if(isEditing){//수정 중이면 업데이트
                         database.recordDao().updateRecord(record.getRecordID(),
-                                Integer.parseInt(sDamage), selectedBossId[0],
+                                Integer.parseInt(sDamage), selectedBossId[0], Integer.parseInt(sLevel),
                                 iHeroIds[0], iHeroIds[1], iHeroIds[2], iHeroIds[3]);
                     }
                     else {//새로운 데이터 생성
@@ -322,6 +324,7 @@ public class CardFragment extends Fragment{
                         record.setHero2Id(iHeroIds[1]);
                         record.setHero3Id(iHeroIds[2]);
                         record.setHero4Id(iHeroIds[3]);
+                        record.setLevel(Integer.parseInt(sLevel));
 
                         //recordList 갱신
                         database.recordDao().insertRecord(record);
@@ -332,6 +335,9 @@ public class CardFragment extends Fragment{
                     setFabVisibility();
 
                     adapter.notifyDataSetChanged();
+                }
+                else{
+                    showToast("데미지 및 보스 레벨을 입력하세요!");
                 }
             }
         });

@@ -20,6 +20,7 @@ public class Record implements Serializable {
     private int day;
 
     private int bossId;
+    private int level;
     private int damage;
 
     private int hero1Id;
@@ -96,6 +97,10 @@ public class Record implements Serializable {
     public void setBossId(int bossId) {
         this.bossId = bossId;
     }
+
+    public int getLevel() { return level; }
+
+    public void setLevel(int level) { this.level = level; }
 
     public int getDamage() {
         return damage;

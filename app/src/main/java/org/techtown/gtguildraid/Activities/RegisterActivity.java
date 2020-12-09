@@ -1,6 +1,7 @@
 package org.techtown.gtguildraid.Activities;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
@@ -51,6 +52,8 @@ public class RegisterActivity extends AppCompatActivity {
                 editor.putString("guildName", cGuildName);
                 editor.putBoolean("isRegistered", true);
                 editor.commit();
+                Intent intent = new Intent();
+                setResult(RESULT_OK, intent);
 
                 finish();
             }

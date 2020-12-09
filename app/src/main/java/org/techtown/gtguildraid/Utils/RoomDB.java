@@ -20,7 +20,7 @@ import org.techtown.gtguildraid.Models.Raid;
 import org.techtown.gtguildraid.Models.Record;
 
 //Add database entities
-@Database(entities = {GuildMember.class, Boss.class, Raid.class, Hero.class, Record.class}, version = 4, exportSchema = false)
+@Database(entities = {GuildMember.class, Boss.class, Raid.class, Hero.class, Record.class}, version = 5, exportSchema = false)
 @TypeConverters(DateConverter.class)
 public abstract class RoomDB extends RoomDatabase {
     private static RoomDB database;

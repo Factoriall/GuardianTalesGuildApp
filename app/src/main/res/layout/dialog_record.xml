@@ -22,20 +22,36 @@
             android:id="@+id/bossText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
             android:layout_weight="1"
-            android:text="상대 보스:"
+            android:text="보스:"
             android:textSize="20sp" />
 
         <Spinner
             android:id="@+id/bossSpinner"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="3"
+            android:layout_weight="4"
             android:background="@android:drawable/editbox_background"
             android:focusable="false"
             android:gravity="top"
             android:padding="12dp" />
+
+        <TextView
+            android:id="@+id/levelText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="레벨:"
+            android:textSize="20sp" />
+
+        <EditText
+            android:id="@+id/level"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="2"
+            android:background="@android:drawable/editbox_background"
+            android:ems="10"
+            android:inputType="number" />
     </LinearLayout>
 
     <LinearLayout

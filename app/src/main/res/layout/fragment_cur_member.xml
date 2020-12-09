@@ -9,8 +9,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:background="#00000000"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:background="#4C4B42">
 
         <ImageView
             android:id="@+id/imageView4"
@@ -35,8 +35,9 @@
             android:id="@+id/createButton"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_margin="5dp"
             android:layout_weight="1"
-            android:background="#D8B38E"
+            android:background="@drawable/bg_login_button"
             android:text="생성" />
 
     </LinearLayout>
