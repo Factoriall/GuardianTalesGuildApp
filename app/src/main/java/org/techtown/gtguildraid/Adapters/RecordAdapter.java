@@ -17,7 +17,6 @@ import org.techtown.gtguildraid.Models.Record;
 import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.Utils.RoomDB;
 
-import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +51,7 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         TextView damage;
+        ImageView bossImage;
         ImageView[] heroes;
         TextView bossName;
         RoomDB database;
@@ -60,12 +60,13 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            damage = itemView.findViewById(R.id.damage);
             context = itemView.getContext();
             database = RoomDB.getInstance(itemView.getContext());
 
             heroes = new ImageView[4];
+            damage = itemView.findViewById(R.id.damage);
             bossName = itemView.findViewById(R.id.bossName);
+            bossImage = itemView.findViewById(R.id.bossImage);
             for (int i = 1; i <= 4; i++) {
                 Resources res = context.getResources();
                 int heroId = res.getIdentifier("hero" + i, "id", context.getPackageName());
@@ -77,6 +78,7 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder
         public void setItem(Record record) {
             damage.setText(NumberFormat.getNumberInstance(Locale.US).format(record.getDamage()));
             bossName.setText(record.getBoss().getName());
+            bossImage.setImageResource(record.getBoss().getImageId());
 
             List<Hero> heroList = new ArrayList<>();
             heroList.add(record.getHero1());

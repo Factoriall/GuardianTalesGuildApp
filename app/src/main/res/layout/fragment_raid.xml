@@ -168,7 +168,8 @@
                 android:id="@+id/bossInfo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="visible">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/Boss1Info"
@@ -178,27 +179,27 @@
 
                     <TextView
                         android:id="@+id/boss1"
-                        android:layout_width="80dp"
+                        android:layout_width="120dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginStart="50dp"
-                        android:layout_marginLeft="50dp"
                         android:hint="이름"
+                        android:textSize="20sp"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/progressBar1"
+                        app:layout_constraintStart_toEndOf="@+id/boss1Image"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <ProgressBar
                         android:id="@+id/progressBar1"
                         style="?android:attr/progressBarStyleHorizontal"
-                        android:layout_width="150dp"
+                        android:layout_width="120dp"
                         android:layout_height="16dp"
-                        android:layout_marginEnd="50dp"
-                        android:layout_marginRight="50dp"
+                        android:layout_marginEnd="80dp"
+                        android:layout_marginRight="80dp"
                         android:max="20"
                         android:min="0"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/editButton1"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
@@ -210,16 +211,16 @@
                         app:layout_constraintEnd_toEndOf="@+id/progressBar1"
                         app:layout_constraintStart_toStartOf="@+id/progressBar1" />
 
-                    <TextView
-                        android:id="@+id/textView6"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="5dp"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginTop="5dp"
-                        android:text="보스1"
+                    <ImageView
+                        android:id="@+id/boss1Image"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginLeft="10dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:srcCompat="@drawable/boss_1" />
 
                     <ImageView
                         android:id="@+id/editButton1"
@@ -242,30 +243,31 @@
 
                     <TextView
                         android:id="@+id/boss2"
-                        android:layout_width="80dp"
+                        android:layout_width="120dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginStart="50dp"
-                        android:layout_marginLeft="50dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginLeft="10dp"
                         android:hint="이름"
                         android:textColor="#FFFFFF"
                         android:textColorHint="#FFFFFF"
-                        android:textStyle="bold"
+                        android:textSize="20sp"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/progressBar2"
+                        app:layout_constraintStart_toEndOf="@+id/boss2Image"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <ProgressBar
                         android:id="@+id/progressBar2"
                         style="?android:attr/progressBarStyleHorizontal"
-                        android:layout_width="150dp"
+                        android:layout_width="120dp"
                         android:layout_height="16dp"
-                        android:layout_marginEnd="50dp"
-                        android:layout_marginRight="50dp"
+                        android:layout_marginEnd="80dp"
+                        android:layout_marginRight="80dp"
                         android:max="20"
                         android:min="0"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/editButton2"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
@@ -278,16 +280,16 @@
                         app:layout_constraintEnd_toEndOf="@+id/progressBar2"
                         app:layout_constraintStart_toStartOf="@+id/progressBar2" />
 
-                    <TextView
-                        android:id="@+id/textView7"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="5dp"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginTop="5dp"
-                        android:text="보스2"
+                    <ImageView
+                        android:id="@+id/boss2Image"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginLeft="10dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:srcCompat="@drawable/boss_2" />
 
                     <ImageView
                         android:id="@+id/editButton2"
@@ -306,32 +308,35 @@
                     android:id="@+id/Boss3Info"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
-                    android:background="#857D66">
+                    android:background="#857D66"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent">
 
                     <TextView
                         android:id="@+id/boss3"
-                        android:layout_width="80dp"
+                        android:layout_width="120dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginStart="50dp"
-                        android:layout_marginLeft="50dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginLeft="10dp"
                         android:hint="이름"
-                        android:textStyle="bold"
+                        android:textSize="20sp"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/progressBar3"
+                        app:layout_constraintStart_toEndOf="@+id/boss3Image"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <ProgressBar
                         android:id="@+id/progressBar3"
                         style="?android:attr/progressBarStyleHorizontal"
-                        android:layout_width="150dp"
+                        android:layout_width="120dp"
                         android:layout_height="16dp"
-                        android:layout_marginEnd="50dp"
-                        android:layout_marginRight="50dp"
+                        android:layout_marginEnd="80dp"
+                        android:layout_marginRight="80dp"
                         android:max="20"
                         android:min="0"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/editButton3"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
@@ -343,16 +348,16 @@
                         app:layout_constraintEnd_toEndOf="@+id/progressBar3"
                         app:layout_constraintStart_toStartOf="@+id/progressBar3" />
 
-                    <TextView
-                        android:id="@+id/textView8"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="5dp"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginTop="5dp"
-                        android:text="보스3"
+                    <ImageView
+                        android:id="@+id/boss3Image"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginLeft="10dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:srcCompat="@drawable/boss_3" />
 
                     <ImageView
                         android:id="@+id/editButton3"
@@ -375,30 +380,31 @@
 
                     <TextView
                         android:id="@+id/boss4"
-                        android:layout_width="80dp"
+                        android:layout_width="120dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginStart="50dp"
-                        android:layout_marginLeft="50dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginLeft="10dp"
                         android:hint="이름"
                         android:textColor="#FFFFFF"
                         android:textColorHint="#FFFFFF"
-                        android:textStyle="bold"
+                        android:textSize="20sp"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/progressBar4"
+                        app:layout_constraintStart_toEndOf="@+id/boss4Image"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <ProgressBar
                         android:id="@+id/progressBar4"
                         style="?android:attr/progressBarStyleHorizontal"
-                        android:layout_width="150dp"
+                        android:layout_width="120dp"
                         android:layout_height="16dp"
-                        android:layout_marginEnd="50dp"
-                        android:layout_marginRight="50dp"
+                        android:layout_marginEnd="80dp"
+                        android:layout_marginRight="80dp"
                         android:max="20"
                         android:min="0"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/editButton4"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
@@ -411,16 +417,16 @@
                         app:layout_constraintEnd_toEndOf="@+id/progressBar4"
                         app:layout_constraintStart_toStartOf="@+id/progressBar4" />
 
-                    <TextView
-                        android:id="@+id/textView9"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="5dp"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginTop="5dp"
-                        android:text="보스4"
+                    <ImageView
+                        android:id="@+id/boss4Image"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginLeft="10dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:srcCompat="@drawable/boss_4" />
 
                     <ImageView
                         android:id="@+id/editButton4"
@@ -435,7 +441,6 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </LinearLayout>
-
         </LinearLayout>
 
     </LinearLayout>
@@ -471,10 +476,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="20dp"
                 android:layout_marginRight="20dp"
+                android:src="@drawable/icon_arrow_down"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:src="@drawable/icon_arrow_down" />
+                app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.recyclerview.widget.RecyclerView

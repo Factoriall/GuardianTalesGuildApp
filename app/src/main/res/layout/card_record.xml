@@ -34,9 +34,10 @@
                         android:layout_width="150dp"
                         android:layout_height="45dp"
                         android:ems="10"
-                        android:gravity="left|center_vertical"
+                        android:gravity="bottom|left"
                         android:inputType="number"
                         android:paddingLeft="10dp"
+                        android:text="100,000"
                         android:textColor="#FFFFFF"
                         android:textSize="24sp" />
 
@@ -44,8 +45,8 @@
                         android:id="@+id/textDamage"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:gravity="center"
+                        android:layout_gravity="bottom|center"
+                        android:gravity="left"
                         android:text="Damage"
                         android:textColor="#FFFFFF" />
                 </LinearLayout>
@@ -93,58 +94,56 @@
                 android:layout_weight="1"
                 android:orientation="vertical">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
+                <LinearLayout
+                    android:id="@+id/constraintLayout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    card_view:layout_constraintBottom_toTopOf="@+id/bossName"
-                    card_view:layout_constraintEnd_toEndOf="parent">
+                    card_view:layout_constraintEnd_toEndOf="parent"
+                    card_view:layout_constraintTop_toTopOf="parent">
 
                     <TextView
                         android:id="@+id/levelText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Lv."
+                        android:layout_marginRight="10dp"
+                        android:text="Lv.72"
                         android:textColor="#FFFFFF"
-                        card_view:layout_constraintBottom_toBottomOf="parent"
-                        card_view:layout_constraintEnd_toStartOf="@+id/level"
-                        card_view:layout_constraintTop_toTopOf="parent" />
+                        android:textSize="10sp" />
 
                     <TextView
-                        android:id="@+id/level"
-                        android:layout_width="40dp"
+                        android:id="@+id/bossName"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="right"
-                        android:ems="10"
-                        android:gravity="right"
-                        android:inputType="number"
-                        card_view:layout_constraintBottom_toBottomOf="parent"
-                        card_view:layout_constraintEnd_toEndOf="parent"
-                        card_view:layout_constraintTop_toTopOf="parent"
-                        card_view:layout_constraintVertical_bias="0.0" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <TextView
-                    android:id="@+id/bossName"
-                    android:layout_width="100dp"
-                    android:layout_height="65dp"
-                    android:gravity="bottom|right"
-                    android:text="가스트"
-                    android:textColor="#FFFFFF"
-                    android:textSize="24sp"
-                    card_view:layout_constraintBottom_toBottomOf="parent"
-                    card_view:layout_constraintEnd_toEndOf="parent" />
+                        android:gravity="bottom|right"
+                        android:text="분노한 가스트장군"
+                        android:textColor="#FFFFFF" />
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/textView12"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginBottom="10dp"
                     android:text="VS"
                     android:textColor="#FFFFFF"
                     android:textSize="20sp"
                     card_view:layout_constraintBottom_toBottomOf="parent"
-                    card_view:layout_constraintEnd_toStartOf="@+id/bossName" />
+                    card_view:layout_constraintEnd_toStartOf="@+id/bossImage" />
+
+                <ImageView
+                    android:id="@+id/bossImage"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="10dp"
+                    card_view:layout_constraintBottom_toBottomOf="parent"
+                    card_view:layout_constraintEnd_toEndOf="parent"
+                    tools:srcCompat="@tools:sample/avatars" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>

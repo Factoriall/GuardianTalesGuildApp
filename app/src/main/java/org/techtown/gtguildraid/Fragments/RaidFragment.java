@@ -39,7 +39,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class RaidFragment extends Fragment {
+public class RaidFragment extends Fragment implements BossBottomSheetDialog.BottomSheetListener {
     final String dateFormat = "yyyy-MM-dd";
 
     ViewGroup view;
@@ -58,11 +58,13 @@ public class RaidFragment extends Fragment {
     TextView[] bossHardnessList;
     ProgressBar[] bossBarList;
     ImageView[] bossBtnList;
+    ImageView[] bossImageList;
     LinearLayout bossInfo;
 
     Date today;
     Boolean isCurrentExist;
     Button raidButton;
+    ImageView bossImageInDialog;
 
     @Nullable
     @Override
@@ -73,6 +75,7 @@ public class RaidFragment extends Fragment {
         bossInfo = view.findViewById(R.id.bossInfo);
         raidName = view.findViewById(R.id.raidName);
         raidTerm = view.findViewById(R.id.raidTerm);
+
 
         database = RoomDB.getInstance(getActivity());
         today = new Date();
@@ -89,26 +92,18 @@ public class RaidFragment extends Fragment {
             raidButton.setText("생성");
         }
 
-        raidButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                updateRaid();
-            }
-        });
+        raidButton.setOnClickListener(view -> updateRaid());
 
         final ImageView arrow = view.findViewById(R.id.currentArrow);
 
-        arrow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(bossInfo.getVisibility() == View.VISIBLE){
-                    bossInfo.setVisibility(View.GONE);
-                    arrow.setImageResource(R.drawable.icon_arrow_down);
-                }
-                else{
-                    bossInfo.setVisibility(View.VISIBLE);
-                    arrow.setImageResource(R.drawable.icon_arrow_up);
-                }
+        arrow.setOnClickListener(view -> {
+            if(bossInfo.getVisibility() == View.VISIBLE){
+                bossInfo.setVisibility(View.GONE);
+                arrow.setImageResource(R.drawable.icon_arrow_down);
+            }
+            else{
+                bossInfo.setVisibility(View.VISIBLE);
+                arrow.setImageResource(R.drawable.icon_arrow_up);
             }
         });
 
@@ -116,26 +111,16 @@ public class RaidFragment extends Fragment {
         bossHardnessList = new TextView[4];
         bossBarList = new ProgressBar[4];
         bossBtnList = new ImageView[4];
+        bossImageList = new ImageView[4];
 
         for(int i=1; i<=4; i++){
             Resources res = getResources();
-            int nameId = res.getIdentifier("boss" + i, "id", getContext().getPackageName());
-            int barId = res.getIdentifier("progressBar" + i, "id", getContext().getPackageName());
-            int hardnessId = res.getIdentifier("hardness" + i, "id", getContext().getPackageName());
             int buttonId = res.getIdentifier("editButton" + i, "id", getContext().getPackageName());
 
-            bossNameList[i-1] = view.findViewById(nameId);
-            bossHardnessList[i-1] = view.findViewById(hardnessId);
-            bossBarList[i-1] = view.findViewById(barId);
             bossBtnList[i-1] = view.findViewById(buttonId);
 
             final int finalI = i;
-            bossBtnList[i-1].setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    updateBoss(finalI -1);
-                }
-            });
+            bossBtnList[i-1].setOnClickListener(view -> updateBoss(finalI -1));
         }
 
         List<Raid> pastRaids = database.raidDao().getPastRaids(today);
@@ -149,24 +134,21 @@ public class RaidFragment extends Fragment {
 
         ConstraintLayout pastTab = view.findViewById(R.id.pastTab);
         final ImageView tabArrow = view.findViewById(R.id.tabArrow);
-        pastTab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(recyclerView.getVisibility() == View.VISIBLE){
-                    tabArrow.setImageResource(R.drawable.icon_arrow_down);
-                    recyclerView.setVisibility(View.GONE);
-                }
-                else{
-                    tabArrow.setImageResource(R.drawable.icon_arrow_up);
-                    recyclerView.setVisibility(View.VISIBLE);
-                }
+        pastTab.setOnClickListener(view -> {
+            if(recyclerView.getVisibility() == View.VISIBLE){
+                tabArrow.setImageResource(R.drawable.icon_arrow_down);
+                recyclerView.setVisibility(View.GONE);
+            }
+            else{
+                tabArrow.setImageResource(R.drawable.icon_arrow_up);
+                recyclerView.setVisibility(View.VISIBLE);
             }
         });
 
         return view;
     }
 
-    private void updateBoss(int idx) {
+    private void updateBoss(int idx){
         final Dialog dialog = new Dialog(getActivity());
 
         dialog.setContentView(R.layout.dialog_boss);
@@ -178,11 +160,14 @@ public class RaidFragment extends Fragment {
         final EditText name = dialog.findViewById(R.id.bossName);
         final SeekBar bar = dialog.findViewById(R.id.seekBar);
         final TextView hardness = dialog.findViewById(R.id.hardness);
+        bossImageInDialog = dialog.findViewById(R.id.bossImage);
 
         final Boss boss = database.raidDao().getBossesList(currentRaid.getRaidId()).get(idx);
         name.setText(boss.getName());
         hardness.setText(Double.toString(boss.getHardness()));
         bar.setProgress((int)(boss.getHardness() * 10));
+        bossImageInDialog.setImageResource(boss.getImageId());
+        bossImageInDialog.setTag(boss.getImageId());
 
         bar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -202,6 +187,14 @@ public class RaidFragment extends Fragment {
             public void onStopTrackingTouch(SeekBar seekBar) { }
         });
 
+        bossImageInDialog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                BossBottomSheetDialog bottomSheetDialog = new BossBottomSheetDialog(RaidFragment.this);
+                bottomSheetDialog.show(getFragmentManager(), "bottomSheetDialog");
+            }
+        });
+
         Button updateButton = dialog.findViewById(R.id.updateButton);
 
         updateButton.setOnClickListener(new View.OnClickListener() {
@@ -209,8 +202,9 @@ public class RaidFragment extends Fragment {
             public void onClick(View view) {
                 String sName = name.getText().toString().trim();
                 Double dHardness = bar.getProgress() / 10.0;
+                int imageId = (int) bossImageInDialog.getTag();
                 if(!sName.equals("")) {
-                    database.raidDao().updateBoss(boss.getBossId(), sName, dHardness);
+                    database.raidDao().updateBoss(boss.getBossId(), sName, imageId, dHardness);
                     refreshView();
                     dialog.dismiss();
                 }
@@ -309,6 +303,8 @@ public class RaidFragment extends Fragment {
                                 Boss boss = new Boss();
                                 boss.setName("보스" + i);
                                 boss.setHardness(1.0f);
+                                String imageName = "boss_" + i;
+                                boss.setImageId(getResources().getIdentifier(imageName, "drawable", getContext().getPackageName()));
 
                                 bosses.add(boss);
                             }
@@ -317,7 +313,6 @@ public class RaidFragment extends Fragment {
                         else{//업데이트
                             database.raidDao().updateRaid(currentRaid.getRaidId(), sName, sDate, eDate);
                         }
-
                         refreshView();
                     }
                     else{
@@ -348,19 +343,23 @@ public class RaidFragment extends Fragment {
             int nameId = res.getIdentifier("boss" + i, "id", getContext().getPackageName());
             int barId = res.getIdentifier("progressBar" + i, "id", getContext().getPackageName());
             int hardnessId = res.getIdentifier("hardness" + i, "id", getContext().getPackageName());
+            int bossImageId = res.getIdentifier("boss" + i + "Image", "id", getContext().getPackageName());
 
             TextView bossName = view.findViewById(nameId);
             TextView hardness = view.findViewById(hardnessId);
             ProgressBar progressBar = view.findViewById(barId);
+            ImageView bossImage = view.findViewById(bossImageId);
 
             bossName.setText(bosses.get(i-1).getName());
             hardness.setText("배율: " + String.format("%.1f", bosses.get(i-1).getHardness()));
             progressBar.setProgress((int)(bosses.get(i-1).getHardness() * 10));
+            bossImage.setImageResource(bosses.get(i-1).getImageId());
         }
 
         raidTerm.setText(new SimpleDateFormat(dateFormat).format(currentRaid.getStartDay()) +"~" +
                 new SimpleDateFormat(dateFormat).format(aEnd));
         raidButton.setText("수정");
+
     }
 
     private Date adjustEndTime(Date eDate) {
@@ -373,5 +372,11 @@ public class RaidFragment extends Fragment {
 
     private void showToast(String msg){
         Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onImageClicked(int imgId) {
+        bossImageInDialog.setImageResource(imgId);
+        bossImageInDialog.setTag(imgId);
     }
 }

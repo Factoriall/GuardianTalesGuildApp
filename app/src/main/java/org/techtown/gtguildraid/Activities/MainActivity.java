@@ -22,7 +22,6 @@ import org.techtown.gtguildraid.Utils.RoomDB;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
-
     RecordFragment recordFragment;
     MemberFragment memberFragment;
     RaidFragment raidFragment;

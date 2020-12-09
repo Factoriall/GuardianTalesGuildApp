@@ -96,10 +96,9 @@ public class RecordFragment extends Fragment {
         });
         setViewPager();
 
-        new TabLayoutMediator(tabLayout, viewPager,false, false,
+        new TabLayoutMediator(tabLayout, viewPager,true, true,
                 (tab, position) -> tab.setText("Day " + (position + 1) + "\n" + getRaidDate(position))).attach();
 
-        viewPager.setUserInputEnabled(false);
 
         return view;
     }

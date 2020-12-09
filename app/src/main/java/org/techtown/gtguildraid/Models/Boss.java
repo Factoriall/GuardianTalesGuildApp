@@ -22,6 +22,9 @@ public class Boss implements Serializable {
     @ColumnInfo(name = "hardness")
     private double hardness;
 
+    @ColumnInfo(name = "imageId")
+    private int imageId;
+
     public int getBossId() {
         return bossId;
     }
@@ -53,4 +56,8 @@ public class Boss implements Serializable {
     public void setHardness(double hardness) {
         this.hardness = hardness;
     }
+
+    public int getImageId() { return imageId; }
+
+    public void setImageId(int imageId) { this.imageId = imageId; }
 }

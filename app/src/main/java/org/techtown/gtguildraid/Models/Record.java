@@ -42,7 +42,6 @@ public class Record implements Serializable {
     @Ignore
     public Hero hero4;
 
-
     public Record(int memberId, int raidId, int day) {
         this.memberId = memberId;
         this.raidId = raidId;

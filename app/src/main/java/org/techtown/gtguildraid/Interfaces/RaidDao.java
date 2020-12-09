@@ -1,7 +1,5 @@
 package org.techtown.gtguildraid.Interfaces;
 
-import android.util.Log;
-
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
@@ -41,13 +39,12 @@ public abstract class RaidDao {
     @Query("UPDATE raid SET name = :sName, startDay = :startDate, endDay = :endDate WHERE raidId = :sID")
     public abstract void updateRaid(int sID, String sName, Date startDate, Date endDate);
 
-    @Query("UPDATE boss SET name = :sName, hardness = :hardness WHERE bossId = :sID")
-    public abstract void updateBoss(int sID, String sName, double hardness);
+    @Query("UPDATE boss SET name = :sName, hardness = :hardness, imageId = :imageId WHERE bossId = :sID")
+    public abstract void updateBoss(int sID, String sName, int imageId, double hardness);
 
     public void insertRaidWithBosses(Raid raid, List<Boss> bosses) {
         int id = (int)insertRaid(raid);
         for (int i = 0; i < bosses.size(); i++) {
-            Log.d("InsertRaidId", id + "");
             bosses.get(i).setRaidId(id);
         }
         insertBossList(bosses);
@@ -55,8 +52,6 @@ public abstract class RaidDao {
 
     public Raid getCurrentRaidWithBosses(Date date) {
         Raid raid = getCurrentRaid(date);
-        Log.d("CurrentRaidId", Integer.toString(raid.getRaidId()));
-        Log.d("raidInfo", raid.getName());
         List<Boss> bosses = getBossesList(raid.getRaidId());
 
         raid.setBossList(bosses);
