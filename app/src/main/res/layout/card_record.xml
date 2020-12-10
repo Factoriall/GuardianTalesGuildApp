@@ -4,19 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="120dp"
-    card_view:cardBackgroundColor="#D8B38E"
+    android:layout_margin="3dp"
+    card_view:cardBackgroundColor="#15233d"
     card_view:cardCornerRadius="4dp">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="4dp"
-        card_view:cardBackgroundColor="#2d2f34"
-        card_view:cardCornerRadius="4dp">
+        android:layout_margin="5dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@drawable/bg_record_card"
             android:orientation="horizontal">
 
             <LinearLayout
@@ -27,27 +27,53 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:visibility="visible">
+
+                    <TextView
+                        android:id="@+id/multiplyText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:text="X"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/hardness"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="1.6"
+                        android:textColor="#FF5F5F"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/damage"
-                        android:layout_width="150dp"
-                        android:layout_height="45dp"
-                        android:ems="10"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
                         android:gravity="bottom|left"
                         android:inputType="number"
-                        android:paddingLeft="10dp"
-                        android:text="100,000"
-                        android:textColor="#FFFFFF"
+                        android:text="160,000"
+                        android:textColor="#323261"
                         android:textSize="24sp" />
 
                     <TextView
                         android:id="@+id/textDamage"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="bottom|center"
+                        android:layout_gravity="bottom|left"
+                        android:layout_marginLeft="7dp"
+                        android:layout_marginBottom="1dp"
                         android:gravity="left"
-                        android:text="Damage"
+                        android:text="데미지"
                         android:textColor="#FFFFFF" />
                 </LinearLayout>
 
@@ -62,6 +88,8 @@
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:layout_margin="7dp"
+                        android:background="#504434"
+                        android:padding="3dp"
                         tools:srcCompat="@tools:sample/avatars" />
 
                     <ImageView
@@ -69,6 +97,8 @@
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:layout_margin="7dp"
+                        android:background="#504434"
+                        android:padding="3dp"
                         tools:srcCompat="@tools:sample/avatars" />
 
                     <ImageView
@@ -76,6 +106,8 @@
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:layout_margin="7dp"
+                        android:background="#504434"
+                        android:padding="3dp"
                         tools:srcCompat="@tools:sample/avatars" />
 
                     <ImageView
@@ -83,6 +115,8 @@
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:layout_margin="7dp"
+                        android:background="#504434"
+                        android:padding="3dp"
                         tools:srcCompat="@tools:sample/avatars" />
 
                 </LinearLayout>
@@ -94,55 +128,66 @@
                 android:layout_weight="1"
                 android:orientation="vertical">
 
-                <LinearLayout
-                    android:id="@+id/constraintLayout"
+                <TextView
+                    android:id="@+id/bossName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginRight="5dp"
+                    android:gravity="bottom|right"
+                    android:text="분노한 가스트장군"
+                    android:textColor="#FFFFFF"
+                    android:textStyle="bold"
                     card_view:layout_constraintEnd_toEndOf="parent"
-                    card_view:layout_constraintTop_toTopOf="parent">
-
-                    <TextView
-                        android:id="@+id/levelText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="10dp"
-                        android:text="Lv.72"
-                        android:textColor="#FFFFFF"
-                        android:textSize="10sp" />
-
-                    <TextView
-                        android:id="@+id/bossName"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="bottom|right"
-                        android:text="분노한 가스트장군"
-                        android:textColor="#FFFFFF" />
-                </LinearLayout>
+                    card_view:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/textView12"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="20dp"
-                    android:layout_marginRight="20dp"
-                    android:layout_marginBottom="10dp"
+                    android:layout_marginEnd="50dp"
+                    android:layout_marginRight="50dp"
                     android:text="VS"
                     android:textColor="#FFFFFF"
-                    android:textSize="20sp"
+                    android:textSize="24sp"
                     card_view:layout_constraintBottom_toBottomOf="parent"
                     card_view:layout_constraintEnd_toStartOf="@+id/bossImage" />
 
                 <ImageView
                     android:id="@+id/bossImage"
-                    android:layout_width="75dp"
-                    android:layout_height="75dp"
-                    android:layout_marginEnd="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginBottom="10dp"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="#54748E"
+                    android:padding="3dp"
                     card_view:layout_constraintBottom_toBottomOf="parent"
                     card_view:layout_constraintEnd_toEndOf="parent"
                     tools:srcCompat="@tools:sample/avatars" />
+
+                <TextView
+                    android:id="@+id/levelText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Lv."
+                    android:textColor="#FFFFFF"
+                    android:textSize="10sp"
+                    card_view:layout_constraintBottom_toTopOf="@+id/bossImage"
+                    card_view:layout_constraintEnd_toStartOf="@+id/level" />
+
+                <TextView
+                    android:id="@+id/level"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginRight="5dp"
+                    android:text="100"
+                    android:textColor="#FFFFFF"
+                    android:textSize="10sp"
+                    card_view:layout_constraintBottom_toTopOf="@+id/bossImage"
+                    card_view:layout_constraintEnd_toEndOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>

@@ -17,6 +17,7 @@ import org.techtown.gtguildraid.Models.Record;
 import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.Utils.RoomDB;
 
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +52,8 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         TextView damage;
+        TextView level;
+        TextView hardness;
         ImageView bossImage;
         ImageView[] heroes;
         TextView bossName;
@@ -65,6 +68,8 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder
 
             heroes = new ImageView[4];
             damage = itemView.findViewById(R.id.damage);
+            level = itemView.findViewById(R.id.level);
+            hardness = itemView.findViewById(R.id.hardness);
             bossName = itemView.findViewById(R.id.bossName);
             bossImage = itemView.findViewById(R.id.bossImage);
             for (int i = 1; i <= 4; i++) {
@@ -76,7 +81,9 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder
         }
 
         public void setItem(Record record) {
-            damage.setText(NumberFormat.getNumberInstance(Locale.US).format(record.getDamage()));
+            damage.setText(NumberFormat.getNumberInstance(Locale.US).format((int)(record.getDamage() * record.getBoss().getHardness())));
+            hardness.setText(new DecimalFormat("#.#").format(record.getBoss().getHardness()));
+            level.setText(Integer.toString(record.getLevel()));
             bossName.setText(record.getBoss().getName());
             bossImage.setImageResource(record.getBoss().getImageId());
 

@@ -1,6 +1,7 @@
 package org.techtown.gtguildraid.Fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -96,9 +97,12 @@ public class RecordFragment extends Fragment {
         });
         setViewPager();
 
-        new TabLayoutMediator(tabLayout, viewPager,true, true,
-                (tab, position) -> tab.setText("Day " + (position + 1) + "\n" + getRaidDate(position))).attach();
-
+        new TabLayoutMediator(tabLayout, viewPager, true, true, (tab, position) -> {
+            if(position != 0)
+                tab.setText("Day " + position + "\n" + getRaidDate(position - 1));
+            else
+                tab.setText("전체 기록");
+        }).attach();
 
         return view;
     }
@@ -106,7 +110,7 @@ public class RecordFragment extends Fragment {
     private void setViewPager(){
         vAdapter.setData(memberId.get(sMemberIdx), raid.getRaidId());
         viewPager.setAdapter(vAdapter);
-        viewPager.setCurrentItem(getIntegerFromToday(), false);
+        viewPager.setCurrentItem(getIntegerFromToday() + 1, false);
     }
 
     private int getIntegerFromToday() {

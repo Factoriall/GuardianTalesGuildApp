@@ -16,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -37,10 +38,12 @@ import org.techtown.gtguildraid.Models.Record;
 import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.Utils.RoomDB;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 
@@ -53,6 +56,8 @@ public class CardFragment extends Fragment{
     LinearLayoutManager linearLayoutManager;
     RoomDB database;
     RecordAdapter adapter;
+
+    TextView totalDamage;
     FloatingActionButton fab;
 
     final String[] elementKoreanArray = new String[]{"화", "수", "지", "광", "암", "무"};
@@ -72,7 +77,7 @@ public class CardFragment extends Fragment{
     public static CardFragment newInstance(int counter, int memberId, int raidId) {
         CardFragment fragment = new CardFragment();
         Bundle args = new Bundle();
-        args.putInt("day", counter + 1);
+        args.putInt("day", counter);
         args.putInt("memberId", memberId);
         args.putInt("raidId", raidId);
 
@@ -136,10 +141,12 @@ public class CardFragment extends Fragment{
         adapter.setItems(recordList);
         recyclerView.setAdapter(adapter);
 
+        totalDamage = view.findViewById(R.id.totalDamage);
+        setTotalDamage();
+
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-
                 refreshList();
             }
         });
@@ -161,9 +168,18 @@ public class CardFragment extends Fragment{
         return view;
     }
 
+    private void setTotalDamage() {
+        int total = 0;
+        for(Record record : recordList){
+            total += (int)(record.getDamage() * record.getBoss().getHardness());
+        }
+        totalDamage.setText(NumberFormat.getNumberInstance(Locale.US).format(total));
+    }
+
     private void refreshList() {
         recordList.clear();
         recordList.addAll(database.recordDao().getCertainDayRecordsWithHeroes(memberId, raidId, day));
+        setTotalDamage();
         adapter.notifyDataSetChanged();
 
         new Handler().postDelayed(new Runnable() {
@@ -273,6 +289,7 @@ public class CardFragment extends Fragment{
 
         if(isEditing){
             damage.setText(Integer.toString(record.getDamage()));
+            level.setText(Integer.toString(record.getLevel()));
             String bossName = record.getBoss().getName();
 
             Hero hero1 = record.getHero1();
