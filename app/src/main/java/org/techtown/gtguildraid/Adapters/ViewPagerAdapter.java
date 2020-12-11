@@ -2,7 +2,8 @@ package org.techtown.gtguildraid.Adapters;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import org.techtown.gtguildraid.Fragments.CardFragment;
@@ -20,9 +21,10 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
         this.isChecked = isChecked;
     }
 
-    public ViewPagerAdapter(@NonNull FragmentActivity fragmentActivity) {
-        super(fragmentActivity);
+    public ViewPagerAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle) {
+        super(fragmentManager, lifecycle);
     }
+
 
     @NonNull
     @Override
