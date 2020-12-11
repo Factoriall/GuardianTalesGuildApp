@@ -408,6 +408,7 @@ public class CardFragment extends Fragment{
                             .setAction("취소", new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
+                                    database.recordDao().insertRecord(selected);
                                     recordList.add(position, selected);
                                     adapter.notifyItemInserted(position);
                                 }
