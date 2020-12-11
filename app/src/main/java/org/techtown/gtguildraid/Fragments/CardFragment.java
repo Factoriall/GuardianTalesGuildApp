@@ -219,18 +219,17 @@ public class CardFragment extends Fragment{
         List<Boss> bosses = database.raidDao().getBossesList(raid.getRaidId());
         List<String> bossNames = new ArrayList<>();
         List<Integer> bossIds = new ArrayList<>();
+        List<Integer> bossImages = new ArrayList<>();
         for(Boss boss : bosses){
             bossNames.add(boss.getName());
+            bossImages.add(boss.getImageId());
             bossIds.add(boss.getBossId());
         }
         final int[] selectedBossId = {0};
         int[] selectedHeroElement = new int[4];
 
 
-        ArrayAdapter<String> bossSpinnerAdapter = new ArrayAdapter<String>(
-                getActivity(), android.R.layout.simple_spinner_item, bossNames);
-        bossSpinnerAdapter.setDropDownViewResource(
-                android.R.layout.simple_spinner_dropdown_item);
+        SpinnerAdapter bossSpinnerAdapter = new SpinnerAdapter(getContext(), R.layout.spinner_value_layout, bossNames, bossImages);
 
         bossSpinner.setAdapter(bossSpinnerAdapter);
         bossSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
