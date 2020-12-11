@@ -12,10 +12,12 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
     private static final int CARD_ITEM_SIZE = 15;
     private int memberId;
     private int raidId;
+    private boolean isChecked;
 
-    public void setData(int memberId, int raidId){
+    public void setData(int memberId, int raidId, Boolean isChecked){
         this.memberId = memberId;
         this.raidId = raidId;
+        this.isChecked = isChecked;
     }
 
     public ViewPagerAdapter(@NonNull FragmentActivity fragmentActivity) {
@@ -26,7 +28,7 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
     @Override
     public Fragment createFragment(int position) {
         if(position != 0)
-            return CardFragment.newInstance(position, memberId, raidId);
+            return CardFragment.newInstance(position, memberId, raidId, isChecked);
         else
             return RecordOverallFragment.newInstance(memberId, raidId);
     }

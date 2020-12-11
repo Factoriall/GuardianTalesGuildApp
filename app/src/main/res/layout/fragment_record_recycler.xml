@@ -9,7 +9,7 @@
     <LinearLayout
         android:id="@+id/TotalDamageCard"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="70dp"
         android:background="#45403A"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
@@ -36,7 +36,6 @@
                     android:gravity="center"
                     android:text="금일 총 데미지"
                     android:textColor="#3C3C3C"
-                    android:textSize="20sp"
                     android:textStyle="bold" />
 
                 <TextView

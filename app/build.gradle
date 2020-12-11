@@ -45,4 +45,5 @@ dependencies {
     debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
     implementation 'it.xabaras.android:recyclerview-swipedecorator:1.2.3'
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
+    implementation 'com.llollox:androidtoggleswitch:2.0.1'
 }

@@ -3,11 +3,15 @@ package org.techtown.gtguildraid.Fragments;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -33,14 +37,19 @@ import java.util.List;
 public class RecordFragment extends Fragment {
     final private String dateFormat = "yyyy-MM-dd";
 
-    Raid raid;
-    List<GuildMember> members;
-    List<String> memberSpinner = new ArrayList<>();
-    List<Integer> memberId = new ArrayList<>();
+
     RoomDB database;
     TabLayout tabLayout;
     ViewPager2 viewPager;
     ViewPagerAdapter vAdapter;
+    Switch adjustSwitch;
+
+    Raid raid;
+    List<GuildMember> members;
+    List<String> memberSpinner = new ArrayList<>();
+    List<Integer> memberId = new ArrayList<>();
+
+    private Boolean isAdjustMode = true;
     private int sMemberIdx = 0;
 
     @Override
@@ -79,6 +88,8 @@ public class RecordFragment extends Fragment {
 
         viewPager = view.findViewById(R.id.view_pager);
         tabLayout = view.findViewById(R.id.tabs);
+        adjustSwitch = view.findViewById(R.id.adjustSwitch);
+        isAdjustMode = adjustSwitch.isChecked();
 
         nSpinner.setAdapter(adapter);
 
@@ -88,14 +99,14 @@ public class RecordFragment extends Fragment {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 if(sMemberIdx != i) {
                     sMemberIdx = i;
-                    setViewPager();
+                    setViewPager(isAdjustMode, getIntegerFromToday() + 1);
                 }
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) { }
         });
-        setViewPager();
+        setViewPager(isAdjustMode, getIntegerFromToday() + 1);
 
         new TabLayoutMediator(tabLayout, viewPager, true, true, (tab, position) -> {
             if(position != 0)
@@ -104,13 +115,21 @@ public class RecordFragment extends Fragment {
                 tab.setText("전체 기록");
         }).attach();
 
+        adjustSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                isAdjustMode = isChecked;
+                setViewPager(isChecked, tabLayout.getSelectedTabPosition());
+            }
+        });
+
         return view;
     }
 
-    private void setViewPager(){
-        vAdapter.setData(memberId.get(sMemberIdx), raid.getRaidId());
+    private void setViewPager(Boolean isChecked, int day){
+        vAdapter.setData(memberId.get(sMemberIdx), raid.getRaidId(), isChecked);
         viewPager.setAdapter(vAdapter);
-        viewPager.setCurrentItem(getIntegerFromToday() + 1, false);
+        viewPager.setCurrentItem(day, false);
     }
 
     private int getIntegerFromToday() {

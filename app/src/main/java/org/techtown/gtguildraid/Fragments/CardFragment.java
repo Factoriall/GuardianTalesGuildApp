@@ -28,6 +28,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.techtown.gtguildraid.Adapters.RecordAdapter;
 import org.techtown.gtguildraid.Adapters.SpinnerAdapter;
@@ -52,7 +53,7 @@ public class CardFragment extends Fragment{
 
     SwipeRefreshLayout swipeRefreshLayout;
     RecyclerView recyclerView;
-    List<Record> recordList = new ArrayList<>();
+    SpinnerAdapter elementAdapter;
     LinearLayoutManager linearLayoutManager;
     RoomDB database;
     RecordAdapter adapter;
@@ -63,23 +64,26 @@ public class CardFragment extends Fragment{
     final String[] elementKoreanArray = new String[]{"화", "수", "지", "광", "암", "무"};
     final String[] elementEnglishArray = new String[]{"fire", "water", "earth", "light", "dark", "basic"};
 
+    ArrayList<ArrayList<Integer>> heroIds;
+    List<Record> recordList = new ArrayList<>();
     private int memberId;
     private int raidId;
     private int day;
-    ArrayList<ArrayList<Integer>> heroIds;
-    SpinnerAdapter elementAdapter;
+    private boolean isChecked;
+
     int[] selectedHeroId = new int[4];
 
     public CardFragment() {
         // Required empty public constructor
     }
 
-    public static CardFragment newInstance(int counter, int memberId, int raidId) {
+    public static CardFragment newInstance(int counter, int memberId, int raidId, boolean isChecked) {
         CardFragment fragment = new CardFragment();
         Bundle args = new Bundle();
         args.putInt("day", counter);
         args.putInt("memberId", memberId);
         args.putInt("raidId", raidId);
+        args.putBoolean("isChecked", isChecked);
 
         fragment.setArguments(args);
         return fragment;
@@ -127,6 +131,7 @@ public class CardFragment extends Fragment{
             memberId = getArguments().getInt("memberId");
             raidId = getArguments().getInt("raidId");
             day = getArguments().getInt("day");
+            isChecked = getArguments().getBoolean("isChecked");
         }
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_record_recycler, container, false);
@@ -137,12 +142,14 @@ public class CardFragment extends Fragment{
         recordList = database.recordDao().getCertainDayRecordsWithHeroes(memberId, raidId, day);
 
         recyclerView.setLayoutManager(linearLayoutManager);
-        adapter = new RecordAdapter();
+        adapter = new RecordAdapter(isChecked);
         adapter.setItems(recordList);
         recyclerView.setAdapter(adapter);
 
+        TextView damageText = view.findViewById(R.id.damageText);
+        damageText.setText(day + "일차 총 데미지");
         totalDamage = view.findViewById(R.id.totalDamage);
-        setTotalDamage();
+        setTotalDamage(isChecked);
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -168,18 +175,22 @@ public class CardFragment extends Fragment{
         return view;
     }
 
-    private void setTotalDamage() {
+    private void setTotalDamage(Boolean isChecked) {
         int total = 0;
         for(Record record : recordList){
-            total += (int)(record.getDamage() * record.getBoss().getHardness());
+            if(isChecked)
+                total += (int)(record.getDamage() * record.getBoss().getHardness());
+            else
+                total += record.getDamage();
         }
+
         totalDamage.setText(NumberFormat.getNumberInstance(Locale.US).format(total));
     }
 
     private void refreshList() {
         recordList.clear();
         recordList.addAll(database.recordDao().getCertainDayRecordsWithHeroes(memberId, raidId, day));
-        setTotalDamage();
+        setTotalDamage(isChecked);
         adapter.notifyDataSetChanged();
 
         new Handler().postDelayed(new Runnable() {
@@ -375,13 +386,6 @@ public class CardFragment extends Fragment{
         selectedHeroId[idx] = hero.getHeroId();
     }
 
-    private void setFabVisibility() {
-        if(recordList.size() >= MAX_SIZE)
-            fab.setVisibility(View.GONE);
-        else
-            fab.setVisibility(View.VISIBLE);
-    }
-
     ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT |
             ItemTouchHelper.RIGHT) {
         @Override
@@ -395,12 +399,24 @@ public class CardFragment extends Fragment{
             switch(direction){
 
                 case ItemTouchHelper.LEFT:
-                    //String deletedInfo = "Day " + recordList.get(position).getDay() + ", #" + (position + 1) + " 삭제";
+                    String deletedInfo = "Day " + recordList.get(position).getDay() + ", #" + (position + 1) + " 삭제";
                     Record selected = recordList.get(position);
                     database.recordDao().deleteRecord(selected);
                     recordList.remove(position);
                     adapter.notifyItemRemoved(position);
-                    setFabVisibility();
+                    Snackbar.make(recyclerView, deletedInfo, 2000)
+                            .setAction("취소", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    recordList.add(position, selected);
+                                    adapter.notifyItemInserted(position);
+                                }
+                            }).show();
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            setFabVisibility(); }
+                    }, 2500);
                     break;
                 case ItemTouchHelper.RIGHT:
                     Record editRecord = recordList.get(position);
@@ -423,6 +439,13 @@ public class CardFragment extends Fragment{
             super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
         }
     };
+
+    private void setFabVisibility() {
+        if(recordList.size() >= MAX_SIZE)
+            fab.setVisibility(View.GONE);
+        else
+            fab.setVisibility(View.VISIBLE);
+    }
 
     private void showToast(String msg){
         Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG).show();

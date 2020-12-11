@@ -3,8 +3,8 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="120dp"
-    android:layout_margin="3dp"
+    android:layout_height="110dp"
+    android:layout_margin="2dp"
     card_view:cardBackgroundColor="#15233d"
     card_view:cardCornerRadius="4dp">
 
@@ -25,6 +25,7 @@
                 android:orientation="vertical">
 
                 <LinearLayout
+                    android:id="@+id/adjustLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -36,16 +37,15 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="5dp"
                         android:layout_marginRight="5dp"
-                        android:text="X"
-                        android:textSize="12sp" />
+                        android:text="x"
+                        android:textColor="#ED554A" />
 
                     <TextView
                         android:id="@+id/hardness"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="1.6"
-                        android:textColor="#FF5F5F"
-                        android:textSize="12sp" />
+                        android:textColor="#F15347" />
 
                 </LinearLayout>
 
@@ -62,7 +62,7 @@
                         android:gravity="bottom|left"
                         android:inputType="number"
                         android:text="160,000"
-                        android:textColor="#323261"
+                        android:textColor="#262649"
                         android:textSize="24sp" />
 
                     <TextView
@@ -132,62 +132,52 @@
                     android:id="@+id/bossName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:layout_marginEnd="5dp"
                     android:layout_marginRight="5dp"
-                    android:gravity="bottom|right"
-                    android:text="분노한 가스트장군"
+                    android:layout_marginBottom="2dp"
+                    android:text="광분한 미노타우로스"
                     android:textColor="#FFFFFF"
                     android:textStyle="bold"
-                    card_view:layout_constraintEnd_toEndOf="parent"
-                    card_view:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/textView12"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="50dp"
-                    android:layout_marginRight="50dp"
-                    android:text="VS"
-                    android:textColor="#FFFFFF"
-                    android:textSize="24sp"
                     card_view:layout_constraintBottom_toBottomOf="parent"
-                    card_view:layout_constraintEnd_toStartOf="@+id/bossImage" />
+                    card_view:layout_constraintEnd_toEndOf="parent" />
 
                 <ImageView
                     android:id="@+id/bossImage"
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
+                    android:layout_width="55dp"
+                    android:layout_height="55dp"
+                    android:layout_marginTop="5dp"
                     android:layout_marginEnd="5dp"
                     android:layout_marginRight="5dp"
-                    android:layout_marginBottom="5dp"
                     android:background="#54748E"
                     android:padding="3dp"
-                    card_view:layout_constraintBottom_toBottomOf="parent"
                     card_view:layout_constraintEnd_toEndOf="parent"
+                    card_view:layout_constraintTop_toTopOf="parent"
                     tools:srcCompat="@tools:sample/avatars" />
 
-                <TextView
-                    android:id="@+id/levelText"
+                <LinearLayout
+                    android:id="@+id/linearLayout2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Lv."
-                    android:textColor="#FFFFFF"
-                    android:textSize="10sp"
-                    card_view:layout_constraintBottom_toTopOf="@+id/bossImage"
-                    card_view:layout_constraintEnd_toStartOf="@+id/level" />
+                    android:orientation="horizontal"
+                    card_view:layout_constraintBottom_toTopOf="@+id/bossName"
+                    card_view:layout_constraintEnd_toEndOf="parent">
 
-                <TextView
-                    android:id="@+id/level"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="5dp"
-                    android:layout_marginRight="5dp"
-                    android:text="100"
-                    android:textColor="#FFFFFF"
-                    android:textSize="10sp"
-                    card_view:layout_constraintBottom_toTopOf="@+id/bossImage"
-                    card_view:layout_constraintEnd_toEndOf="parent" />
+                    <TextView
+                        android:id="@+id/levelText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Lv."
+                        android:textColor="#FFFFFF"
+                        android:textSize="10sp" />
+
+                    <TextView
+                        android:id="@+id/level"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="100"
+                        android:textColor="#FFFFFF"
+                        android:textSize="10sp"
+                        android:layout_marginRight="5dp" />
+                </LinearLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>

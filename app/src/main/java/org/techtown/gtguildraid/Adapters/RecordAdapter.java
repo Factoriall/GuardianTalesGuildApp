@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -25,6 +26,11 @@ import java.util.Locale;
 
 public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder> {
     private List<Record> recordList;
+    private static boolean isChecked;
+    
+    public RecordAdapter(boolean isChecked) {
+        this.isChecked = isChecked;
+    }
 
     @NonNull
     @Override
@@ -56,6 +62,7 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder
         TextView hardness;
         ImageView bossImage;
         ImageView[] heroes;
+        LinearLayout adjustLayout;
         TextView bossName;
         RoomDB database;
         Context context;
@@ -72,20 +79,31 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder
             hardness = itemView.findViewById(R.id.hardness);
             bossName = itemView.findViewById(R.id.bossName);
             bossImage = itemView.findViewById(R.id.bossImage);
+            adjustLayout = itemView.findViewById(R.id.adjustLayout);
             for (int i = 1; i <= 4; i++) {
-                Resources res = context.getResources();
-                int heroId = res.getIdentifier("hero" + i, "id", context.getPackageName());
+                int heroId = context.getResources()
+                        .getIdentifier("hero" + i, "id", context.getPackageName());
 
                 heroes[i - 1] = itemView.findViewById(heroId);
             }
         }
 
         public void setItem(Record record) {
-            damage.setText(NumberFormat.getNumberInstance(Locale.US).format((int)(record.getDamage() * record.getBoss().getHardness())));
             hardness.setText(new DecimalFormat("#.#").format(record.getBoss().getHardness()));
             level.setText(Integer.toString(record.getLevel()));
             bossName.setText(record.getBoss().getName());
             bossImage.setImageResource(record.getBoss().getImageId());
+            
+            if(isChecked){
+                adjustLayout.setVisibility(View.VISIBLE);
+                hardness.setText(new DecimalFormat("#.#").format(record.getBoss().getHardness()));
+                damage.setText(NumberFormat.getNumberInstance(Locale.US).format((int)(record.getDamage() * record.getBoss().getHardness())));
+            }
+            else{
+                adjustLayout.setVisibility(View.INVISIBLE);
+                hardness.setText(new DecimalFormat("#.#").format(record.getBoss().getHardness()));
+                damage.setText(NumberFormat.getNumberInstance(Locale.US).format(record.getDamage()));
+            }
 
             List<Hero> heroList = new ArrayList<>();
             heroList.add(record.getHero1());
