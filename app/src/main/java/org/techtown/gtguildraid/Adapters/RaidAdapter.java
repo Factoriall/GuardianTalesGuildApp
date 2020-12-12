@@ -6,6 +6,9 @@ import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -59,8 +62,10 @@ public class RaidAdapter extends RecyclerView.Adapter<RaidAdapter.ViewHolder> {
         TextView[] bossNameList;
         TextView[] bossHardnessList;
         ProgressBar[] bossBarList;
+        ImageView[] bossImageList;
         Context context;
         RoomDB database;
+
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -72,6 +77,7 @@ public class RaidAdapter extends RecyclerView.Adapter<RaidAdapter.ViewHolder> {
             bossNameList = new TextView[4];
             bossHardnessList = new TextView[4];
             bossBarList = new ProgressBar[4];
+            bossImageList = new ImageView[4];
             context = itemView.getContext();
 
             for(int i=1; i<=4; i++){
@@ -79,11 +85,25 @@ public class RaidAdapter extends RecyclerView.Adapter<RaidAdapter.ViewHolder> {
                 int nameId = res.getIdentifier("boss" + i, "id", context.getPackageName());
                 int barId = res.getIdentifier("progressBar" + i, "id", context.getPackageName());
                 int hardnessId = res.getIdentifier("hardness" + i, "id", context.getPackageName());
-
+                int imageId = res.getIdentifier("boss"+i+"Image", "id", context.getPackageName());
                 bossNameList[i-1] = itemView.findViewById(nameId);
                 bossHardnessList[i-1] = itemView.findViewById(hardnessId);
                 bossBarList[i-1] = itemView.findViewById(barId);
+                bossImageList[i-1] = itemView.findViewById(imageId);
             }
+
+            ImageView arrow = itemView.findViewById(R.id.currentArrow);
+            LinearLayout bossInfo = itemView.findViewById(R.id.bossInfo);
+            arrow.setOnClickListener(view -> {
+                if(bossInfo.getVisibility() == View.VISIBLE){
+                    bossInfo.setVisibility(View.GONE);
+                    arrow.setImageResource(R.drawable.icon_arrow_down);
+                }
+                else{
+                    bossInfo.setVisibility(View.VISIBLE);
+                    arrow.setImageResource(R.drawable.icon_arrow_up);
+                }
+            });
         }
 
         public void setItem(Raid raid){
@@ -97,6 +117,7 @@ public class RaidAdapter extends RecyclerView.Adapter<RaidAdapter.ViewHolder> {
                 bossNameList[i].setText(boss.getName());
                 bossHardnessList[i].setText("배율: " + String.format("%.1f", boss.getHardness()));
                 bossBarList[i].setProgress((int)(boss.getHardness() * 10));
+                bossImageList[i].setImageResource(boss.getImageId());
             }
         }
     }

@@ -76,7 +76,6 @@ public class RaidFragment extends Fragment implements BossBottomSheetDialog.Bott
         raidName = view.findViewById(R.id.raidName);
         raidTerm = view.findViewById(R.id.raidTerm);
 
-
         database = RoomDB.getInstance(getActivity());
         today = new Date();
         isCurrentExist = database.raidDao().isCurrentRaidExist(today);

@@ -159,7 +159,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:background="#555555"
-                    app:srcCompat="@drawable/icon_arrow_up"
+                    app:srcCompat="@drawable/icon_arrow_down"
                     tools:ignore="VectorDrawableCompat" />
 
             </LinearLayout>
@@ -169,7 +169,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:visibility="visible">
+                android:visibility="gone">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/Boss1Info"
@@ -182,6 +182,8 @@
                         android:layout_width="120dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginLeft="10dp"
                         android:hint="이름"
                         android:textSize="20sp"
                         app:layout_constraintBottom_toBottomOf="parent"

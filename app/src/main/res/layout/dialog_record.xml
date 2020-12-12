@@ -114,19 +114,20 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
+                android:layout_margin="5dp"
                 android:orientation="horizontal">
 
                 <Spinner
                     android:id="@+id/elementSpinner1"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1" />
+                    android:layout_weight="2" />
 
                 <Spinner
                     android:id="@+id/heroNameSpinner1"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="2" />
+                    android:layout_weight="3" />
             </LinearLayout>
         </LinearLayout>
 
@@ -154,13 +155,13 @@
                 android:id="@+id/elementSpinner2"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1" />
+                android:layout_weight="2" />
 
             <Spinner
                 android:id="@+id/heroNameSpinner2"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="2" />
+                android:layout_weight="3" />
 
         </LinearLayout>
 
@@ -174,13 +175,13 @@
                 android:id="@+id/elementSpinner3"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1" />
+                android:layout_weight="2" />
 
             <Spinner
                 android:id="@+id/heroNameSpinner3"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="2" />
+                android:layout_weight="3" />
         </LinearLayout>
 
         <LinearLayout
@@ -193,13 +194,13 @@
                 android:id="@+id/elementSpinner4"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1" />
+                android:layout_weight="2" />
 
             <Spinner
                 android:id="@+id/heroNameSpinner4"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="2" />
+                android:layout_weight="3" />
         </LinearLayout>
 
 
