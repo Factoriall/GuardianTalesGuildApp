@@ -40,7 +40,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:background="#95DEFF"
-                        app:srcCompat="@drawable/flag"
+                        app:srcCompat="@drawable/icon_flag"
                         tools:ignore="VectorDrawableCompat" />
 
                     <TextView

@@ -34,6 +34,9 @@ public abstract class RecordDao {
     @Query("SELECT * FROM Record WHERE memberId = :memberId AND raidId = :raidId AND day = :day")
     public abstract List<Record> getCertainDayRecords(int memberId, int raidId, int day);
 
+    @Query("SELECT * FROM Record WHERE memberId = :memberId AND raidId = :raidId AND bossId = :bossId")
+    public abstract List<Record> getCertainBossRecords(int memberId, int raidId, int bossId);
+
     @Query("SELECT * FROM Boss WHERE bossId = :bossId")
     public abstract Boss getBoss(int bossId);
 
@@ -42,6 +45,26 @@ public abstract class RecordDao {
             "WHERE recordID = :rId")
     public abstract void updateRecord(int rId, int damage, int bossId, int level,
                                       int heroId1, int heroId2, int heroId3, int heroId4);
+
+    public List<Record> getCertainMemberRecordsWithBoss(int memberId, int raidId) {
+        List<Record> records = getCertainMemberRecords(memberId, raidId);
+        for(Record record: records){
+            Boss boss = getBoss(record.getBossId());
+            record.setBoss(boss);
+        }
+
+        return records;
+    }
+
+    public List<Record> getCertainBossRecordsWithBoss(int memberId, int raidId, int bossId) {
+        List<Record> records = getCertainBossRecords(memberId, raidId, bossId);
+        for(Record record: records){
+            Boss boss = getBoss(record.getBossId());
+            record.setBoss(boss);
+        }
+
+        return records;
+    }
 
     public List<Record> getCertainDayRecordsWithHeroes(int memberId, int raidId, int day){
         List<Record> records = getCertainDayRecords(memberId, raidId, day);

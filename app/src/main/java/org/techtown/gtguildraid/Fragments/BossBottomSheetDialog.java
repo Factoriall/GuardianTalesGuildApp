@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -65,7 +64,6 @@ public class BossBottomSheetDialog extends BottomSheetDialogFragment {
             img.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(getContext(), "info" + finalI, Toast.LENGTH_SHORT).show();
                     mListener.onImageClicked(mImgIds[finalI]);
                     dismiss();
                 }

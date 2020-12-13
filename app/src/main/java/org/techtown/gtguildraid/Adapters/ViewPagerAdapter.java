@@ -32,7 +32,7 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
         if(position != 0)
             return CardFragment.newInstance(position, memberId, raidId, isChecked);
         else
-            return RecordOverallFragment.newInstance(memberId, raidId);
+            return RecordOverallFragment.newInstance(memberId, raidId, isChecked);
     }
 
     @Override
