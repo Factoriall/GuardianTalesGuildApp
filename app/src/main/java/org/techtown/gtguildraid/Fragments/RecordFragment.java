@@ -1,13 +1,16 @@
 package org.techtown.gtguildraid.Fragments;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -33,8 +36,8 @@ import java.util.Date;
 import java.util.List;
 
 public class RecordFragment extends Fragment {
+    final int VIEWPAGER_NUM = 15;
     final private String dateFormat = "yyyy-MM-dd";
-
 
     RoomDB database;
     TabLayout tabLayout;
@@ -116,6 +119,24 @@ public class RecordFragment extends Fragment {
                 tab.setText("전체 기록");
         }).attach();
 
+        LinearLayout tabStrip = ((LinearLayout)tabLayout.getChildAt(0));
+        for(int i=getIntegerFromToday()+2; i<VIEWPAGER_NUM; i++){
+            tabStrip.getChildAt(i).setBackgroundColor(Color.GRAY);
+            tabStrip.getChildAt(i).setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    return true;
+                }
+            });
+        }
+
+        tabStrip.getChildAt(2).setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
+            }
+        });
+
         adjustSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
@@ -141,9 +162,8 @@ public class RecordFragment extends Fragment {
         int differentDays = (int) ((today.getTime() - startDate.getTime()) / (1000 * 3600 * 24));
 
         if (differentDays < 0)
-            return 0;
-        else
-            return differentDays;
+            return -1;
+        return differentDays;
     }
 
     private String getRaidDate(int position) {
