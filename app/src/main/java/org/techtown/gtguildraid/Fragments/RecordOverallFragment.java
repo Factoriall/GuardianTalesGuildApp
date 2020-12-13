@@ -103,7 +103,7 @@ public class RecordOverallFragment extends Fragment {
             int bossHitNum = bossRecords.size();
             bossHitNumList[idx-1].setText(Integer.toString(bossHitNum));
             bossImageList[idx-1].setImageResource(boss.getImageId());
-            vsBossList[idx-1].setText(boss.getName() + " 상대 기록");
+            vsBossList[idx-1].setText("vs " + boss.getName());
 
             int bossDamageInt = 0;
             for(Record record : bossRecords) {
