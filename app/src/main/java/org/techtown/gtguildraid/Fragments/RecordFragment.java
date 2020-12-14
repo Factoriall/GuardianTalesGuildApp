@@ -7,11 +7,8 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -23,6 +20,8 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
+import org.angmarch.views.NiceSpinner;
+import org.angmarch.views.OnSpinnerItemSelectedListener;
 import org.techtown.gtguildraid.Adapters.ViewPagerAdapter;
 import org.techtown.gtguildraid.Models.GuildMember;
 import org.techtown.gtguildraid.Models.Raid;
@@ -66,7 +65,7 @@ public class RecordFragment extends Fragment {
 
         TextView raidName = view.findViewById(R.id.raidName);
         TextView raidTerm = view.findViewById(R.id.raidTerm);
-        Spinner nSpinner = view.findViewById(R.id.nickname);
+        NiceSpinner nSpinner = view.findViewById(R.id.nickname);
 
         raid = database.raidDao().getCurrentRaid(new Date());
         members = database.memberDao().getCurrentMembers();
@@ -82,42 +81,38 @@ public class RecordFragment extends Fragment {
             memberId.add(m.getID());
         }
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                getContext(), android.R.layout.simple_spinner_item, memberSpinner);
-
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        viewPager = view.findViewById(R.id.view_pager);
+        viewPager = view.findViewById(R.id.viewpager);
         tabLayout = view.findViewById(R.id.tabs);
         adjustSwitch = view.findViewById(R.id.adjustSwitch);
         isAdjustMode = adjustSwitch.isChecked();
 
-        nSpinner.setAdapter(adapter);
+        nSpinner.attachDataSource(memberSpinner);
+        if(memberSpinner.size() == 1){
+            nSpinner.setText(memberSpinner.get(0));
+        }
 
         vAdapter = new ViewPagerAdapter(getChildFragmentManager(), getLifecycle());
-        nSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        nSpinner.setOnSpinnerItemSelectedListener(new OnSpinnerItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (sMemberIdx != i) {
+            public void onItemSelected(NiceSpinner parent, View view, int position, long id) {
+                if (sMemberIdx != position) {
                     Log.d("setViewPager", "nSpinner");
-                    sMemberIdx = i;
+                    sMemberIdx = position;
                     setViewPager(isAdjustMode, getIntegerFromToday() + 1);
                 }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
             }
         });
 
         setViewPager(isAdjustMode, getIntegerFromToday() + 1);
 
-        new TabLayoutMediator(tabLayout, viewPager, true, true, (tab, position) -> {
+        new TabLayoutMediator(tabLayout, viewPager, true, (tab, position) -> {
             if (position != 0)
                 tab.setText("Day " + position + "\n" + getRaidDate(position - 1));
             else
                 tab.setText("전체 기록");
         }).attach();
+
+        viewPager.setUserInputEnabled(false);
 
         LinearLayout tabStrip = ((LinearLayout)tabLayout.getChildAt(0));
         for(int i=getIntegerFromToday()+2; i<VIEWPAGER_NUM; i++){
@@ -129,13 +124,6 @@ public class RecordFragment extends Fragment {
                 }
             });
         }
-
-        tabStrip.getChildAt(2).setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return true;
-            }
-        });
 
         adjustSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override

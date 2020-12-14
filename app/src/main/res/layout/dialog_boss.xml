@@ -77,7 +77,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:max="20"
-                android:min="0"
                 android:progress="10" />
 
         </LinearLayout>

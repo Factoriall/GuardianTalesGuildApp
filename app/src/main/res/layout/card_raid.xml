@@ -136,7 +136,6 @@
                 android:layout_marginEnd="80dp"
                 android:layout_marginRight="80dp"
                 android:max="20"
-                android:min="0"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -204,7 +203,6 @@
                 android:layout_marginEnd="80dp"
                 android:layout_marginRight="80dp"
                 android:max="20"
-                android:min="0"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -273,7 +271,6 @@
                 android:layout_marginEnd="80dp"
                 android:layout_marginRight="80dp"
                 android:max="20"
-                android:min="0"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -341,7 +338,6 @@
                 android:layout_marginEnd="80dp"
                 android:layout_marginRight="80dp"
                 android:max="20"
-                android:min="0"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

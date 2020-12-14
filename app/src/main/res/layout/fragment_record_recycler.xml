@@ -10,7 +10,7 @@
         android:id="@+id/TotalDamageCard"
         android:layout_width="match_parent"
         android:layout_height="70dp"
-        android:background="#45403A"
+        android:background="#6A5A46"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

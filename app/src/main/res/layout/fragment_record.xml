@@ -5,24 +5,73 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:background="#2D2F34">
+    android:background="#2D2F34">
 
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardView"
+        android:id="@+id/raidCard"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="55dp"
         app:cardBackgroundColor="#45403A"
         app:cardCornerRadius="0dp"
-        app:layout_constraintEnd_toStartOf="@+id/switchCard"
+        app:layout_constraintEnd_toEndOf="@+id/switchCard"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="4dp">
+            android:layout_margin="4dp"
+            app:cardCornerRadius="0dp">
 
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/raid_icon"
+                    android:layout_width="100dp"
+                    android:layout_height="match_parent"
+                    android:background="#D8B38E"
+                    android:padding="10dp"
+                    android:src="@drawable/icon_raid" />
+
+                <TextView
+                    android:id="@+id/raidName"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#2D2F34"
+                    android:gravity="center"
+                    android:text="길드 레이드"
+                    android:textColor="#FFFFFF"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/termCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardBackgroundColor="#45403A"
+        app:cardCornerRadius="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/raidCard">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:layout_marginBottom="4dp"
+            app:cardCornerRadius="0dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -31,52 +80,21 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:id="@+id/raid_icon"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:background="#D8B38E"
-                        android:src="@drawable/icon_raid" />
-
-                    <TextView
-                        android:id="@+id/raidName"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="3"
-                        android:background="#2D2F34"
-                        android:gravity="center"
-                        android:text="길드레이드 이름"
-                        android:textColor="#FFFFFF"
-                        android:textStyle="bold" />
-
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
+                    android:layout_height="22dp"
                     android:orientation="horizontal">
 
                     <ImageView
                         android:id="@+id/imageView3"
-                        android:layout_width="0dp"
+                        android:layout_width="100dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
                         android:background="#D8B38E"
                         app:srcCompat="@drawable/icon_time"
                         tools:ignore="VectorDrawableCompat" />
 
                     <TextView
                         android:id="@+id/raidTerm"
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_weight="3"
                         android:background="#2D2F34"
                         android:gravity="center"
                         android:text="기간"
@@ -84,24 +102,25 @@
                         android:textStyle="bold" />
                 </LinearLayout>
             </LinearLayout>
-
         </androidx.cardview.widget.CardView>
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/my_card"
-        android:layout_width="match_parent"
+        android:id="@+id/membersCard"
+        android:layout_width="0dp"
         android:layout_height="60dp"
-        app:cardBackgroundColor="#000000"
+        app:cardBackgroundColor="#45403A"
         app:cardCornerRadius="0dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/switchCard"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardView">
+        app:layout_constraintTop_toBottomOf="@id/termCard">
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="4dp">
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:layout_marginBottom="4dp">
 
 
             <LinearLayout
@@ -117,24 +136,20 @@
 
                     <ImageView
                         android:id="@+id/people_icon"
-                        android:layout_width="0dp"
+                        android:layout_width="100dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:background="#95DEFF"
+                        android:background="#D8B38E"
+                        android:padding="10dp"
                         android:src="@drawable/icon_profile" />
 
-                    <Spinner
+                    <org.angmarch.views.NiceSpinner
                         android:id="@+id/nickname"
-                        style="@style/Widget.AppCompat.Spinner"
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="match_parent"
 
-                        android:layout_weight="3"
-                        android:background="@drawable/bg_spinner"
                         android:dropDownWidth="300dp"
                         android:gravity="center"
                         android:stateListAnimator="@drawable/sla_spinner"
-                        android:text="닉네임"
                         android:textColor="#FFFFFF"
                         android:textSize="20sp"
                         android:textStyle="bold" />
@@ -152,13 +167,18 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/my_card"
-        app:tabMode="scrollable" />
+        app:layout_constraintTop_toBottomOf="@+id/membersCard"
+        app:tabBackground="@drawable/tab_color_selector"
+        app:tabIndicatorHeight="0dp"
+        app:tabMode="scrollable"
+        app:tabSelectedTextColor="#D8B38E"
+        app:tabTextColor="#FFFFFF" />
 
     <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/view_pager"
+        android:id="@+id/viewpager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:background="#2D2F34"
         android:saveEnabled="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -171,16 +191,17 @@
         android:id="@+id/switchCard"
         android:layout_width="70dp"
         android:layout_height="0dp"
-        app:cardCornerRadius="0dp"
         app:cardBackgroundColor="#45403A"
-        app:layout_constraintBottom_toTopOf="@+id/my_card"
+        app:cardCornerRadius="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/tabs"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/termCard">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="5dp"
+            android:layout_marginRight="4dp"
+            android:layout_marginBottom="4dp"
             android:orientation="vertical">
 
             <TextView
@@ -195,7 +216,7 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:background="#2D2F34">
 
                 <Switch
