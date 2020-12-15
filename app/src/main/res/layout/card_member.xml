@@ -3,14 +3,14 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="4dp"
+    android:layout_margin="5dp"
     card_view:cardBackgroundColor="#D8B38E"
     card_view:cardCornerRadius="4dp">
 
-    <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="4dp"
+        android:layout_margin="5dp"
         card_view:cardBackgroundColor="#2d2f34"
         card_view:cardCornerRadius="4dp">
 
@@ -30,9 +30,9 @@
                     android:id="@+id/nickname"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
                     android:layout_weight="2"
                     android:text="닉네임"
-                    android:layout_margin="5dp"
                     android:textColor="#D8B38E"
                     android:textSize="20sp"
                     android:textStyle="bold" />
@@ -41,11 +41,11 @@
                     android:id="@+id/remark"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:layout_margin="3dp"
-                    android:textColor="#D8B38E"
+                    android:layout_weight="1"
                     android:gravity="right"
-                    android:text="TextView" />
+                    android:text="TextView"
+                    android:textColor="#D8B38E" />
             </LinearLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>

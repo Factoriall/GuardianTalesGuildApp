@@ -25,17 +25,20 @@ import org.angmarch.views.OnSpinnerItemSelectedListener;
 import org.techtown.gtguildraid.Adapters.ViewPagerAdapter;
 import org.techtown.gtguildraid.Models.GuildMember;
 import org.techtown.gtguildraid.Models.Raid;
+import org.techtown.gtguildraid.Models.Record;
 import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.Utils.RoomDB;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 public class RecordFragment extends Fragment {
     final int VIEWPAGER_NUM = 15;
+    final int MAX_RECORDS = 3;
     final private String dateFormat = "yyyy-MM-dd";
 
     RoomDB database;
@@ -43,14 +46,48 @@ public class RecordFragment extends Fragment {
     ViewPager2 viewPager;
     ViewPagerAdapter vAdapter;
     Switch adjustSwitch;
+    NiceSpinner memberSpinner;
 
     Raid raid;
     List<GuildMember> members;
-    List<String> memberSpinner = new ArrayList<>();
-    List<Integer> memberId = new ArrayList<>();
-
+    
     private Boolean isAdjustMode = true;
     private int sMemberIdx = 0;
+
+    private class Member implements Comparable<Member>{
+        private String name;
+        private int id;
+        private int todayRemain;
+
+        Member(String name, int id, int todayRemain){
+            this.name = name;
+            this.id = id;
+            this.todayRemain = todayRemain;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public int getTodayRemain() {
+            return todayRemain;
+        }
+
+        public void setTodayRemain(int todayRemain) {
+            this.todayRemain = todayRemain;
+        }
+
+        @Override
+        public int compareTo(Member member) {
+            return member.getTodayRemain() - todayRemain;
+        }
+    }
+
+    List<Member> memberList = new ArrayList<>();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -61,12 +98,15 @@ public class RecordFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_record, container, false);
-        database = RoomDB.getInstance(getActivity());
-
         TextView raidName = view.findViewById(R.id.raidName);
         TextView raidTerm = view.findViewById(R.id.raidTerm);
-        NiceSpinner nSpinner = view.findViewById(R.id.nickname);
+        memberSpinner = view.findViewById(R.id.nickname);
+        viewPager = view.findViewById(R.id.viewpager);
+        tabLayout = view.findViewById(R.id.tabs);
+        adjustSwitch = view.findViewById(R.id.adjustSwitch);
+        isAdjustMode = adjustSwitch.isChecked();
 
+        database = RoomDB.getInstance(getActivity());
         raid = database.raidDao().getCurrentRaid(new Date());
         members = database.memberDao().getCurrentMembers();
 
@@ -74,29 +114,14 @@ public class RecordFragment extends Fragment {
         raidTerm.setText((new SimpleDateFormat(dateFormat).format(raid.getStartDay()) + "~" +
                 new SimpleDateFormat(dateFormat).format(raid.getEndDay())));
 
-        memberSpinner.clear();
-        memberId.clear();
-        for (GuildMember m : members) {
-            memberSpinner.add(m.getName());
-            memberId.add(m.getID());
-        }
-
-        viewPager = view.findViewById(R.id.viewpager);
-        tabLayout = view.findViewById(R.id.tabs);
-        adjustSwitch = view.findViewById(R.id.adjustSwitch);
-        isAdjustMode = adjustSwitch.isChecked();
-
-        nSpinner.attachDataSource(memberSpinner);
-        if(memberSpinner.size() == 1){
-            nSpinner.setText(memberSpinner.get(0));
-        }
+        setMemberSpinner();
 
         vAdapter = new ViewPagerAdapter(getChildFragmentManager(), getLifecycle());
-        nSpinner.setOnSpinnerItemSelectedListener(new OnSpinnerItemSelectedListener() {
+        memberSpinner.setOnSpinnerItemSelectedListener(new OnSpinnerItemSelectedListener() {
             @Override
             public void onItemSelected(NiceSpinner parent, View view, int position, long id) {
                 if (sMemberIdx != position) {
-                    Log.d("setViewPager", "nSpinner");
+                    refreshSpinnerItem(sMemberIdx);//spinner
                     sMemberIdx = position;
                     setViewPager(isAdjustMode, getIntegerFromToday() + 1);
                 }
@@ -137,8 +162,45 @@ public class RecordFragment extends Fragment {
         return view;
     }
 
+    private void setMemberSpinner() {
+        memberList.clear();
+        for (GuildMember m : members) {
+            memberList.add(new Member(m.getName(), m.getID(),
+                    getRemainedRecord(m.getID(), raid.getRaidId())));
+        }
+
+        attachSpinnerAdapter();
+    }
+
+    private void refreshSpinnerItem(int rIdx) {
+        Member rMember = memberList.get(rIdx);
+        rMember.setTodayRemain(getRemainedRecord(database.memberDao()
+                .getMember(rMember.getId()).getID(), raid.getRaidId()));
+        memberList.set(rIdx, rMember);
+
+        attachSpinnerAdapter();
+    }
+
+    private void attachSpinnerAdapter(){
+        Collections.sort(memberList);
+
+        List<String> memberNameList = new ArrayList<>();
+        for(Member m : memberList){
+            memberNameList.add(m.getName() + " - " + m.getTodayRemain());
+        }
+
+        memberSpinner.attachDataSource(memberNameList);
+
+        if(memberNameList.size() == 1){
+            memberSpinner.setText(memberNameList.get(0));
+        }
+    }
+
     private void setViewPager(Boolean isChecked, int day) {
-        vAdapter.setData(memberId.get(sMemberIdx), raid.getRaidId(), isChecked);
+        if(sMemberIdx < memberList.size())
+            vAdapter.setData(memberList.get(sMemberIdx).getId(), raid.getRaidId(), isChecked);
+        else
+            vAdapter.setData(memberList.get(0).getId(), raid.getRaidId(), isChecked);
         viewPager.setAdapter(vAdapter);
         viewPager.setCurrentItem(day, false);
     }
@@ -152,6 +214,13 @@ public class RecordFragment extends Fragment {
         if (differentDays < 0)
             return -1;
         return differentDays;
+    }
+
+    private int getRemainedRecord(int id, int raidId) {
+        List<Record> recordList = database.recordDao()
+                .getCertainDayRecords(id, raidId, getIntegerFromToday() + 1);
+
+        return MAX_RECORDS - recordList.size();
     }
 
     private String getRaidDate(int position) {

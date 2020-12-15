@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#2D2F34">
+    android:orientation="vertical">
 
 
     <androidx.cardview.widget.CardView
@@ -21,7 +20,7 @@
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="4dp"
+            android:layout_margin="5dp"
             app:cardCornerRadius="0dp">
 
 
@@ -43,7 +42,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="#2D2F34"
-                    android:gravity="center"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="20dp"
                     android:text="길드 레이드"
                     android:textColor="#FFFFFF"
                     android:textSize="20sp"
@@ -58,7 +58,7 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/termCard"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         app:cardBackgroundColor="#45403A"
         app:cardCornerRadius="0dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -67,10 +67,10 @@
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="4dp"
-            android:layout_marginBottom="4dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp"
             app:cardCornerRadius="0dp">
 
             <LinearLayout
@@ -80,7 +80,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="22dp"
+                    android:layout_height="match_parent"
                     android:orientation="horizontal">
 
                     <ImageView
@@ -88,6 +88,7 @@
                         android:layout_width="100dp"
                         android:layout_height="match_parent"
                         android:background="#D8B38E"
+                        android:padding="3dp"
                         app:srcCompat="@drawable/icon_time"
                         tools:ignore="VectorDrawableCompat" />
 
@@ -96,9 +97,11 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="#2D2F34"
-                        android:gravity="center"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="20dp"
                         android:text="기간"
                         android:textColor="#FFFFFF"
+                        android:textSize="18sp"
                         android:textStyle="bold" />
                 </LinearLayout>
             </LinearLayout>
@@ -118,9 +121,9 @@
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="4dp"
-            android:layout_marginBottom="4dp">
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp">
 
 
             <LinearLayout
@@ -149,10 +152,12 @@
 
                         android:dropDownWidth="300dp"
                         android:gravity="center"
-                        android:stateListAnimator="@drawable/sla_spinner"
-                        android:textColor="#FFFFFF"
                         android:textSize="20sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        app:arrowTint="#FFFFFF"
+                        app:backgroundSelector="@drawable/bg_spinner"
+                        app:popupTextAlignment="start"
+                        app:textTint="#FFFFFF" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -160,32 +165,6 @@
 
 
     </androidx.cardview.widget.CardView>
-
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tabs"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/membersCard"
-        app:tabBackground="@drawable/tab_color_selector"
-        app:tabIndicatorHeight="0dp"
-        app:tabMode="scrollable"
-        app:tabSelectedTextColor="#D8B38E"
-        app:tabTextColor="#FFFFFF" />
-
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/viewpager"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="#2D2F34"
-        android:saveEnabled="false"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tabs">
-
-    </androidx.viewpager2.widget.ViewPager2>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/switchCard"
@@ -200,8 +179,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginRight="4dp"
-            android:layout_marginBottom="4dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp"
             android:orientation="vertical">
 
             <TextView
@@ -237,5 +216,30 @@
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/membersCard"
+        app:tabBackground="@drawable/tab_color_selector"
+        app:tabIndicatorHeight="0dp"
+        app:tabMode="scrollable"
+        app:tabSelectedTextColor="#D8B38E"
+        app:tabTextColor="#FFFFFF" />
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:saveEnabled="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tabs">
+
+    </androidx.viewpager2.widget.ViewPager2>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

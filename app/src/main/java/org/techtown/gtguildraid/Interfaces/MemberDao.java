@@ -29,6 +29,9 @@ public interface MemberDao {
     @Query("UPDATE member SET isResigned = :flag WHERE ID = :sID")
     void setIsResigned(int sID, boolean flag);
 
+    @Query("SELECT * FROM member WHERE ID = :sID")
+    GuildMember getMember(int sID);
+
     @Query("SELECT * FROM member")
     List<GuildMember> getAllMembers();
 

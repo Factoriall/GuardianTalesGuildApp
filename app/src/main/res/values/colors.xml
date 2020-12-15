@@ -3,6 +3,8 @@
     <color name="colorPrimary">#6200EE</color>
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#03DAC5</color>
-    <color name="tab_background_selected">#6A5A46</color>
-    <color name="tab_background_unselected">#2D2F34</color>
+    <color name="black">#000000</color>
+    <color name="tab_background_selected">#2A315A</color>
+    <color name="tab_background_unselected">#687DB3</color>
+    <color name="spinner_bg">#2D2F34</color>
 </resources>

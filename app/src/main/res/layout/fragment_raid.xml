@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#2D2F34"
+    android:background="#2A315A"
     android:orientation="vertical">
 
     <LinearLayout
@@ -76,7 +76,7 @@
                     android:layout_width="0dp"
                     android:layout_height="60dp"
                     android:layout_weight="6"
-                    app:cardBackgroundColor="#000000"
+                    app:cardBackgroundColor="#6A5A46"
                     app:cardCornerRadius="0dp">
 
                     <androidx.cardview.widget.CardView
@@ -111,7 +111,8 @@
                                     android:layout_height="match_parent"
                                     android:layout_weight="3"
                                     android:background="#2D2F34"
-                                    android:gravity="center"
+                                    android:gravity="center_vertical"
+                                    android:paddingLeft="20dp"
                                     android:text="길드레이드 이름"
                                     android:textColor="#FFFFFF"
                                     android:textSize="20sp"
@@ -139,7 +140,8 @@
                                     android:layout_height="match_parent"
                                     android:layout_weight="3"
                                     android:background="#2D2F34"
-                                    android:gravity="center"
+                                    android:gravity="center_vertical"
+                                    android:paddingLeft="20dp"
                                     android:text="기간"
                                     android:textColor="#FFFFFF"
                                     android:textSize="16sp"
