@@ -136,6 +136,20 @@ public class StatisticMember3Fragment extends Fragment {
         List<Record> allRecords = database.recordDao().getAllRecordsWithBoss(raidId);
         List<Record> memberRecords = database.recordDao().getCertainMemberRecordsWithBoss(memberId, raidId);
 
+        setData(allRecords, memberRecords);
+    }
+
+    private void setBossData(Boss boss) {
+        int bossId = boss.getBossId();
+
+        List<Record> allRecords = database.recordDao().getAllRecordsWithOneBoss(raidId, bossId);
+        List<Record> memberRecords = database.recordDao().getMemberRecordsWithOneBoss(memberId, raidId, bossId);
+
+        setData(allRecords, memberRecords);
+    }
+
+
+    private void setData(List<Record> allRecords, List<Record> memberRecords) {
         int allDamage = getDamageFromList(allRecords, isAdjustMode);
         int memberDamage = getDamageFromList(memberRecords, isAdjustMode);
 
@@ -146,8 +160,6 @@ public class StatisticMember3Fragment extends Fragment {
         rank.setText(getRank(allRecords, memberDamage, isAdjustMode));
     }
 
-    private void setBossData(Boss boss) {
-    }
 
 
     private String getRank(List<Record> allRecords, int memberDamage, boolean isAdjustMode) {
@@ -187,6 +199,8 @@ public class StatisticMember3Fragment extends Fragment {
     }
 
     private String getPercentage(int memberDamage, int allDamage) {
+        if(allDamage == 0)
+            return "0.00";
         return String.format("%.2f", memberDamage/(double)allDamage * 100);
     }
 

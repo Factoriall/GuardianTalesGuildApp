@@ -30,6 +30,9 @@ public abstract class RecordDao {
     @Query("SELECT * FROM Record WHERE memberId = :memberId AND raidId = :raidId AND bossId = :bossId")
     public abstract List<Record> getCertainBossRecords(int memberId, int raidId, int bossId);
 
+    @Query("SELECT * FROM Record WHERE raidId = :raidId AND bossId = :bossId")
+    public abstract List<Record> getAllMemberBossRecords(int raidId, int bossId);
+
     @Query("SELECT * FROM Boss WHERE bossId = :bossId")
     public abstract Boss getBoss(int bossId);
 
@@ -69,12 +72,21 @@ public abstract class RecordDao {
         return records;
     }
 
+    public List<Record> getAllRecordsWithOneBoss(int raidId, int bossId) {
+        List<Record> records = getAllMemberBossRecords(raidId, bossId);
+        for(Record record: records){
+            Boss boss = getBoss(record.getBossId());
+            record.setBoss(boss);
+        }
+
+        return records;
+    }
+
     public List<Record> getMemberRecordsWithOneBoss(int memberId, int raidId, int bossId) {
         List<Record> records = getCertainBossRecords(memberId, raidId, bossId);
         for(Record record: records){
             Boss boss = getBoss(record.getBossId());
             record.setBoss(boss);
-            record.setLevel(record.getLevel());
         }
 
         return records;
