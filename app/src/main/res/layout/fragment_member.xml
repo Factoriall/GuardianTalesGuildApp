@@ -9,7 +9,7 @@
         android:id="@+id/myCard"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        app:cardBackgroundColor="#000000"
+        app:cardBackgroundColor="@color/info_card_out"
         app:cardCornerRadius="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -38,7 +38,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:background="#95DEFF"
+                        android:background="@color/bg_icon"
                         app:srcCompat="@drawable/icon_flag"
                         tools:ignore="VectorDrawableCompat" />
 
@@ -47,7 +47,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="3"
-                        android:background="#222C63"
+                        android:background="@color/bg_text"
                         android:gravity="center"
                         android:text="길드 이름"
                         android:textColor="#FFFFFF"
@@ -66,7 +66,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:background="#95DEFF"
+                        android:background="@color/bg_icon"
                         app:srcCompat="@drawable/icon_profile"
                         tools:ignore="VectorDrawableCompat" />
 
@@ -75,7 +75,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="3"
-                        android:background="#222C63"
+                        android:background="@color/bg_text"
                         android:gravity="center"
                         android:text="닉네임"
                         android:textColor="#FFFFFF"

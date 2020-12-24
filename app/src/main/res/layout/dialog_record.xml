@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:layout_margin="8dp">
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/textView10"
@@ -57,7 +56,9 @@
                 android:layout_height="50dp"
                 android:background="@android:drawable/editbox_background"
                 android:ems="10"
-                android:inputType="number" />
+                android:imeOptions="actionNext"
+                android:inputType="number"
+                android:maxLength="3" />
         </LinearLayout>
 
     </LinearLayout>
@@ -82,10 +83,13 @@
             android:digits="0123456789,-"
             android:gravity="top"
             android:hint="데미지"
+            android:imeOptions="actionDone"
             android:inputType="number"
+            android:maxLength="10"
             android:padding="12dp" />
     </LinearLayout>
 
+    <!--
     <TextView
         android:id="@+id/textView11"
         android:layout_width="match_parent"
@@ -205,6 +209,7 @@
 
 
     </LinearLayout>
+    -->
 
     <LinearLayout
         android:layout_width="match_parent"

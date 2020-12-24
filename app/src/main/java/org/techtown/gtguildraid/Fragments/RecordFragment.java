@@ -2,7 +2,6 @@ package org.techtown.gtguildraid.Fragments;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -37,8 +36,9 @@ import java.util.Date;
 import java.util.List;
 
 public class RecordFragment extends Fragment {
-    final int VIEWPAGER_NUM = 15;
+    final int VIEWPAGER_NUM = 14;
     final int MAX_RECORDS = 3;
+    final int DAY_IN_SECONDS = 1000 * 3600 * 24;
     final private String dateFormat = "yyyy-MM-dd";
 
     RoomDB database;
@@ -50,16 +50,16 @@ public class RecordFragment extends Fragment {
 
     Raid raid;
     List<GuildMember> members;
-    
+
     private Boolean isAdjustMode = true;
     private int sMemberIdx = 0;
 
-    private class Member implements Comparable<Member>{
+    private class MemberForSpinner implements Comparable<MemberForSpinner>{
         private String name;
         private int id;
         private int todayRemain;
 
-        Member(String name, int id, int todayRemain){
+        public MemberForSpinner(String name, int id, int todayRemain){
             this.name = name;
             this.id = id;
             this.todayRemain = todayRemain;
@@ -82,12 +82,13 @@ public class RecordFragment extends Fragment {
         }
 
         @Override
-        public int compareTo(Member member) {
+        public int compareTo(MemberForSpinner member) {
             return member.getTodayRemain() - todayRemain;
         }
     }
 
-    List<Member> memberList = new ArrayList<>();
+
+    List<MemberForSpinner> memberList = new ArrayList<>();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -98,6 +99,7 @@ public class RecordFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_record, container, false);
+
         TextView raidName = view.findViewById(R.id.raidName);
         TextView raidTerm = view.findViewById(R.id.raidTerm);
         memberSpinner = view.findViewById(R.id.nickname);
@@ -121,26 +123,23 @@ public class RecordFragment extends Fragment {
             @Override
             public void onItemSelected(NiceSpinner parent, View view, int position, long id) {
                 if (sMemberIdx != position) {
-                    refreshSpinnerItem(sMemberIdx);//spinner
+                    //refreshSpinnerItem(sMemberIdx);//spinner
                     sMemberIdx = position;
-                    setViewPager(isAdjustMode, getIntegerFromToday() + 1);
+                    setViewPager(isAdjustMode, getIntegerFromToday());
                 }
             }
         });
 
-        setViewPager(isAdjustMode, getIntegerFromToday() + 1);
+        setViewPager(isAdjustMode, getIntegerFromToday());
 
         new TabLayoutMediator(tabLayout, viewPager, true, (tab, position) -> {
-            if (position != 0)
-                tab.setText("Day " + position + "\n" + getRaidDate(position - 1));
-            else
-                tab.setText("전체 기록");
+            tab.setText("Day " + (position + 1) + "\n" + getRaidDate(position));
         }).attach();
 
         viewPager.setUserInputEnabled(false);
 
         LinearLayout tabStrip = ((LinearLayout)tabLayout.getChildAt(0));
-        for(int i=getIntegerFromToday()+2; i<VIEWPAGER_NUM; i++){
+        for(int i=getIntegerFromToday()+1; i<VIEWPAGER_NUM; i++){
             tabStrip.getChildAt(i).setBackgroundColor(Color.GRAY);
             tabStrip.getChildAt(i).setOnTouchListener(new View.OnTouchListener() {
                 @Override
@@ -155,7 +154,6 @@ public class RecordFragment extends Fragment {
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 isAdjustMode = isChecked;
                 setViewPager(isChecked, tabLayout.getSelectedTabPosition());
-                Log.d("setViewPager", "adjust");
             }
         });
 
@@ -165,27 +163,27 @@ public class RecordFragment extends Fragment {
     private void setMemberSpinner() {
         memberList.clear();
         for (GuildMember m : members) {
-            memberList.add(new Member(m.getName(), m.getID(),
+            memberList.add(new MemberForSpinner(m.getName(), m.getID(),
                     getRemainedRecord(m.getID(), raid.getRaidId())));
         }
 
-        attachSpinnerAdapter();
+        attachDataToSpinner();
     }
 
     private void refreshSpinnerItem(int rIdx) {
-        Member rMember = memberList.get(rIdx);
+        MemberForSpinner rMember = memberList.get(rIdx);
         rMember.setTodayRemain(getRemainedRecord(database.memberDao()
                 .getMember(rMember.getId()).getID(), raid.getRaidId()));
         memberList.set(rIdx, rMember);
 
-        attachSpinnerAdapter();
+        attachDataToSpinner();
     }
 
-    private void attachSpinnerAdapter(){
+    private void attachDataToSpinner(){
         Collections.sort(memberList);
 
         List<String> memberNameList = new ArrayList<>();
-        for(Member m : memberList){
+        for(MemberForSpinner m : memberList){
             memberNameList.add(m.getName() + " - " + m.getTodayRemain());
         }
 
@@ -209,7 +207,7 @@ public class RecordFragment extends Fragment {
         Date today = new Date();
         Date startDate = raid.getStartDay();
 
-        int differentDays = (int) ((today.getTime() - startDate.getTime()) / (1000 * 3600 * 24));
+        int differentDays = (int) ((today.getTime() - startDate.getTime()) / DAY_IN_SECONDS);
 
         if (differentDays < 0)
             return -1;

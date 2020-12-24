@@ -160,17 +160,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageView
-                android:id="@+id/editButton1"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginEnd="30dp"
-                android:layout_marginRight="30dp"
-                android:src="@drawable/icon_create"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -226,17 +215,6 @@
                 android:src="@drawable/boss_2"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <ImageView
-                android:id="@+id/editButton2"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginEnd="30dp"
-                android:layout_marginRight="30dp"
-                android:src="@drawable/icon_create"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -295,17 +273,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageView
-                android:id="@+id/editButton3"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginEnd="30dp"
-                android:layout_marginRight="30dp"
-                android:src="@drawable/icon_create"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -361,17 +328,6 @@
                 android:src="@drawable/boss_4"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <ImageView
-                android:id="@+id/editButton4"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginEnd="30dp"
-                android:layout_marginRight="30dp"
-                android:src="@drawable/icon_create"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

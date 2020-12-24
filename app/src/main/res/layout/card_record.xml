@@ -19,17 +19,20 @@
             android:background="@drawable/bg_record_card"
             android:orientation="horizontal">
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_height="match_parent">
 
                 <LinearLayout
                     android:id="@+id/adjustLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="5dp"
                     android:orientation="horizontal"
-                    android:visibility="visible">
+                    android:visibility="visible"
+                    card_view:layout_constraintStart_toStartOf="parent"
+                    card_view:layout_constraintTop_toTopOf="parent">
 
                     <TextView
                         android:id="@+id/multiplyText"
@@ -38,21 +41,27 @@
                         android:layout_marginLeft="5dp"
                         android:layout_marginRight="5dp"
                         android:text="x"
-                        android:textColor="#ED554A" />
+                        android:textColor="#ED554A"
+                        android:textSize="18sp" />
 
                     <TextView
                         android:id="@+id/hardness"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="1.6"
-                        android:textColor="#F15347" />
+                        android:textColor="#F15347"
+                        android:textSize="24sp" />
 
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:layout_marginStart="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:orientation="horizontal"
+                    card_view:layout_constraintBottom_toBottomOf="parent"
+                    card_view:layout_constraintStart_toStartOf="parent">
 
                     <TextView
                         android:id="@+id/damage"
@@ -61,9 +70,9 @@
                         android:layout_marginLeft="5dp"
                         android:gravity="bottom|left"
                         android:inputType="number"
-                        android:text="160,000"
+                        android:text="16,000,000"
                         android:textColor="#262649"
-                        android:textSize="24sp" />
+                        android:textSize="32sp" />
 
                     <TextView
                         android:id="@+id/textDamage"
@@ -76,7 +85,7 @@
                         android:text="데미지"
                         android:textColor="#FFFFFF" />
                 </LinearLayout>
-
+                <!--
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -120,7 +129,9 @@
                         tools:srcCompat="@tools:sample/avatars" />
 
                 </LinearLayout>
-            </LinearLayout>
+                -->
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -133,7 +144,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
-                    android:layout_marginBottom="2dp"
+                    android:layout_marginBottom="5dp"
                     android:text="광분한 미노타우로스"
                     android:textColor="#FFFFFF"
                     android:textStyle="bold"

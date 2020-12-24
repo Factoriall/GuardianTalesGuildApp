@@ -13,7 +13,7 @@ import java.io.Serializable;
 @TypeConverters(DateConverter.class)
 public class Record implements Serializable {
     @PrimaryKey(autoGenerate = true)
-    private int recordID;
+    private int recordId;
 
     private int memberId;
     private int raidId;
@@ -23,13 +23,14 @@ public class Record implements Serializable {
     private int level;
     private int damage;
 
+    @Ignore
+    public Boss boss;
+
+    /*
     private int hero1Id;
     private int hero2Id;
     private int hero3Id;
     private int hero4Id;
-
-    @Ignore
-    public Boss boss;
 
     @Ignore
     public Hero hero1;
@@ -41,7 +42,7 @@ public class Record implements Serializable {
     public Hero hero3;
 
     @Ignore
-    public Hero hero4;
+    public Hero hero4;*/
 
     public Record(int memberId, int raidId, int day) {
         this.memberId = memberId;
@@ -50,12 +51,12 @@ public class Record implements Serializable {
         this.damage = 0;
     }
 
-    public int getRecordID() {
-        return recordID;
+    public int getRecordId() {
+        return recordId;
     }
 
-    public void setRecordID(int recordID) {
-        this.recordID = recordID;
+    public void setRecordId(int recordId) {
+        this.recordId = recordId;
     }
 
     public int getMemberId() {
@@ -110,6 +111,7 @@ public class Record implements Serializable {
         this.damage = damage;
     }
 
+    /*
     public int getHero1Id() {
         return hero1Id;
     }
@@ -172,5 +174,5 @@ public class Record implements Serializable {
 
     public void setHero4(Hero hero4) {
         this.hero4 = hero4;
-    }
+    }*/
 }

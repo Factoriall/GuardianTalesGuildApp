@@ -12,13 +12,13 @@ import org.techtown.gtguildraid.R;
 
 import java.util.List;
 
-public class SpinnerAdapter extends ArrayAdapter<String> {
+public class DialogSpinnerAdapter extends ArrayAdapter<String> {
     private Context ctx;
     private List<String> contentArray;
     private List<Integer> imageArray;
 
-    public SpinnerAdapter(Context context, int resource, List<String> objects,
-                          List<Integer> imageArray) {
+    public DialogSpinnerAdapter(Context context, int resource, List<String> objects,
+                                List<Integer> imageArray) {
         super(context, resource, R.id.spinnerTextView, objects);
         this.ctx = context;
         this.contentArray = objects;

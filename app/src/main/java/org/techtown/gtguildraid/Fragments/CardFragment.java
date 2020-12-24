@@ -1,7 +1,6 @@
 package org.techtown.gtguildraid.Fragments;
 
 import android.app.Dialog;
-import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -29,10 +28,9 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import org.techtown.gtguildraid.Adapters.DialogSpinnerAdapter;
 import org.techtown.gtguildraid.Adapters.RecordAdapter;
-import org.techtown.gtguildraid.Adapters.SpinnerAdapter;
 import org.techtown.gtguildraid.Models.Boss;
-import org.techtown.gtguildraid.Models.Hero;
 import org.techtown.gtguildraid.Models.Raid;
 import org.techtown.gtguildraid.Models.Record;
 import org.techtown.gtguildraid.R;
@@ -40,7 +38,6 @@ import org.techtown.gtguildraid.Utils.RoomDB;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -52,7 +49,7 @@ public class CardFragment extends Fragment{
 
     SwipeRefreshLayout swipeRefreshLayout;
     RecyclerView recyclerView;
-    SpinnerAdapter elementAdapter;
+    DialogSpinnerAdapter elementAdapter;
     LinearLayoutManager linearLayoutManager;
     RoomDB database;
     RecordAdapter adapter;
@@ -60,10 +57,6 @@ public class CardFragment extends Fragment{
     TextView totalDamage;
     FloatingActionButton fab;
 
-    final String[] elementKoreanArray = new String[]{"화", "수", "지", "광", "암", "무"};
-    final String[] elementEnglishArray = new String[]{"fire", "water", "earth", "light", "dark", "basic"};
-
-    ArrayList<ArrayList<Integer>> heroIds;
     List<Record> recordList = new ArrayList<>();
     private int memberId;
     private int raidId;
@@ -79,7 +72,7 @@ public class CardFragment extends Fragment{
     public static CardFragment newInstance(int counter, int memberId, int raidId, boolean isChecked) {
         CardFragment fragment = new CardFragment();
         Bundle args = new Bundle();
-        args.putInt("day", counter);
+        args.putInt("day", counter + 1);
         args.putInt("memberId", memberId);
         args.putInt("raidId", raidId);
         args.putBoolean("isChecked", isChecked);
@@ -94,6 +87,7 @@ public class CardFragment extends Fragment{
 
         database = RoomDB.getInstance(getActivity());
 
+        /*
         List<Hero> heroList = database.heroDao().getAllHeroes();
         //heroId 정보 생성
         heroIds = new ArrayList<>();
@@ -111,19 +105,11 @@ public class CardFragment extends Fragment{
         }
 
         List<String> elementList = Arrays.asList(elementKoreanArray);
-        elementAdapter = new SpinnerAdapter(getContext(), R.layout.spinner_value_layout, elementList, elementImageList);
+        elementAdapter = new SpinnerAdapter(getContext(), R.layout.spinner_value_layout, elementList, elementImageList);*/
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        Log.d("onResume", "onResume");
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (getArguments() != null) {
             memberId = getArguments().getInt("memberId");
             raidId = getArguments().getInt("raidId");
@@ -132,11 +118,12 @@ public class CardFragment extends Fragment{
         }
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_record_recycler, container, false);
+        Log.d("RecordMemberInfo", database.memberDao().getMember(memberId).getName());
 
         linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView = view.findViewById(R.id.recordRecyclerView);
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
-        recordList = database.recordDao().getCertainDayRecordsWithHeroes(memberId, raidId, day);
+        recordList = database.recordDao().getCertainDayRecordsWithBoss(memberId, raidId, day);
 
         recyclerView.setLayoutManager(linearLayoutManager);
         adapter = new RecordAdapter(isChecked);
@@ -186,7 +173,7 @@ public class CardFragment extends Fragment{
 
     private void refreshList() {
         recordList.clear();
-        recordList.addAll(database.recordDao().getCertainDayRecordsWithHeroes(memberId, raidId, day));
+        recordList.addAll(database.recordDao().getCertainDayRecordsWithBoss(memberId, raidId, day));
         setTotalDamage(isChecked);
         adapter.notifyDataSetChanged();
 
@@ -223,12 +210,10 @@ public class CardFragment extends Fragment{
             bossIds.add(boss.getBossId());
         }
         final int[] selectedBossId = {0};
-        int[] selectedHeroElement = new int[4];
 
+        DialogSpinnerAdapter bossDialogSpinnerAdapter = new DialogSpinnerAdapter(getContext(), R.layout.spinner_value_layout, bossNames, bossImages);
 
-        SpinnerAdapter bossSpinnerAdapter = new SpinnerAdapter(getContext(), R.layout.spinner_value_layout, bossNames, bossImages);
-
-        bossSpinner.setAdapter(bossSpinnerAdapter);
+        bossSpinner.setAdapter(bossDialogSpinnerAdapter);
         bossSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -239,6 +224,7 @@ public class CardFragment extends Fragment{
             public void onNothingSelected(AdapterView<?> adapterView) { }
         });
 
+        /*
         //원소 및 영웅 스피너 생성
         Spinner[] elements = new Spinner[4];
         Spinner[] heroNames = new Spinner[4];
@@ -292,13 +278,14 @@ public class CardFragment extends Fragment{
                 @Override
                 public void onNothingSelected(AdapterView<?> adapterView) { }
             });
-        }
+        }*/
 
         if(isEditing){
             damage.setText(Integer.toString(record.getDamage()));
             level.setText(Integer.toString(record.getLevel()));
             String bossName = record.getBoss().getName();
 
+            /*
             Hero hero1 = record.getHero1();
             setHeroSpinner(0, hero1, elements[0]);
             Hero hero2 = record.getHero2();
@@ -306,7 +293,7 @@ public class CardFragment extends Fragment{
             Hero hero3 = record.getHero3();
             setHeroSpinner(2, hero3, elements[2]);
             Hero hero4 = record.getHero4();
-            setHeroSpinner(3, hero4, elements[3]);
+            setHeroSpinner(3, hero4, elements[3]);*/
 
             for(int i=0; i<4; i++){
                 if(bossName.equals(bossSpinner.getItemAtPosition(i).toString())) {
@@ -327,34 +314,36 @@ public class CardFragment extends Fragment{
             public void onClick(View view) {
                 String sDamage = damage.getText().toString().trim();
                 String sLevel = level.getText().toString().trim();
+                /*
                 Integer[] iHeroIds = new Integer[4];
                 for(int i=0; i<4; i++){
                     iHeroIds[i] = heroIds.get(elements[i].getSelectedItemPosition() + 1)
                             .get(heroNames[i].getSelectedItemPosition());
-                }
+                }*/
 
                 if(!sDamage.equals("") && !sLevel.equals("")) {
                     dialog.dismiss();
                     if(isEditing){//수정 중이면 업데이트
-                        database.recordDao().updateRecord(record.getRecordID(),
-                                Integer.parseInt(sDamage), selectedBossId[0], Integer.parseInt(sLevel),
-                                iHeroIds[0], iHeroIds[1], iHeroIds[2], iHeroIds[3]);
+                        database.recordDao().updateRecord(record.getRecordId(),
+                                Integer.parseInt(sDamage), selectedBossId[0], Integer.parseInt(sLevel));
                     }
                     else {//새로운 데이터 생성
                         Record record = new Record(memberId, raidId, day);
                         record.setDamage(Integer.parseInt(sDamage));
                         record.setBossId(selectedBossId[0]);
+                        /*
                         record.setHero1Id(iHeroIds[0]);
                         record.setHero2Id(iHeroIds[1]);
                         record.setHero3Id(iHeroIds[2]);
                         record.setHero4Id(iHeroIds[3]);
+                         */
                         record.setLevel(Integer.parseInt(sLevel));
 
                         //recordList 갱신
                         database.recordDao().insertRecord(record);
                     }
                     recordList.clear();
-                    recordList.addAll(database.recordDao().getCertainDayRecordsWithHeroes(memberId, raidId, day));
+                    recordList.addAll(database.recordDao().getCertainDayRecordsWithBoss(memberId, raidId, day));
 
                     setFabVisibility();
 
@@ -375,12 +364,13 @@ public class CardFragment extends Fragment{
         });
     }
 
+    /*
     private void setHeroSpinner(int idx, Hero hero, Spinner element) {
         int ele = hero.getElement();
         element.setSelection(ele - 1);
 
         selectedHeroId[idx] = hero.getHeroId();
-    }
+    }*/
 
     ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT |
             ItemTouchHelper.RIGHT) {
@@ -393,7 +383,6 @@ public class CardFragment extends Fragment{
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
             int position = viewHolder.getAdapterPosition();
             switch(direction){
-
                 case ItemTouchHelper.LEFT:
                     String deletedInfo = "Day " + recordList.get(position).getDay() + ", #" + (position + 1) + " 삭제";
                     Record selected = recordList.get(position);

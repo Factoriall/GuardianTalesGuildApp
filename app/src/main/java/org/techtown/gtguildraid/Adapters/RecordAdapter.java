@@ -1,7 +1,6 @@
 package org.techtown.gtguildraid.Adapters;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,14 +11,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.techtown.gtguildraid.Models.Hero;
 import org.techtown.gtguildraid.Models.Record;
 import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.Utils.RoomDB;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -60,7 +57,7 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder
         TextView level;
         TextView hardness;
         ImageView bossImage;
-        ImageView[] heroes;
+        //ImageView[] heroes;
         LinearLayout adjustLayout;
         TextView bossName;
         RoomDB database;
@@ -72,19 +69,20 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder
             context = itemView.getContext();
             database = RoomDB.getInstance(itemView.getContext());
 
-            heroes = new ImageView[4];
+            //heroes = new ImageView[4];
             damage = itemView.findViewById(R.id.damage);
             level = itemView.findViewById(R.id.level);
             hardness = itemView.findViewById(R.id.hardness);
             bossName = itemView.findViewById(R.id.bossName);
             bossImage = itemView.findViewById(R.id.bossImage);
             adjustLayout = itemView.findViewById(R.id.adjustLayout);
+            /*
             for (int i = 1; i <= 4; i++) {
                 int heroId = context.getResources()
                         .getIdentifier("hero" + i, "id", context.getPackageName());
 
                 heroes[i - 1] = itemView.findViewById(heroId);
-            }
+            }*/
         }
 
         public void setItem(Record record) {
@@ -104,6 +102,7 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder
                 damage.setText(NumberFormat.getNumberInstance(Locale.US).format(record.getDamage()));
             }
 
+            /*
             List<Hero> heroList = new ArrayList<>();
             heroList.add(record.getHero1());
             heroList.add(record.getHero2());
@@ -117,7 +116,7 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder
                 int imageId = context.getResources()
                         .getIdentifier("character_" + name, "drawable", context.getPackageName());
                 heroes[i].setImageResource(imageId);
-            }
+            }*/
         }
     }
 }

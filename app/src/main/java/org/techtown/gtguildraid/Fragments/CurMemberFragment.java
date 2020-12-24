@@ -116,7 +116,7 @@ public class CurMemberFragment extends Fragment {
         }
         final Dialog dialog = new Dialog(getActivity());
 
-        dialog.setContentView(R.layout.dialog_update);
+        dialog.setContentView(R.layout.dialog_member);
         int width = WindowManager.LayoutParams.MATCH_PARENT;
         int height = WindowManager.LayoutParams.WRAP_CONTENT;
         dialog.getWindow().setLayout(width, height);
@@ -162,7 +162,7 @@ public class CurMemberFragment extends Fragment {
 
         final Dialog dialog = new Dialog(getActivity());
 
-        dialog.setContentView(R.layout.dialog_update);
+        dialog.setContentView(R.layout.dialog_member);
 
         int width = WindowManager.LayoutParams.MATCH_PARENT;
         int height = WindowManager.LayoutParams.WRAP_CONTENT;

@@ -13,7 +13,6 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import org.techtown.gtguildraid.Fragments.ArchiveFragment;
 import org.techtown.gtguildraid.Fragments.MemberFragment;
 import org.techtown.gtguildraid.Fragments.RaidFragment;
 import org.techtown.gtguildraid.Fragments.RecordFragment;
@@ -27,7 +26,6 @@ public class MainActivity extends AppCompatActivity {
     MemberFragment memberFragment;
     RaidFragment raidFragment;
     RecordFragment recordFragment;
-    ArchiveFragment archiveFragment;
     StatisticFragment statisticFragment;
 
     @Override
@@ -53,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
         memberFragment = new MemberFragment();
         raidFragment = new RaidFragment();
         recordFragment = new RecordFragment();
-        archiveFragment = new ArchiveFragment();
         statisticFragment = new StatisticFragment();
 
         SharedPreferences pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
@@ -82,9 +79,6 @@ public class MainActivity extends AppCompatActivity {
                                 return false;
                             }
                             getSupportFragmentManager().beginTransaction().replace(R.id.container, recordFragment).commit();
-                            return true;
-                        case R.id.archiveTab:
-                            getSupportFragmentManager().beginTransaction().replace(R.id.container, archiveFragment).commit();
                             return true;
                         case R.id.statisticTab:
                             getSupportFragmentManager().beginTransaction().replace(R.id.container, statisticFragment).commit();

@@ -8,8 +8,9 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
+import androidx.room.migration.Migration;
+import androidx.sqlite.db.SupportSQLiteDatabase;
 
-import org.techtown.gtguildraid.Interfaces.HeroDao;
 import org.techtown.gtguildraid.Interfaces.MemberDao;
 import org.techtown.gtguildraid.Interfaces.RaidDao;
 import org.techtown.gtguildraid.Interfaces.RecordDao;
@@ -19,13 +20,28 @@ import org.techtown.gtguildraid.Models.Hero;
 import org.techtown.gtguildraid.Models.Raid;
 import org.techtown.gtguildraid.Models.Record;
 
+
+
 //Add database entities
-@Database(entities = {GuildMember.class, Boss.class, Raid.class, Hero.class, Record.class}, version = 5, exportSchema = false)
+@Database(entities = {GuildMember.class, Boss.class, Raid.class, Hero.class, Record.class}, version = 6, exportSchema = false)
 @TypeConverters(DateConverter.class)
 public abstract class RoomDB extends RoomDatabase {
     private static RoomDB database;
 
     private static String DATABASE_NAME = "database";
+
+    static final Migration MIGRATION_5_6 = new Migration(5, 6) {//hero 데이터 삭제
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            database.execSQL("CREATE TABLE Record_backup "
+                    + "(recordId INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, memberId INTEGER NOT NULL, raidId INTEGER NOT NULL, " +
+                    "day INTEGER NOT NULL, bossId INTEGER NOT NULL, level INTEGER NOT NULL, damage INTEGER NOT NULL)");
+            database.execSQL("INSERT INTO Record_backup "
+            + "SELECT recordId, memberId, raidId, day, bossId, level, damage FROM Record");
+            database.execSQL("DROP TABLE Record");
+            database.execSQL("ALTER TABLE Record_backup RENAME TO Record");
+        }
+    };
 
     public synchronized static RoomDB getInstance(Context context){
         if(database == null){//initialize
@@ -33,6 +49,7 @@ public abstract class RoomDB extends RoomDatabase {
             , RoomDB.class, DATABASE_NAME)
                     .createFromAsset("database/database.db")
                     .allowMainThreadQueries()
+                    .addMigrations(MIGRATION_5_6)
                     .build();
         }
         else{
@@ -45,5 +62,5 @@ public abstract class RoomDB extends RoomDatabase {
     public abstract MemberDao memberDao();
     public abstract RaidDao raidDao();
     public abstract RecordDao recordDao();
-    public abstract HeroDao heroDao();
+    //public abstract HeroDao heroDao();
 }

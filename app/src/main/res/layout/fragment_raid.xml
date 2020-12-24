@@ -76,7 +76,7 @@
                     android:layout_width="0dp"
                     android:layout_height="60dp"
                     android:layout_weight="6"
-                    app:cardBackgroundColor="#6A5A46"
+                    app:cardBackgroundColor="@color/info_card_out"
                     app:cardCornerRadius="0dp">
 
                     <androidx.cardview.widget.CardView
@@ -101,16 +101,15 @@
                                     android:layout_width="0dp"
                                     android:layout_height="match_parent"
                                     android:layout_weight="1"
-                                    android:background="#D8B38E"
-                                    app:srcCompat="@drawable/icon_raid"
-                                    tools:ignore="VectorDrawableCompat" />
+                                    android:background="@color/bg_icon"
+                                    android:src="@drawable/icon_raid" />
 
                                 <TextView
                                     android:id="@+id/raidName"
                                     android:layout_width="0dp"
                                     android:layout_height="match_parent"
                                     android:layout_weight="3"
-                                    android:background="#2D2F34"
+                                    android:background="@color/bg_text"
                                     android:gravity="center_vertical"
                                     android:paddingLeft="20dp"
                                     android:text="길드레이드 이름"
@@ -130,7 +129,7 @@
                                     android:layout_width="0dp"
                                     android:layout_height="match_parent"
                                     android:layout_weight="1"
-                                    android:background="#D8B38E"
+                                    android:background="@color/bg_icon"
                                     app:srcCompat="@drawable/icon_time"
                                     tools:ignore="VectorDrawableCompat" />
 
@@ -139,7 +138,7 @@
                                     android:layout_width="0dp"
                                     android:layout_height="match_parent"
                                     android:layout_weight="3"
-                                    android:background="#2D2F34"
+                                    android:background="@color/bg_text"
                                     android:gravity="center_vertical"
                                     android:paddingLeft="20dp"
                                     android:text="기간"
@@ -160,7 +159,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:background="#555555"
+                    android:background="@color/info_card_out"
                     app:srcCompat="@drawable/icon_arrow_down"
                     tools:ignore="VectorDrawableCompat" />
 

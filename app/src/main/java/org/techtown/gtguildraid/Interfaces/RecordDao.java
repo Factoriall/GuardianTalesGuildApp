@@ -6,7 +6,6 @@ import androidx.room.Insert;
 import androidx.room.Query;
 
 import org.techtown.gtguildraid.Models.Boss;
-import org.techtown.gtguildraid.Models.Hero;
 import org.techtown.gtguildraid.Models.Record;
 
 import java.util.List;
@@ -16,17 +15,11 @@ public abstract class RecordDao {
     @Insert
     public abstract void insertRecord(Record record);
 
-    @Insert
-    public abstract void insertHeroList(List<Hero> heroes);
-
     @Delete
     public abstract void deleteRecord(Record record);
 
-    @Query("SELECT * FROM Record WHERE raidId = :raidId")
+    @Query("SELECT * FROM Record WHERE raidId = :raidId ORDER BY memberId")
     public abstract List<Record> getAllRecords(int raidId);
-
-    @Query("SELECT * FROM Hero WHERE heroId = :heroId")
-    public abstract Hero getHero(int heroId);
 
     @Query("SELECT * FROM Record WHERE memberId = :memberId AND raidId = :raidId")
     public abstract List<Record> getCertainMemberRecords(int memberId, int raidId);
@@ -40,13 +33,33 @@ public abstract class RecordDao {
     @Query("SELECT * FROM Boss WHERE bossId = :bossId")
     public abstract Boss getBoss(int bossId);
 
-    @Query("UPDATE Record SET damage = :damage, bossId = :bossId, level = :level," +
-            "hero1Id = :heroId1, hero2Id = :heroId2, hero3Id = :heroId3, hero4Id = :heroId4 " +
-            "WHERE recordID = :rId")
-    public abstract void updateRecord(int rId, int damage, int bossId, int level,
-                                      int heroId1, int heroId2, int heroId3, int heroId4);
+    @Query("UPDATE Record SET damage = :damage, bossId = :bossId, level = :level" +
+            " WHERE recordID = :rId")
+    public abstract void updateRecord(int rId, int damage, int bossId, int level);
 
-    public List<Record> getCertainMemberRecordsWithBoss(int memberId, int raidId) {
+    public List<Record> getCertainDayRecordsWithBoss(int memberId, int raidId, int day) {
+        List<Record> records = getCertainDayRecords(memberId, raidId, day);
+        for(Record record: records){
+            Boss boss = getBoss(record.getBossId());
+            record.setBoss(boss);
+        }
+
+        return records;
+    }
+
+
+    public List<Record> getAllRecordsWithBoss(int raidId){
+        List<Record> records = getAllRecords(raidId);
+        for(Record record: records){
+            Boss boss = getBoss(record.getBossId());
+            record.setBoss(boss);
+        }
+
+        return records;
+    }
+
+
+    public List<Record> getCertainMemberRecordsWithBoss(int memberId, int raidId){
         List<Record> records = getCertainMemberRecords(memberId, raidId);
         for(Record record: records){
             Boss boss = getBoss(record.getBossId());
@@ -56,17 +69,18 @@ public abstract class RecordDao {
         return records;
     }
 
-    public List<Record> getCertainBossRecordsWithBoss(int memberId, int raidId, int bossId) {
+    public List<Record> getMemberRecordsWithOneBoss(int memberId, int raidId, int bossId) {
         List<Record> records = getCertainBossRecords(memberId, raidId, bossId);
         for(Record record: records){
             Boss boss = getBoss(record.getBossId());
             record.setBoss(boss);
+            record.setLevel(record.getLevel());
         }
 
         return records;
     }
 
-    public List<Record> getCertainDayRecordsWithHeroes(int memberId, int raidId, int day){
+    /*public List<Record> getCertainDayRecordsWithHeroes(int memberId, int raidId, int day){
         List<Record> records = getCertainDayRecords(memberId, raidId, day);
         for(Record record: records){
             Boss boss = getBoss(record.getBossId());
@@ -85,5 +99,5 @@ public abstract class RecordDao {
         }
 
         return records;
-    }
+    }*/
 }

@@ -7,37 +7,41 @@
     android:layout_margin="8dp">
 
     <TextView
-        android:id="@+id/raidText"
+        android:id="@+id/textView8"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="레이드 이름:"
+        android:text="닉네임"
         android:textSize="20sp" />
 
     <EditText
-        android:id="@+id/raidName"
+        android:id="@+id/name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:drawable/editbox_background"
         android:gravity="top"
-        android:hint="길드레이드 이름"
-        android:maxLength="20"
+        android:hint="최대 10글자"
+        android:imeOptions="actionDone"
+        android:maxLength="10"
         android:padding="12dp" />
 
     <TextView
-        android:id="@+id/bossText"
+        android:id="@+id/textView9"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="시작 날짜:"
+        android:layout_marginTop="20dp"
+        android:text="참고사항"
         android:textSize="20sp" />
 
     <EditText
-        android:id="@+id/startDate"
+        android:id="@+id/remark"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:drawable/editbox_background"
-        android:focusable="false"
         android:gravity="top"
+        android:hint="최대 20글자"
+        android:imeOptions="actionDone"
+        android:lines="2"
+        android:maxLength="20"
         android:padding="12dp" />
 
     <Button
