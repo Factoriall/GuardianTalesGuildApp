@@ -1,5 +1,6 @@
 package org.techtown.gtguildraid.Fragments;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,6 +13,16 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.IFillFormatter;
+import com.github.mikephil.charting.formatter.ValueFormatter;
+import com.github.mikephil.charting.interfaces.dataprovider.LineDataProvider;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
 import org.techtown.gtguildraid.Models.Boss;
 import org.techtown.gtguildraid.Models.Record;
@@ -21,6 +32,7 @@ import org.techtown.gtguildraid.Utils.RoomDB;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -30,13 +42,15 @@ public class StatisticMember3Fragment extends Fragment {
     final int BOSS_2 = 2;
     final int BOSS_3 = 3;
     final int BOSS_4 = 4;
+    final int DAY_IN_SECONDS = 1000 * 3600 * 24;
+    final int MAX_DURATION = 14;
 
     RoomDB database;
     TextView damage;
     TextView contribution;
     TextView hitNum;
     TextView rank;
-    LineChart dpsChart;
+    LineChartClass dpsChart;
 
     int memberId;
     int raidId;
@@ -48,8 +62,8 @@ public class StatisticMember3Fragment extends Fragment {
         int totalDamage;
 
         MemberTotalDamage(int memberId, int totalDamage){
-            memberId = this.memberId;
-            totalDamage = this.totalDamage;
+            this.memberId = memberId;
+            this.totalDamage = totalDamage;
         }
 
         public int getMemberId() {
@@ -71,6 +85,147 @@ public class StatisticMember3Fragment extends Fragment {
         @Override
         public int compareTo(MemberTotalDamage m){
             return m.getTotalDamage() - totalDamage;
+        }
+    }
+
+    class LineChartClass {
+        LineChart chart;
+        int xAxisNum;
+
+        LineChartClass(View viewById, int xAxisNum) {
+            this.chart = (LineChart) viewById;
+            this.xAxisNum = xAxisNum;
+        }
+
+        public void setLineChartUi(List<Record> records, boolean isAdjustMode) {
+            // background color
+            chart.setBackgroundColor(Color.WHITE);
+
+            // disable description text
+            chart.getDescription().setEnabled(false);
+
+            // enable touch gestures
+            chart.setTouchEnabled(true);
+
+            // set listeners
+            chart.setDrawGridBackground(false);
+
+            // enable scaling and dragging
+            chart.setDragEnabled(true);
+            chart.setScaleEnabled(true);
+
+            XAxis xAxis;
+            {   // // X-Axis Style // //
+                xAxis = chart.getXAxis();
+
+                xAxis.setLabelCount(xAxisNum, true);
+
+                xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+                xAxis.setGranularity(1f);
+                xAxis.setDrawGridLines(false);
+            }
+
+            YAxis yAxis;
+            {   // // Y-Axis Style // //
+                yAxis = chart.getAxisLeft();
+
+                // disable dual axis (only use LEFT axis)
+                chart.getAxisRight().setEnabled(false);
+                yAxis.setAxisMinimum(0.0f);
+            }
+
+            // get the legend (only possible after setting data)
+            Legend l = chart.getLegend();
+            l.setEnabled(false);
+
+            setLineChartData(records, isAdjustMode);
+        }
+
+        private void setLineChartData(List<Record> records, boolean isAdjustMode) {
+            ArrayList<Entry> values = new ArrayList<>();
+            for(int i=0; i<xAxisNum; i++){
+                values.add(new Entry(i, 0));
+            }
+
+            for(Record r : records) {
+                Log.d("recordInfo", Integer.toString(r.getDamage()));
+
+                Entry e = values.get(r.getDay() - 1);
+                int rawDamage = r.getDamage();
+                if(isAdjustMode) {
+                    Boss b = r.getBoss();
+                    e.setY( e.getY() + (int) (rawDamage * b.getHardness()) );
+                }
+                else
+                    e.setY( e.getY() + rawDamage );
+            }
+
+            XAxis xAxis = chart.getXAxis();
+            xAxis.setDrawLabels(true);
+            final ArrayList<String> xAxisLabel = new ArrayList<>();
+            for(int i=1; i<=xAxisNum; i++){
+                xAxisLabel.add("Day " + i);
+            }
+            xAxis.setValueFormatter(new ValueFormatter(){
+                @Override
+                public String getFormattedValue(float value) {
+                    Log.d("formattedValue", Float.toString(value));
+                    return xAxisLabel.get((int) value);
+                }
+            });
+
+            LineDataSet set1;
+
+            if (chart.getData() != null &&
+                    chart.getData().getDataSetCount() > 0) {
+                set1 = (LineDataSet) chart.getData().getDataSetByIndex(0);
+                set1.setValues(values);
+                set1.notifyDataSetChanged();
+                chart.getData().notifyDataChanged();
+                chart.notifyDataSetChanged();
+            } else {
+                // create a dataset and give it a type
+                set1 = new LineDataSet(values, "DataSet 1");
+
+                set1.setDrawIcons(false);
+
+                // black lines and points
+                set1.setColor(Color.BLACK);
+                set1.setCircleColor(Color.BLACK);
+
+                // line thickness and point size
+                set1.setLineWidth(1f);
+                set1.setCircleRadius(3f);
+
+                // draw points as solid circles
+                set1.setDrawCircleHole(false);
+
+                // customize legend entry
+                set1.setFormLineWidth(1f);
+                set1.setFormSize(15.f);
+
+                // text size of values
+                set1.setValueTextSize(9f);
+
+                set1.setDrawValues(false);
+                // set the filled area
+                set1.setDrawFilled(true);
+                set1.setFillFormatter(new IFillFormatter() {
+                    @Override
+                    public float getFillLinePosition(ILineDataSet dataSet, LineDataProvider dataProvider) {
+                        return chart.getAxisLeft().getAxisMinimum();
+                    }
+                });
+
+                ArrayList<ILineDataSet> dataSets = new ArrayList<>();
+                dataSets.add(set1); // add the data sets
+
+                // create a data object with the data sets
+                LineData data = new LineData(dataSets);
+
+                // set data
+                chart.setData(data);
+            }
         }
     }
 
@@ -98,13 +253,12 @@ public class StatisticMember3Fragment extends Fragment {
             isAdjustMode = getArguments().getBoolean("isChecked");
             position = getArguments().getInt("position");
         }
-        Log.d("isAdjustMode", Boolean.toString(isAdjustMode));
 
         damage = view.findViewById(R.id.damage);
         contribution = view.findViewById(R.id.contribution);
         hitNum = view.findViewById(R.id.hitNum);
         rank = view.findViewById(R.id.rank);
-        dpsChart = view.findViewById(R.id.dpsChart);
+        dpsChart = new LineChartClass(view.findViewById(R.id.dpsChart), getIntegerFromToday());
 
         setView(position);
 
@@ -158,9 +312,8 @@ public class StatisticMember3Fragment extends Fragment {
         hitNum.setText(Integer.toString(memberRecords.size()));
 
         rank.setText(getRank(allRecords, memberDamage, isAdjustMode));
+        dpsChart.setLineChartUi(memberRecords, isAdjustMode);
     }
-
-
 
     private String getRank(List<Record> allRecords, int memberDamage, boolean isAdjustMode) {
         if(memberDamage == 0)
@@ -217,4 +370,17 @@ public class StatisticMember3Fragment extends Fragment {
         return damage;
     }
 
+
+    private int getIntegerFromToday() {
+        Date today = new Date();
+        Date startDate = database.raidDao().getRaid(raidId).getStartDay();
+
+        int differentDays = (int) ((today.getTime() - startDate.getTime()) / DAY_IN_SECONDS);
+
+        if (differentDays < 0)
+            return -1;
+        else if(differentDays > MAX_DURATION)
+            return MAX_DURATION;
+        return differentDays;
+    }
 }
