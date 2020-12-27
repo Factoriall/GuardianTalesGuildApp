@@ -2,7 +2,6 @@ package org.techtown.gtguildraid.Fragments;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,17 +11,20 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.charts.CombinedChart;
+import com.github.mikephil.charting.charts.CombinedChart.DrawOrder;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.XAxis.XAxisPosition;
 import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.CombinedData;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.formatter.IFillFormatter;
 import com.github.mikephil.charting.formatter.ValueFormatter;
-import com.github.mikephil.charting.interfaces.dataprovider.LineDataProvider;
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
 import org.techtown.gtguildraid.Models.Boss;
 import org.techtown.gtguildraid.Models.Record;
@@ -50,7 +52,7 @@ public class StatisticMember3Fragment extends Fragment {
     TextView contribution;
     TextView hitNum;
     TextView rank;
-    LineChartClass dpsChart;
+    CombinedChartClass dpsChart;
 
     int memberId;
     int raidId;
@@ -78,79 +80,155 @@ public class StatisticMember3Fragment extends Fragment {
             return totalDamage;
         }
 
-        public void setTotalDamage(int totalDamage) {
-            this.totalDamage = totalDamage;
-        }
-
         @Override
         public int compareTo(MemberTotalDamage m){
             return m.getTotalDamage() - totalDamage;
         }
     }
 
-    class LineChartClass {
-        LineChart chart;
-        int xAxisNum;
 
-        LineChartClass(View viewById, int xAxisNum) {
-            this.chart = (LineChart) viewById;
+    class CombinedChartClass{
+        private CombinedChart chart;
+        private int xAxisNum;
+        private List<Record> memberRecords;
+        private List<Record> allRecords;
+
+        public CombinedChartClass(CombinedChart chart, int xAxisNum) {
+            this.chart = chart;
             this.xAxisNum = xAxisNum;
         }
 
-        public void setLineChartUi(List<Record> records, boolean isAdjustMode) {
-            // background color
-            chart.setBackgroundColor(Color.WHITE);
-
-            // disable description text
-            chart.getDescription().setEnabled(false);
-
-            // enable touch gestures
-            chart.setTouchEnabled(true);
-
-            // set listeners
-            chart.setDrawGridBackground(false);
-
-            // enable scaling and dragging
-            chart.setDragEnabled(true);
-            chart.setScaleEnabled(true);
-
-            XAxis xAxis;
-            {   // // X-Axis Style // //
-                xAxis = chart.getXAxis();
-
-                xAxis.setLabelCount(xAxisNum, true);
-
-                xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-                xAxis.setGranularity(1f);
-                xAxis.setDrawGridLines(false);
-            }
-
-            YAxis yAxis;
-            {   // // Y-Axis Style // //
-                yAxis = chart.getAxisLeft();
-
-                // disable dual axis (only use LEFT axis)
-                chart.getAxisRight().setEnabled(false);
-                yAxis.setAxisMinimum(0.0f);
-            }
-
-            // get the legend (only possible after setting data)
-            Legend l = chart.getLegend();
-            l.setEnabled(false);
-
-            setLineChartData(records, isAdjustMode);
+        public void setRecords(List<Record> memberRecords, List<Record> allRecords){
+            this.memberRecords = memberRecords;
+            this.allRecords = allRecords;
         }
 
-        private void setLineChartData(List<Record> records, boolean isAdjustMode) {
-            ArrayList<Entry> values = new ArrayList<>();
-            for(int i=0; i<xAxisNum; i++){
-                values.add(new Entry(i, 0));
+        public void setCombinedChartUi(){ //CombinedChart의 ui 설정
+            chart.getDescription().setEnabled(false);
+            chart.setDrawGridBackground(false);
+            chart.setDrawBarShadow(false);
+            chart.setHighlightFullBarEnabled(false);
+            chart.setExtraOffsets(0, 0, 0, 10);
+
+            // draw bars behind lines
+            chart.setDrawOrder(new DrawOrder[]{
+                    DrawOrder.BAR, DrawOrder.LINE
+            });
+
+            Legend l = chart.getLegend();
+            l.setWordWrapEnabled(true);
+            l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
+            l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
+            l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+            l.setDrawInside(false);
+            l.setTextColor(Color.WHITE);
+
+            YAxis rightAxis = chart.getAxisRight();
+            rightAxis.setDrawGridLines(false);
+            rightAxis.setTextColor(getResources().getColor(R.color.line_chart_color));
+            rightAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
+
+            YAxis leftAxis = chart.getAxisLeft();
+            leftAxis.setGridColor(getResources().getColor(R.color.bar_chart_color));
+            leftAxis.setTextColor(getResources().getColor(R.color.bar_chart_color));
+            leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
+
+            XAxis xAxis = chart.getXAxis();
+            xAxis.setGridColor(Color.WHITE);
+            xAxis.setTextColor(Color.WHITE);
+            xAxis.setPosition(XAxisPosition.BOTTOM);
+            xAxis.setAxisMinimum(0f);
+            xAxis.setGranularity(1f);
+
+            final ArrayList<String> xAxisLabel = new ArrayList<>();
+            xAxisLabel.add("");
+            for(int i=1; i<=xAxisNum; i++)
+                xAxisLabel.add("Day " + i);
+            xAxis.setValueFormatter(new ValueFormatter() {
+                @Override
+                public String getFormattedValue(float value) {
+                    return xAxisLabel.get((int) value);
+                }
+            });
+
+            CombinedData data = new CombinedData();
+
+            data.setData(generateLineData());
+            data.setData(generateBarData());
+
+            xAxis.setAxisMaximum(data.getXMax() + 0.8f);
+
+            chart.setData(data);
+            chart.invalidate();
+        }
+
+        private LineData generateLineData(){ // 기여도 그래프
+            LineData d = new LineData();
+
+            ArrayList<Entry> entries = new ArrayList<>();
+
+            int[] allArray = new int[xAxisNum];
+            int[] memberArray = new int[xAxisNum];
+
+            for(Record r : memberRecords) {
+                int rawDamage = r.getDamage();
+                if(isAdjustMode) {
+                    Boss b = r.getBoss();
+                    memberArray[r.getDay() - 1] += (int) (rawDamage * b.getHardness());
+                }
+                else
+                    memberArray[r.getDay() - 1] += (rawDamage);
             }
 
-            for(Record r : records) {
-                Log.d("recordInfo", Integer.toString(r.getDamage()));
+            for(Record r : allRecords) {
+                int rawDamage = r.getDamage();
+                if(isAdjustMode) {
+                    Boss b = r.getBoss();
+                    allArray[r.getDay() - 1] += (int) (rawDamage * b.getHardness());
+                }
+                else
+                    allArray[r.getDay() - 1] += (rawDamage);
+            }
 
-                Entry e = values.get(r.getDay() - 1);
+            for (int i = 0; i < xAxisNum; i++) {
+                if(allArray[i] == 0)
+                    entries.add(new Entry(i + 1f, 0f));
+                else
+                    entries.add(new Entry(i + 1f, memberArray[i] / (float) allArray[i] * 100));
+            }
+
+            LineDataSet set = new LineDataSet(entries, "기여도(%)");
+            set.setValueFormatter(new ValueFormatter() {
+                @Override
+                public String getFormattedValue(float value) {
+                    return String.format("%.1f", value);
+                }
+            });
+            int lineColor = getResources().getColor(R.color.line_chart_color);
+            set.setColor(lineColor);
+            set.setLineWidth(2.5f);
+            set.setCircleColor(lineColor);
+            set.setCircleRadius(5f);
+            set.setFillColor(lineColor);
+            set.setDrawValues(true);
+            set.setValueTextSize(10f);
+            set.setValueTextColor(lineColor);
+
+            set.setAxisDependency(YAxis.AxisDependency.RIGHT);
+            d.addDataSet(set);
+
+            return d;
+        }
+
+        private BarData generateBarData(){ // 최종 딜량 그래프
+            ArrayList<BarEntry> entries = new ArrayList<>();
+
+            for(int i=0; i<xAxisNum; i++){
+                entries.add(new BarEntry(i + 1f, 0));
+            }
+
+            for(Record r : memberRecords) {
+                BarEntry e = entries.get(r.getDay() - 1);
                 int rawDamage = r.getDamage();
                 if(isAdjustMode) {
                     Boss b = r.getBoss();
@@ -160,75 +238,26 @@ public class StatisticMember3Fragment extends Fragment {
                     e.setY( e.getY() + rawDamage );
             }
 
-            XAxis xAxis = chart.getXAxis();
-            xAxis.setDrawLabels(true);
-            final ArrayList<String> xAxisLabel = new ArrayList<>();
-            for(int i=1; i<=xAxisNum; i++){
-                xAxisLabel.add("Day " + i);
-            }
-            xAxis.setValueFormatter(new ValueFormatter(){
+            BarDataSet set = new BarDataSet(entries, "총 딜량");
+
+            int barColor = getResources().getColor(R.color.bar_chart_color);
+            set.setValueFormatter(new ValueFormatter() {
                 @Override
                 public String getFormattedValue(float value) {
-                    Log.d("formattedValue", Float.toString(value));
-                    return xAxisLabel.get((int) value);
+                    return "" + (int) value;
                 }
             });
+            set.setColor(barColor);
+            set.setValueTextColor(barColor);
+            set.setValueTextSize(10f);
 
-            LineDataSet set1;
+            set.setAxisDependency(YAxis.AxisDependency.LEFT);
 
-            if (chart.getData() != null &&
-                    chart.getData().getDataSetCount() > 0) {
-                set1 = (LineDataSet) chart.getData().getDataSetByIndex(0);
-                set1.setValues(values);
-                set1.notifyDataSetChanged();
-                chart.getData().notifyDataChanged();
-                chart.notifyDataSetChanged();
-            } else {
-                // create a dataset and give it a type
-                set1 = new LineDataSet(values, "DataSet 1");
-
-                set1.setDrawIcons(false);
-
-                // black lines and points
-                set1.setColor(Color.BLACK);
-                set1.setCircleColor(Color.BLACK);
-
-                // line thickness and point size
-                set1.setLineWidth(1f);
-                set1.setCircleRadius(3f);
-
-                // draw points as solid circles
-                set1.setDrawCircleHole(false);
-
-                // customize legend entry
-                set1.setFormLineWidth(1f);
-                set1.setFormSize(15.f);
-
-                // text size of values
-                set1.setValueTextSize(9f);
-
-                set1.setDrawValues(false);
-                // set the filled area
-                set1.setDrawFilled(true);
-                set1.setFillFormatter(new IFillFormatter() {
-                    @Override
-                    public float getFillLinePosition(ILineDataSet dataSet, LineDataProvider dataProvider) {
-                        return chart.getAxisLeft().getAxisMinimum();
-                    }
-                });
-
-                ArrayList<ILineDataSet> dataSets = new ArrayList<>();
-                dataSets.add(set1); // add the data sets
-
-                // create a data object with the data sets
-                LineData data = new LineData(dataSets);
-
-                // set data
-                chart.setData(data);
-            }
+            BarData data = new BarData(set);
+            data.setBarWidth(0.8f);
+            return data;
         }
     }
-
 
     public static StatisticMember3Fragment newInstance(int position, int memberId, int raidId, boolean isChecked) {
         StatisticMember3Fragment fragment = new StatisticMember3Fragment();
@@ -258,7 +287,8 @@ public class StatisticMember3Fragment extends Fragment {
         contribution = view.findViewById(R.id.contribution);
         hitNum = view.findViewById(R.id.hitNum);
         rank = view.findViewById(R.id.rank);
-        dpsChart = new LineChartClass(view.findViewById(R.id.dpsChart), getIntegerFromToday());
+
+        dpsChart = new CombinedChartClass(view.findViewById(R.id.dpsChart), getIntegerFromToday());
 
         setView(position);
 
@@ -312,7 +342,9 @@ public class StatisticMember3Fragment extends Fragment {
         hitNum.setText(Integer.toString(memberRecords.size()));
 
         rank.setText(getRank(allRecords, memberDamage, isAdjustMode));
-        dpsChart.setLineChartUi(memberRecords, isAdjustMode);
+
+        dpsChart.setRecords(memberRecords, allRecords);
+        dpsChart.setCombinedChartUi();
     }
 
     private String getRank(List<Record> allRecords, int memberDamage, boolean isAdjustMode) {

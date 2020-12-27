@@ -19,7 +19,7 @@
             <androidx.cardview.widget.CardView
                 android:id="@+id/dpsChartCard"
                 android:layout_width="match_parent"
-                android:layout_height="250dp"
+                android:layout_height="300dp"
                 android:layout_margin="5dp"
                 android:layout_marginStart="5dp"
                 android:layout_marginEnd="4dp"
@@ -47,12 +47,13 @@
                             android:text="날짜별 딜링 기록"
                             android:textColor="#FFFFFF" />
 
-                        <com.github.mikephil.charting.charts.LineChart
+                        <com.github.mikephil.charting.charts.CombinedChart
                             android:id="@+id/dpsChart"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent">
+                            android:layout_height="match_parent"
+                            android:layout_margin="10dp">
 
-                        </com.github.mikephil.charting.charts.LineChart>
+                        </com.github.mikephil.charting.charts.CombinedChart>
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 

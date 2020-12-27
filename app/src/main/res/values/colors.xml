@@ -14,4 +14,6 @@
     <color name="info_card_out">#45403A</color>
     <color name="bg_icon">#D8B38E</color>
     <color name="bg_text">#2D2F34</color>
+    <color name="bar_chart_color">#423118</color>
+    <color name="line_chart_color">#D8B38E</color>
 </resources>

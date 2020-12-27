@@ -1,7 +1,6 @@
 package org.techtown.gtguildraid.Fragments;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,10 +42,6 @@ public class StatisticMember2Fragment extends Fragment {
         return fragment;
     }
 
-    public interface MyListener {
-        public void callback(View view, String result);
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -58,8 +53,6 @@ public class StatisticMember2Fragment extends Fragment {
             raidId = getArguments().getInt("raidId");
             memberId = getArguments().getInt("memberId");
         }
-        Log.d("raidInfo3", database.raidDao().getRaid(raidId).getName());
-        Log.d("raidInfo3", database.memberDao().getMember(memberId).getName());
 
         //TabLayout 설정
         List<Boss> bossList = database.raidDao().getBossesList(raidId);
@@ -85,7 +78,6 @@ public class StatisticMember2Fragment extends Fragment {
         adapter.setData(memberId, raidId, isAdjustMode);
         viewPager.setAdapter(adapter);
 
-
         viewPager.setPageTransformer(false, new ViewPager.PageTransformer() {
             @Override
             public void transformPage(@NonNull View page, float position) {
@@ -98,7 +90,6 @@ public class StatisticMember2Fragment extends Fragment {
                         .setDuration(page.getResources().getInteger(android.R.integer.config_shortAnimTime));
             }
         });
-
 
         //adjustSwitch 설정
         adjustSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
