@@ -1,4 +1,4 @@
-package org.techtown.gtguildraid.Fragments;
+package org.techtown.gtguildraid.Etc;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -34,7 +34,7 @@ public class BossBottomSheetDialog extends BottomSheetDialogFragment {
         void onImageClicked(int imgId);
     }
 
-    BossBottomSheetDialog(Fragment fragment){
+    public BossBottomSheetDialog(Fragment fragment){
         this.mListener = (BottomSheetListener) fragment;
     }
 

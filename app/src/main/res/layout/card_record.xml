@@ -24,15 +24,33 @@
                 android:layout_height="match_parent">
 
                 <LinearLayout
+                    android:id="@+id/linearLayout4"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@color/info_card_out"
+                    android:orientation="horizontal"
+                    card_view:layout_constraintStart_toStartOf="parent"
+                    card_view:layout_constraintTop_toTopOf="parent">
+
+                    <ImageView
+                        android:id="@+id/leaderImage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="3dp"
+                        tools:srcCompat="@tools:sample/avatars" />
+                </LinearLayout>
+
+                <LinearLayout
                     android:id="@+id/adjustLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
-                    android:layout_marginTop="5dp"
                     android:orientation="horizontal"
                     android:visibility="visible"
-                    card_view:layout_constraintStart_toStartOf="parent"
-                    card_view:layout_constraintTop_toTopOf="parent">
+                    card_view:layout_constraintBottom_toTopOf="@+id/linearLayout3"
+                    card_view:layout_constraintStart_toEndOf="@+id/linearLayout4">
 
                     <TextView
                         android:id="@+id/multiplyText"
@@ -50,11 +68,12 @@
                         android:layout_height="wrap_content"
                         android:text="1.6"
                         android:textColor="#F15347"
-                        android:textSize="24sp" />
+                        android:textSize="20sp" />
 
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/linearLayout3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
@@ -72,7 +91,7 @@
                         android:inputType="number"
                         android:text="16,000,000"
                         android:textColor="#262649"
-                        android:textSize="32sp" />
+                        android:textSize="28sp" />
 
                     <TextView
                         android:id="@+id/textDamage"

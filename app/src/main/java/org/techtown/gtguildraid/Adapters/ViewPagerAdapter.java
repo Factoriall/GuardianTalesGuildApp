@@ -8,7 +8,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import org.techtown.gtguildraid.Fragments.CardFragment;
+import org.techtown.gtguildraid.Fragments.RecordCardFragment;
 
 public class ViewPagerAdapter extends FragmentStateAdapter {
     private static final int CARD_ITEM_SIZE = 14;
@@ -31,7 +31,7 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
     @Override
     public Fragment createFragment(int position) {
         Log.d("createFragment", Integer.toString(memberId));
-        return CardFragment.newInstance(position, memberId, raidId, isChecked);
+        return RecordCardFragment.newInstance(position, memberId, raidId, isChecked);
     }
 
     @Override

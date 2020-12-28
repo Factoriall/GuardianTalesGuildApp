@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.techtown.gtguildraid.Adapters.RaidAdapter;
+import org.techtown.gtguildraid.Etc.BossBottomSheetDialog;
 import org.techtown.gtguildraid.Models.Boss;
 import org.techtown.gtguildraid.Models.Raid;
 import org.techtown.gtguildraid.R;

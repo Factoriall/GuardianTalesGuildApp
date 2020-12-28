@@ -11,6 +11,7 @@ import androidx.room.TypeConverters;
 import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
+import org.techtown.gtguildraid.Interfaces.HeroDao;
 import org.techtown.gtguildraid.Interfaces.MemberDao;
 import org.techtown.gtguildraid.Interfaces.RaidDao;
 import org.techtown.gtguildraid.Interfaces.RecordDao;
@@ -23,7 +24,7 @@ import org.techtown.gtguildraid.Models.Record;
 
 
 //Add database entities
-@Database(entities = {GuildMember.class, Boss.class, Raid.class, Hero.class, Record.class}, version = 6, exportSchema = false)
+@Database(entities = {GuildMember.class, Boss.class, Raid.class, Hero.class, Record.class}, version = 7, exportSchema = false)
 @TypeConverters(DateConverter.class)
 public abstract class RoomDB extends RoomDatabase {
     private static RoomDB database;
@@ -43,6 +44,14 @@ public abstract class RoomDB extends RoomDatabase {
         }
     };
 
+    static final Migration MIGRATION_6_7 = new Migration(6, 7) {//leader만 재생성
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            database.execSQL("ALTER TABLE Record " +
+                    "ADD COLUMN leaderId INTEGER NOT NULL DEFAULT 1");
+        }
+    };
+
     public synchronized static RoomDB getInstance(Context context){
         if(database == null){//initialize
             database = Room.databaseBuilder(context.getApplicationContext()
@@ -50,6 +59,7 @@ public abstract class RoomDB extends RoomDatabase {
                     .createFromAsset("database/database.db")
                     .allowMainThreadQueries()
                     .addMigrations(MIGRATION_5_6)
+                    .addMigrations(MIGRATION_6_7)
                     .build();
         }
         else{
@@ -62,5 +72,5 @@ public abstract class RoomDB extends RoomDatabase {
     public abstract MemberDao memberDao();
     public abstract RaidDao raidDao();
     public abstract RecordDao recordDao();
-    //public abstract HeroDao heroDao();
+    public abstract HeroDao heroDao();
 }

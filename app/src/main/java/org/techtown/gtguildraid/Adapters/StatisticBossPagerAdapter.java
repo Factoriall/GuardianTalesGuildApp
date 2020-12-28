@@ -5,28 +5,27 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
-import org.techtown.gtguildraid.Fragments.StatisticMember3Fragment;
+import org.techtown.gtguildraid.Fragments.StatisticBoss2Fragment;
 
-public class StatisticMember2PagerAdapter extends FragmentStatePagerAdapter {
-    private static final int ITEM_SIZE = 5;
-    private int memberId;
+
+public class StatisticBossPagerAdapter extends FragmentStatePagerAdapter {
+    private static final int ITEM_SIZE = 4;
     private int raidId;
     private boolean isChecked;
 
-    public void setData(int memberId, int raidId, Boolean isChecked){
-        this.memberId = memberId;
+    public void setData(int raidId, boolean isChecked){
         this.raidId = raidId;
         this.isChecked = isChecked;
     }
 
-    public StatisticMember2PagerAdapter(@NonNull FragmentManager fragmentManager) {
+    public StatisticBossPagerAdapter(@NonNull FragmentManager fragmentManager) {
         super(fragmentManager, FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
     }
 
     @NonNull
     @Override
     public Fragment getItem(int position) {
-        return StatisticMember3Fragment.newInstance(position, memberId, raidId, isChecked);
+        return StatisticBoss2Fragment.newInstance(position, raidId, isChecked);
     }
 
     @Override

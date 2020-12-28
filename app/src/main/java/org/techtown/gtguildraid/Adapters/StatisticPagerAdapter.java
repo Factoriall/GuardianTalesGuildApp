@@ -6,7 +6,9 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
+import org.techtown.gtguildraid.Fragments.StatisticBoss1Fragment;
 import org.techtown.gtguildraid.Fragments.StatisticMember1Fragment;
+import org.techtown.gtguildraid.Fragments.StatisticRankFragment;
 
 public class StatisticPagerAdapter extends FragmentStateAdapter {
     private static final int ITEM_SIZE = 3;
@@ -27,12 +29,14 @@ public class StatisticPagerAdapter extends FragmentStateAdapter {
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-        if(position == MEMBER)
-            return StatisticMember1Fragment.newInstance(raidId);
-        else if(position == BOSS)
-            return null;
-        else if(position == RANK)
-            return null;
+        switch(position) {
+            case MEMBER:
+                return StatisticMember1Fragment.newInstance(raidId);
+            case BOSS:
+                return StatisticBoss1Fragment.newInstance(raidId);
+            case RANK:
+                return StatisticRankFragment.newInstance(raidId);
+        }
         return null;
     }
 

@@ -89,12 +89,11 @@
             android:padding="12dp" />
     </LinearLayout>
 
-    <!--
     <TextView
         android:id="@+id/textView11"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="영웅 정보"
+        android:text="리더 정보"
         android:textSize="30sp" />
 
     <LinearLayout
@@ -108,7 +107,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/hero1Text"
+                android:id="@+id/heroText"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center_horizontal|center_vertical"
@@ -122,13 +121,13 @@
                 android:orientation="horizontal">
 
                 <Spinner
-                    android:id="@+id/elementSpinner1"
+                    android:id="@+id/elementSpinner"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="2" />
 
                 <Spinner
-                    android:id="@+id/heroNameSpinner1"
+                    android:id="@+id/heroNameSpinner"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="3" />
@@ -137,79 +136,6 @@
 
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/subText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Sub"
-            android:textSize="20sp" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_margin="5dp"
-            android:orientation="horizontal">
-
-            <Spinner
-                android:id="@+id/elementSpinner2"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="2" />
-
-            <Spinner
-                android:id="@+id/heroNameSpinner2"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="3" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_margin="5dp"
-            android:orientation="horizontal">
-
-            <Spinner
-                android:id="@+id/elementSpinner3"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="2" />
-
-            <Spinner
-                android:id="@+id/heroNameSpinner3"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="3" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_margin="5dp"
-            android:orientation="horizontal">
-
-            <Spinner
-                android:id="@+id/elementSpinner4"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="2" />
-
-            <Spinner
-                android:id="@+id/heroNameSpinner4"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="3" />
-        </LinearLayout>
-
-
-    </LinearLayout>
-    -->
 
     <LinearLayout
         android:layout_width="match_parent"

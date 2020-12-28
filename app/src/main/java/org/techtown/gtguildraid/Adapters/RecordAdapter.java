@@ -11,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.techtown.gtguildraid.Models.Hero;
 import org.techtown.gtguildraid.Models.Record;
 import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.Utils.RoomDB;
@@ -57,7 +58,7 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder
         TextView level;
         TextView hardness;
         ImageView bossImage;
-        //ImageView[] heroes;
+        ImageView leaderImage;
         LinearLayout adjustLayout;
         TextView bossName;
         RoomDB database;
@@ -76,6 +77,7 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder
             bossName = itemView.findViewById(R.id.bossName);
             bossImage = itemView.findViewById(R.id.bossImage);
             adjustLayout = itemView.findViewById(R.id.adjustLayout);
+            leaderImage = itemView.findViewById(R.id.leaderImage);
             /*
             for (int i = 1; i <= 4; i++) {
                 int heroId = context.getResources()
@@ -101,6 +103,13 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder
                 hardness.setText(new DecimalFormat("#.#").format(record.getBoss().getHardness()));
                 damage.setText(NumberFormat.getNumberInstance(Locale.US).format(record.getDamage()));
             }
+
+            Hero leader = record.getLeader();
+            String name = leader.getEnglishName();
+            int imageId = context.getResources()
+                    .getIdentifier("character_" + name, "drawable", context.getPackageName());
+            leaderImage.setImageResource(imageId);
+
 
             /*
             List<Hero> heroList = new ArrayList<>();

@@ -288,7 +288,7 @@ public class StatisticMember3Fragment extends Fragment {
         hitNum = view.findViewById(R.id.hitNum);
         rank = view.findViewById(R.id.rank);
 
-        dpsChart = new CombinedChartClass(view.findViewById(R.id.dpsChart), getIntegerFromToday());
+        dpsChart = new CombinedChartClass(view.findViewById(R.id.dpsChart), getIntegerFromToday() + 1);
 
         setView(position);
 
@@ -317,8 +317,8 @@ public class StatisticMember3Fragment extends Fragment {
     }
 
     private void setAllData() {
-        List<Record> allRecords = database.recordDao().getAllRecordsWithBoss(raidId);
-        List<Record> memberRecords = database.recordDao().getCertainMemberRecordsWithBoss(memberId, raidId);
+        List<Record> allRecords = database.recordDao().getAllRecordsWithBossAndLeader(raidId);
+        List<Record> memberRecords = database.recordDao().getCertainMemberRecordsWithBossAndLeader(memberId, raidId);
 
         setData(allRecords, memberRecords);
     }
@@ -326,8 +326,8 @@ public class StatisticMember3Fragment extends Fragment {
     private void setBossData(Boss boss) {
         int bossId = boss.getBossId();
 
-        List<Record> allRecords = database.recordDao().getAllRecordsWithOneBoss(raidId, bossId);
-        List<Record> memberRecords = database.recordDao().getMemberRecordsWithOneBoss(memberId, raidId, bossId);
+        List<Record> allRecords = database.recordDao().getAllRecordsWithOneBossAndLeader(raidId, bossId);
+        List<Record> memberRecords = database.recordDao().getMemberRecordsWithOneBossAndLeader(memberId, raidId, bossId);
 
         setData(allRecords, memberRecords);
     }

@@ -6,6 +6,7 @@ import androidx.room.Insert;
 import androidx.room.Query;
 
 import org.techtown.gtguildraid.Models.Boss;
+import org.techtown.gtguildraid.Models.Hero;
 import org.techtown.gtguildraid.Models.Record;
 
 import java.util.List;
@@ -36,80 +37,77 @@ public abstract class RecordDao {
     @Query("SELECT * FROM Boss WHERE bossId = :bossId")
     public abstract Boss getBoss(int bossId);
 
-    @Query("UPDATE Record SET damage = :damage, bossId = :bossId, level = :level" +
-            " WHERE recordID = :rId")
-    public abstract void updateRecord(int rId, int damage, int bossId, int level);
+    @Query("SELECT * FROM Hero WHERE heroId = :heroId")
+    public abstract Hero getHero(int heroId);
 
-    public List<Record> getCertainDayRecordsWithBoss(int memberId, int raidId, int day) {
+    @Query("UPDATE Record SET damage = :damage, bossId = :bossId, level = :level, leaderId = :leaderId" +
+            " WHERE recordID = :rId")
+    public abstract void updateRecord(int rId, int damage, int bossId, int level, int leaderId);
+
+    public List<Record> getCertainDayRecordsWithBossAndLeader(int memberId, int raidId, int day) {
         List<Record> records = getCertainDayRecords(memberId, raidId, day);
         for(Record record: records){
             Boss boss = getBoss(record.getBossId());
             record.setBoss(boss);
+
+            Hero hero = getHero(record.getLeaderId());
+            record.setLeader(hero);
         }
 
         return records;
     }
 
 
-    public List<Record> getAllRecordsWithBoss(int raidId){
+    public List<Record> getAllRecordsWithBossAndLeader(int raidId){
         List<Record> records = getAllRecords(raidId);
         for(Record record: records){
             Boss boss = getBoss(record.getBossId());
             record.setBoss(boss);
+
+            Hero hero = getHero(record.getLeaderId());
+            record.setLeader(hero);
         }
 
         return records;
     }
 
 
-    public List<Record> getCertainMemberRecordsWithBoss(int memberId, int raidId){
+    public List<Record> getCertainMemberRecordsWithBossAndLeader(int memberId, int raidId){
         List<Record> records = getCertainMemberRecords(memberId, raidId);
         for(Record record: records){
             Boss boss = getBoss(record.getBossId());
             record.setBoss(boss);
+
+            Hero hero = getHero(record.getLeaderId());
+            record.setLeader(hero);
         }
 
         return records;
     }
 
-    public List<Record> getAllRecordsWithOneBoss(int raidId, int bossId) {
+    public List<Record> getAllRecordsWithOneBossAndLeader(int raidId, int bossId) {
         List<Record> records = getAllMemberBossRecords(raidId, bossId);
         for(Record record: records){
             Boss boss = getBoss(record.getBossId());
             record.setBoss(boss);
+
+            Hero hero = getHero(record.getLeaderId());
+            record.setLeader(hero);
         }
 
         return records;
     }
 
-    public List<Record> getMemberRecordsWithOneBoss(int memberId, int raidId, int bossId) {
+    public List<Record> getMemberRecordsWithOneBossAndLeader(int memberId, int raidId, int bossId) {
         List<Record> records = getCertainBossRecords(memberId, raidId, bossId);
         for(Record record: records){
             Boss boss = getBoss(record.getBossId());
             record.setBoss(boss);
+
+            Hero hero = getHero(record.getLeaderId());
+            record.setLeader(hero);
         }
 
         return records;
     }
-
-    /*public List<Record> getCertainDayRecordsWithHeroes(int memberId, int raidId, int day){
-        List<Record> records = getCertainDayRecords(memberId, raidId, day);
-        for(Record record: records){
-            Boss boss = getBoss(record.getBossId());
-            record.setBoss(boss);
-
-            Hero hero1 = getHero(record.getHero1Id());
-            Hero hero2 = getHero(record.getHero2Id());
-            Hero hero3 = getHero(record.getHero3Id());
-            Hero hero4 = getHero(record.getHero4Id());
-
-            record.setHero1(hero1);
-            record.setHero2(hero2);
-            record.setHero3(hero3);
-            record.setHero4(hero4);
-            record.setLevel(record.getLevel());
-        }
-
-        return records;
-    }*/
 }
