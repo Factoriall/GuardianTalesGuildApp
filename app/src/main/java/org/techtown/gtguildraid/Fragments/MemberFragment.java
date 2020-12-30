@@ -19,8 +19,8 @@ import org.techtown.gtguildraid.R;
 
 public class MemberFragment extends Fragment {
     ViewGroup view;
-    CurMemberFragment curMemberFragment;
-    ResMemberFragment resMemberFragment;
+    MemberCurrentFragment memberCurrentFragment;
+    MemberResignedFragment memberResignedFragment;
 
     @Nullable
     @Override
@@ -38,11 +38,11 @@ public class MemberFragment extends Fragment {
         myName.setText(nickname);
         myGuildName.setText(guildName);
 
-        curMemberFragment = new CurMemberFragment();
-        resMemberFragment = new ResMemberFragment();
+        memberCurrentFragment = new MemberCurrentFragment();
+        memberResignedFragment = new MemberResignedFragment();
 
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.add(R.id.childContainer, curMemberFragment).commit();
+        transaction.add(R.id.childContainer, memberCurrentFragment).commit();
 
         TabLayout tabs = view.findViewById(R.id.tabs);
         tabs.addTab(tabs.newTab().setText("현재 멤버"));
@@ -54,9 +54,9 @@ public class MemberFragment extends Fragment {
                 int position = tab.getPosition();
                 Fragment selected = null;
                 if(position == 0)
-                    selected = curMemberFragment;
+                    selected = memberCurrentFragment;
                 else if(position == 1)
-                    selected = resMemberFragment;
+                    selected = memberResignedFragment;
 
                 getFragmentManager().beginTransaction().replace(R.id.childContainer, selected).commit();
             }

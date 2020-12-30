@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -28,42 +27,27 @@ import org.techtown.gtguildraid.Utils.RoomDB;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CurMemberFragment extends Fragment {
+public class MemberResignedFragment extends Fragment {
     RecyclerView recyclerView;
     List<GuildMember> memberList = new ArrayList<>();
     LinearLayoutManager linearLayoutManager;
     RoomDB database;
     MemberAdapter adapter;
-    TextView currentCnt;
-    MemberFragment parentFragment;
     final int MAX_MEMBER = 29;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        ViewGroup view = (ViewGroup) inflater.inflate(R.layout.fragment_cur_member, container, false);
-
-        Button createButton = view.findViewById(R.id.createButton);
-        currentCnt = view.findViewById(R.id.currentCnt);
-        parentFragment = (MemberFragment) getParentFragment();
+        ViewGroup view = (ViewGroup) inflater.inflate(R.layout.fragment_res_member, container, false);
 
         database = RoomDB.getInstance(getActivity());
 
         linearLayoutManager = new LinearLayoutManager(getActivity());
-        recyclerView = view.findViewById(R.id.currentRecyclerView);
-        memberList = database.memberDao().getCurrentMembersWithoutMe();
-        currentCnt.setText((memberList.size() + 1) + "/30");
-
+        recyclerView = view.findViewById(R.id.resignedRecyclerView);
+        memberList = database.memberDao().getResignedMembers();
         recyclerView.setLayoutManager(linearLayoutManager);
         adapter = new MemberAdapter(getActivity(), memberList);
         recyclerView.setAdapter(adapter);
-
-        createButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                createMember();
-            }
-        });
 
         MySwipeHelper swipeHelper = new MySwipeHelper(getActivity(), recyclerView, 200) {
             @Override
@@ -77,18 +61,17 @@ public class CurMemberFragment extends Fragment {
                             @Override
                             public void onClick(int pos) {
                                 deleteMember(pos);
-                                currentCnt.setText((memberList.size() + 1) + "/30");
                             }
                         }));
                 buffer.add(new MyButton(getActivity(),
-                        "탈퇴",
+                        "복귀",
                         50,
                         0,
                         Color.parseColor("#FFFF00"),
                         new MyButtonClickListener(){
                             @Override
                             public void onClick(int pos) {
-                                resignMember(pos);
+                                recoverMember(pos);
                             }
                         }));
                 buffer.add(new MyButton(getActivity(),
@@ -106,52 +89,6 @@ public class CurMemberFragment extends Fragment {
         };
 
         return view;
-    }
-
-
-    private void createMember() {
-        if(memberList.size() == MAX_MEMBER){
-            showToast("멤버 인원이 가득찼습니다.");
-            return;
-        }
-        final Dialog dialog = new Dialog(getActivity());
-
-        dialog.setContentView(R.layout.dialog_member);
-        int width = WindowManager.LayoutParams.MATCH_PARENT;
-        int height = WindowManager.LayoutParams.WRAP_CONTENT;
-        dialog.getWindow().setLayout(width, height);
-        dialog.show();
-
-        final EditText name = dialog.findViewById(R.id.name);
-        final EditText remark = dialog.findViewById(R.id.remark);
-        Button updateButton = dialog.findViewById(R.id.updateButton);
-
-        updateButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String sName = name.getText().toString().trim();
-                String sRemark = remark.getText().toString().trim();
-                if(!sName.equals("")){
-                    dialog.dismiss();
-                    GuildMember member = new GuildMember();
-                    member.setName(sName);
-                    member.setRemark(sRemark);
-                    member.setResigned(false);
-                    member.setMe(false);
-
-                    database.memberDao().insert(member);
-
-                    memberList.clear();
-                    memberList.addAll(database.memberDao().getCurrentMembersWithoutMe());
-                    currentCnt.setText((memberList.size() + 1) + "/30");
-
-                    adapter.notifyDataSetChanged();
-                }
-                else{
-                    showToast("이름을 입력하세요");
-                }
-            }
-        });
     }
 
     private void updateMember(int pos) {
@@ -186,7 +123,7 @@ public class CurMemberFragment extends Fragment {
                 database.memberDao().update(sID, uName, uRemark);
 
                 memberList.clear();
-                memberList.addAll(database.memberDao().getCurrentMembers());
+                memberList.addAll(database.memberDao().getResignedMembers());
 
                 adapter.notifyDataSetChanged();
             }
@@ -194,17 +131,20 @@ public class CurMemberFragment extends Fragment {
         showToast("Update click");
     }
 
-    private void resignMember(int pos) {
+    private void recoverMember(int pos) {
+        int memberNum = database.memberDao().getCurrentMembersWithoutMe().size();
+        if(memberNum == MAX_MEMBER){
+            showToast("인원이 가득찼습니다!");
+            return;
+        }
+
         GuildMember m = memberList.get(pos);
-        database.memberDao().setIsResigned(m.getID(), true);
+        database.memberDao().setIsResigned(m.getID(), false);
 
         memberList.remove(pos);
 
-        currentCnt.setText((memberList.size() + 1) + "/30");
-
         adapter.notifyItemRemoved(pos);
         adapter.notifyItemRangeChanged(pos, memberList.size());
-        showToast("Resign click");
     }
 
     private void deleteMember(int pos) {

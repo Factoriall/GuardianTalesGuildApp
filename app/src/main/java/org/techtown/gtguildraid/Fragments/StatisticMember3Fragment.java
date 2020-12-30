@@ -10,6 +10,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.mikephil.charting.charts.CombinedChart;
 import com.github.mikephil.charting.charts.CombinedChart.DrawOrder;
@@ -26,7 +28,9 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 
+import org.techtown.gtguildraid.Adapters.StatisticLeaderAdapter;
 import org.techtown.gtguildraid.Models.Boss;
+import org.techtown.gtguildraid.Models.LeaderInformation;
 import org.techtown.gtguildraid.Models.Record;
 import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.Utils.RoomDB;
@@ -53,6 +57,8 @@ public class StatisticMember3Fragment extends Fragment {
     TextView hitNum;
     TextView rank;
     CombinedChartClass dpsChart;
+    RecyclerView recyclerView;
+    StatisticLeaderAdapter adapter;
 
     int memberId;
     int raidId;
@@ -86,8 +92,7 @@ public class StatisticMember3Fragment extends Fragment {
         }
     }
 
-
-    class CombinedChartClass{
+    private class CombinedChartClass{
         private CombinedChart chart;
         private int xAxisNum;
         private List<Record> memberRecords;
@@ -287,7 +292,9 @@ public class StatisticMember3Fragment extends Fragment {
         contribution = view.findViewById(R.id.contribution);
         hitNum = view.findViewById(R.id.hitNum);
         rank = view.findViewById(R.id.rank);
+        recyclerView = view.findViewById(R.id.recyclerView);
 
+        //처음 빈 공간을 위해 +1 처리
         dpsChart = new CombinedChartClass(view.findViewById(R.id.dpsChart), getIntegerFromToday() + 1);
 
         setView(position);
@@ -332,7 +339,6 @@ public class StatisticMember3Fragment extends Fragment {
         setData(allRecords, memberRecords);
     }
 
-
     private void setData(List<Record> allRecords, List<Record> memberRecords) {
         int allDamage = getDamageFromList(allRecords, isAdjustMode);
         int memberDamage = getDamageFromList(memberRecords, isAdjustMode);
@@ -340,11 +346,33 @@ public class StatisticMember3Fragment extends Fragment {
         damage.setText(NumberFormat.getNumberInstance(Locale.US).format(memberDamage));
         contribution.setText(getPercentage(memberDamage, allDamage) + "%");
         hitNum.setText(Integer.toString(memberRecords.size()));
-
         rank.setText(getRank(allRecords, memberDamage, isAdjustMode));
+        setLeaderCard(memberRecords);
 
         dpsChart.setRecords(memberRecords, allRecords);
         dpsChart.setCombinedChartUi();
+    }
+
+    private void setLeaderCard(List<Record> records) {
+        List<LeaderInformation> memberLeaderList = new ArrayList<>();
+        for(Record r : records){
+            boolean isMatched = false;
+            for(LeaderInformation info : memberLeaderList){
+                if(info.isMatched(r.getLeader())) {
+                    info.addList(r);
+                    isMatched = true;
+                    break;
+                }
+            }
+            if(!isMatched)
+                memberLeaderList.add(new LeaderInformation(r.getLeader(), r));
+        }
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setNestedScrollingEnabled(false);
+        adapter = new StatisticLeaderAdapter(memberLeaderList, isAdjustMode);
+
+        recyclerView.setAdapter(adapter);
     }
 
     private String getRank(List<Record> allRecords, int memberDamage, boolean isAdjustMode) {
