@@ -52,7 +52,7 @@ public abstract class RoomDB extends RoomDatabase {
         }
     };
 
-    static final Migration MIGRATION_7_8 = new Migration(7, 8) {//boss의 imageid를 imgName으로 교체
+    static final Migration MIGRATION_7_8 = new Migration(7, 8) {//boss의 imageId를 imgName으로 교체
         @Override
         public void migrate(SupportSQLiteDatabase database) {
             database.execSQL("CREATE TABLE Boss_backup "

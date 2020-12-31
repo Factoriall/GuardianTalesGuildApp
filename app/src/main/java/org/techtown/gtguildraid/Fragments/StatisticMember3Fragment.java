@@ -29,7 +29,7 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 
-import org.techtown.gtguildraid.Adapters.StatisticLeaderAdapter;
+import org.techtown.gtguildraid.Adapters.StatisticMemberLeaderAdapter;
 import org.techtown.gtguildraid.Models.Boss;
 import org.techtown.gtguildraid.Models.LeaderInformation;
 import org.techtown.gtguildraid.Models.Record;
@@ -60,7 +60,7 @@ public class StatisticMember3Fragment extends Fragment {
     CardView leaderCard;
     CombinedChartClass dpsChart;
     RecyclerView recyclerView;
-    StatisticLeaderAdapter adapter;
+    StatisticMemberLeaderAdapter adapter;
 
     int memberId;
     int raidId;
@@ -339,8 +339,8 @@ public class StatisticMember3Fragment extends Fragment {
 
         List<Record> allRecords = database.recordDao().getAllRecordsWithOneBossAndLeader(raidId, bossId);
         List<Record> memberRecords = database.recordDao().getMemberRecordsWithOneBossAndLeader(memberId, raidId, bossId);
-        setLeaderCard(memberRecords);
 
+        setLeaderCard(memberRecords);
         setData(allRecords, memberRecords);
     }
 
@@ -374,7 +374,7 @@ public class StatisticMember3Fragment extends Fragment {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setNestedScrollingEnabled(false);
-        adapter = new StatisticLeaderAdapter(memberLeaderList, isAdjustMode);
+        adapter = new StatisticMemberLeaderAdapter(memberLeaderList, isAdjustMode);
 
         recyclerView.setAdapter(adapter);
     }

@@ -19,11 +19,11 @@ import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
 
-public class StatisticLeaderAdapter extends RecyclerView.Adapter<StatisticLeaderAdapter.ViewHolder>{
+public class StatisticMemberLeaderAdapter extends RecyclerView.Adapter<StatisticMemberLeaderAdapter.ViewHolder>{
     private List<LeaderInformation> leaderList;
     private boolean isAdjustMode;
 
-    public StatisticLeaderAdapter(List<LeaderInformation> records, boolean isAdjustMode){
+    public StatisticMemberLeaderAdapter(List<LeaderInformation> records, boolean isAdjustMode){
         this.leaderList = records;
         this.isAdjustMode = isAdjustMode;
     }
@@ -32,7 +32,7 @@ public class StatisticLeaderAdapter extends RecyclerView.Adapter<StatisticLeader
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.card_stat_leader, parent, false);
+                .inflate(R.layout.card_stat_member_leader, parent, false);
 
         return new ViewHolder(view);
     }
