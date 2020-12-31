@@ -55,11 +55,7 @@ public class RaidFragment extends Fragment implements BossBottomSheetDialog.Bott
     RecyclerView recyclerView;
     RaidAdapter adapter;
 
-    TextView[] bossNameList;
-    TextView[] bossHardnessList;
-    ProgressBar[] bossBarList;
     ImageView[] bossBtnList;
-    ImageView[] bossImageList;
     LinearLayout bossInfo;
 
     Date today;
@@ -107,15 +103,10 @@ public class RaidFragment extends Fragment implements BossBottomSheetDialog.Bott
             }
         });
 
-        bossNameList = new TextView[4];
-        bossHardnessList = new TextView[4];
-        bossBarList = new ProgressBar[4];
         bossBtnList = new ImageView[4];
-        bossImageList = new ImageView[4];
 
         for(int i=1; i<=4; i++){
-            Resources res = getResources();
-            int buttonId = res.getIdentifier("editButton" + i, "id", getContext().getPackageName());
+            int buttonId = getIdentifierFromResource("editButton" + i, "id");
 
             bossBtnList[i-1] = view.findViewById(buttonId);
 
@@ -129,7 +120,7 @@ public class RaidFragment extends Fragment implements BossBottomSheetDialog.Bott
         recyclerView = view.findViewById(R.id.raidRecyclerView);
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        adapter = new RaidAdapter(getActivity(), pastRaids);
+        adapter = new RaidAdapter(pastRaids);
         recyclerView.setAdapter(adapter);
 
         ConstraintLayout pastTab = view.findViewById(R.id.pastTab);
@@ -166,8 +157,8 @@ public class RaidFragment extends Fragment implements BossBottomSheetDialog.Bott
         name.setText(boss.getName());
         hardness.setText(Double.toString(boss.getHardness()));
         bar.setProgress((int)(boss.getHardness() * 10));
-        bossImageInDialog.setImageResource(boss.getImageId());
-        bossImageInDialog.setTag(boss.getImageId());
+        bossImageInDialog.setImageResource(getIdentifierFromResource("boss_" + boss.getImgName(),"drawable"));
+        bossImageInDialog.setTag(boss.getImgName());
 
         bar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -202,9 +193,9 @@ public class RaidFragment extends Fragment implements BossBottomSheetDialog.Bott
             public void onClick(View view) {
                 String sName = name.getText().toString().trim();
                 Double dHardness = bar.getProgress() / 10.0;
-                int imageId = (int) bossImageInDialog.getTag();
+                String imgName = (String) bossImageInDialog.getTag();
                 if(!sName.equals("")) {
-                    database.raidDao().updateBoss(boss.getBossId(), sName, imageId, dHardness);
+                    database.raidDao().updateBoss(boss.getBossId(), sName, imgName, dHardness);
                     refreshView();
                     dialog.dismiss();
                 }
@@ -245,7 +236,6 @@ public class RaidFragment extends Fragment implements BossBottomSheetDialog.Bott
         myCalendar.set(Calendar.DAY_OF_MONTH, defaultCal.get(Calendar.DAY_OF_MONTH));
 
         final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
-
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear,
                                   int dayOfMonth) {
@@ -304,7 +294,7 @@ public class RaidFragment extends Fragment implements BossBottomSheetDialog.Bott
                                 boss.setName("보스" + i);
                                 boss.setHardness(1.0f);
                                 String imageName = "boss_" + i;
-                                boss.setImageId(getResources().getIdentifier(imageName, "drawable", getContext().getPackageName()));
+                                boss.setImgName(imageName);
 
                                 bosses.add(boss);
                             }
@@ -340,10 +330,10 @@ public class RaidFragment extends Fragment implements BossBottomSheetDialog.Bott
 
         for(int i=1; i<=4; i++){
             Resources res = getResources();
-            int nameId = res.getIdentifier("boss" + i, "id", getContext().getPackageName());
-            int barId = res.getIdentifier("progressBar" + i, "id", getContext().getPackageName());
-            int hardnessId = res.getIdentifier("hardness" + i, "id", getContext().getPackageName());
-            int bossImageId = res.getIdentifier("boss" + i + "Image", "id", getContext().getPackageName());
+            int nameId = getIdentifierFromResource("boss" + i, "id");
+            int barId = getIdentifierFromResource("progressBar" + i, "id");
+            int hardnessId = getIdentifierFromResource("hardness" + i, "id");
+            int bossImageId = getIdentifierFromResource("boss" + i + "Image", "id");
 
             TextView bossName = view.findViewById(nameId);
             TextView hardness = view.findViewById(hardnessId);
@@ -353,7 +343,7 @@ public class RaidFragment extends Fragment implements BossBottomSheetDialog.Bott
             bossName.setText(bosses.get(i-1).getName());
             hardness.setText("배율: " + String.format("%.1f", bosses.get(i-1).getHardness()));
             progressBar.setProgress((int)(bosses.get(i-1).getHardness() * 10));
-            bossImage.setImageResource(bosses.get(i-1).getImageId());
+            bossImage.setImageResource(getIdentifierFromResource("boss_" + bosses.get(i-1).getImgName(), "drawable"));
         }
 
         raidTerm.setText(new SimpleDateFormat(dateFormat).format(currentRaid.getStartDay()) +"~" +
@@ -375,8 +365,13 @@ public class RaidFragment extends Fragment implements BossBottomSheetDialog.Bott
     }
 
     @Override
-    public void onImageClicked(int imgId) {
-        bossImageInDialog.setImageResource(imgId);
-        bossImageInDialog.setTag(imgId);
+    public void onImageClicked(String imgName) {
+        bossImageInDialog.setImageResource(getIdentifierFromResource("boss_" + imgName, "drawable"));
+        bossImageInDialog.setTag(imgName);
+    }
+
+    int getIdentifierFromResource(String name, String defType){
+        return getResources().getIdentifier(
+                name, defType, getContext().getPackageName());
     }
 }

@@ -46,7 +46,7 @@ public class MemberResignedFragment extends Fragment {
         recyclerView = view.findViewById(R.id.resignedRecyclerView);
         memberList = database.memberDao().getResignedMembers();
         recyclerView.setLayoutManager(linearLayoutManager);
-        adapter = new MemberAdapter(getActivity(), memberList);
+        adapter = new MemberAdapter(memberList);
         recyclerView.setAdapter(adapter);
 
         MySwipeHelper swipeHelper = new MySwipeHelper(getActivity(), recyclerView, 200) {

@@ -1,7 +1,6 @@
 package org.techtown.gtguildraid.Fragments;
 
 import android.app.Dialog;
-import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -104,7 +103,7 @@ public class RecordCardFragment extends Fragment {
         List<String> elementEnglishList = Arrays.asList(elementEnglishArray);
         List<Integer> elementImageList = new ArrayList<>();
         for (String elementName : elementEnglishList) {
-            int imageId = getResources().getIdentifier("element_" + elementName, "drawable", getContext().getPackageName()); // or other resource class
+            int imageId = getIdentifierFromResource("element_" + elementName, "drawable");
             elementImageList.add(imageId);
         }
 
@@ -210,7 +209,7 @@ public class RecordCardFragment extends Fragment {
         List<Integer> bossImages = new ArrayList<>();
         for (Boss boss : bosses) {
             bossNames.add(boss.getName());
-            bossImages.add(boss.getImageId());
+            bossImages.add(getIdentifierFromResource("boss_" + boss.getImgName(), "drawable"));
             bossIds.add(boss.getBossId());
         }
         final int[] selectedBossId = {0};
@@ -229,14 +228,12 @@ public class RecordCardFragment extends Fragment {
             }
         });
 
-
         //원소 및 영웅 스피너 생성
         Spinner elements;
         Spinner heroNames;
 
-        Resources res = getResources();
-        int elementId = res.getIdentifier("elementSpinner", "id", getContext().getPackageName());
-        int heroNameId = res.getIdentifier("heroNameSpinner", "id", getContext().getPackageName());
+        int elementId = getIdentifierFromResource("elementSpinner", "id");
+        int heroNameId = getIdentifierFromResource("heroNameSpinner", "id");
 
         elements = dialog.findViewById(elementId);
         heroNames = dialog.findViewById(heroNameId);
@@ -262,7 +259,7 @@ public class RecordCardFragment extends Fragment {
                 List<Integer> imageList = new ArrayList<>();
 
                 for (Hero hero : elementHeroes) {
-                    int imageId = getResources().getIdentifier("character_" + hero.getEnglishName(), "drawable", getContext().getPackageName());
+                    int imageId = getIdentifierFromResource("character_" + hero.getEnglishName(), "drawable");
                     heroList.add(hero.getKoreanName());
                     imageList.add(imageId);
                 }
@@ -283,7 +280,6 @@ public class RecordCardFragment extends Fragment {
             public void onNothingSelected(AdapterView<?> adapterView) {
             }
         });
-
 
         if (isEditing) {
             damage.setText(Integer.toString(record.getDamage()));
@@ -317,7 +313,6 @@ public class RecordCardFragment extends Fragment {
                 Integer iHeroId;
                 iHeroId = heroIds.get(elements.getSelectedItemPosition())
                             .get(heroNames.getSelectedItemPosition());
-
 
                 if (!sDamage.equals("") && !sLevel.equals("")) {
                     dialog.dismiss();
@@ -410,6 +405,11 @@ public class RecordCardFragment extends Fragment {
             super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
         }
     };
+
+    int getIdentifierFromResource(String name, String defType){
+        return getResources().getIdentifier(
+                name, defType, getContext().getPackageName());
+    }
 
     private void setFabVisibility() {
         if (recordList.size() >= MAX_SIZE)

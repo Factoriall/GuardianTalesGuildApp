@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -56,6 +57,7 @@ public class StatisticMember3Fragment extends Fragment {
     TextView contribution;
     TextView hitNum;
     TextView rank;
+    CardView leaderCard;
     CombinedChartClass dpsChart;
     RecyclerView recyclerView;
     StatisticLeaderAdapter adapter;
@@ -292,6 +294,7 @@ public class StatisticMember3Fragment extends Fragment {
         contribution = view.findViewById(R.id.contribution);
         hitNum = view.findViewById(R.id.hitNum);
         rank = view.findViewById(R.id.rank);
+        leaderCard = view.findViewById(R.id.leaderCard);
         recyclerView = view.findViewById(R.id.recyclerView);
 
         //처음 빈 공간을 위해 +1 처리
@@ -326,6 +329,7 @@ public class StatisticMember3Fragment extends Fragment {
     private void setAllData() {
         List<Record> allRecords = database.recordDao().getAllRecordsWithBossAndLeader(raidId);
         List<Record> memberRecords = database.recordDao().getCertainMemberRecordsWithBossAndLeader(memberId, raidId);
+        leaderCard.setVisibility(View.GONE);
 
         setData(allRecords, memberRecords);
     }
@@ -335,6 +339,7 @@ public class StatisticMember3Fragment extends Fragment {
 
         List<Record> allRecords = database.recordDao().getAllRecordsWithOneBossAndLeader(raidId, bossId);
         List<Record> memberRecords = database.recordDao().getMemberRecordsWithOneBossAndLeader(memberId, raidId, bossId);
+        setLeaderCard(memberRecords);
 
         setData(allRecords, memberRecords);
     }
@@ -347,7 +352,6 @@ public class StatisticMember3Fragment extends Fragment {
         contribution.setText(getPercentage(memberDamage, allDamage) + "%");
         hitNum.setText(Integer.toString(memberRecords.size()));
         rank.setText(getRank(allRecords, memberDamage, isAdjustMode));
-        setLeaderCard(memberRecords);
 
         dpsChart.setRecords(memberRecords, allRecords);
         dpsChart.setCombinedChartUi();

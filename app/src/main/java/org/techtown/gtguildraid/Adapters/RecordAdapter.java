@@ -11,7 +11,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.techtown.gtguildraid.Models.Hero;
 import org.techtown.gtguildraid.Models.Record;
 import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.Utils.RoomDB;
@@ -78,21 +77,15 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder
             bossImage = itemView.findViewById(R.id.bossImage);
             adjustLayout = itemView.findViewById(R.id.adjustLayout);
             leaderImage = itemView.findViewById(R.id.leaderImage);
-            /*
-            for (int i = 1; i <= 4; i++) {
-                int heroId = context.getResources()
-                        .getIdentifier("hero" + i, "id", context.getPackageName());
-
-                heroes[i - 1] = itemView.findViewById(heroId);
-            }*/
         }
 
         public void setItem(Record record) {
             hardness.setText(new DecimalFormat("#.#").format(record.getBoss().getHardness()));
             level.setText(Integer.toString(record.getLevel()));
             bossName.setText(record.getBoss().getName());
-            bossImage.setImageResource(record.getBoss().getImageId());
-            
+            bossImage.setImageResource(getIdentifierFromResource(
+                    "boss_" + record.getBoss().getImgName(), "drawable"));
+
             if(isChecked){
                 adjustLayout.setVisibility(View.VISIBLE);
                 hardness.setText(new DecimalFormat("#.#").format(record.getBoss().getHardness()));
@@ -104,28 +97,14 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder
                 damage.setText(NumberFormat.getNumberInstance(Locale.US).format(record.getDamage()));
             }
 
-            Hero leader = record.getLeader();
-            String name = leader.getEnglishName();
-            int imageId = context.getResources()
-                    .getIdentifier("character_" + name, "drawable", context.getPackageName());
-            leaderImage.setImageResource(imageId);
+            String leaderName = record.getLeader().getEnglishName();
+            leaderImage.setImageResource(getIdentifierFromResource(
+                    "character_" + leaderName, "drawable"));
+        }
 
-
-            /*
-            List<Hero> heroList = new ArrayList<>();
-            heroList.add(record.getHero1());
-            heroList.add(record.getHero2());
-            heroList.add(record.getHero3());
-            heroList.add(record.getHero4());
-
-            for (int i = 0; i < 4; i++) {
-                String name = heroList.get(i).getEnglishName();
-                Log.d("heroName", name);
-
-                int imageId = context.getResources()
-                        .getIdentifier("character_" + name, "drawable", context.getPackageName());
-                heroes[i].setImageResource(imageId);
-            }*/
+        int getIdentifierFromResource(String name, String defType){
+            return context.getResources().getIdentifier(
+                    name, defType, context.getPackageName());
         }
     }
 }

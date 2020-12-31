@@ -1,6 +1,5 @@
 package org.techtown.gtguildraid.Adapters;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.view.LayoutInflater;
@@ -26,11 +25,9 @@ import java.util.List;
 
 public class RaidAdapter extends RecyclerView.Adapter<RaidAdapter.ViewHolder> {
     private List<Raid> raidList;
-    private Activity context;
 
-    public RaidAdapter(Activity context, List<Raid> raidList) {
+    public RaidAdapter(List<Raid> raidList) {
         this.raidList = raidList;
-        this.context = context;
         notifyDataSetChanged();
     }
 
@@ -65,7 +62,6 @@ public class RaidAdapter extends RecyclerView.Adapter<RaidAdapter.ViewHolder> {
         Context context;
         RoomDB database;
 
-
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
@@ -81,10 +77,10 @@ public class RaidAdapter extends RecyclerView.Adapter<RaidAdapter.ViewHolder> {
 
             for(int i=1; i<=4; i++){
                 Resources res = context.getResources();
-                int nameId = res.getIdentifier("boss" + i, "id", context.getPackageName());
-                int barId = res.getIdentifier("progressBar" + i, "id", context.getPackageName());
-                int hardnessId = res.getIdentifier("hardness" + i, "id", context.getPackageName());
-                int imageId = res.getIdentifier("boss"+i+"Image", "id", context.getPackageName());
+                int nameId = getIdentifierFromResource("boss" + i, "id");
+                int barId = getIdentifierFromResource("progressBar" + i, "id");
+                int hardnessId = getIdentifierFromResource("hardness" + i, "id");
+                int imageId = getIdentifierFromResource("boss" + i + "Image", "id");
                 bossNameList[i-1] = itemView.findViewById(nameId);
                 bossHardnessList[i-1] = itemView.findViewById(hardnessId);
                 bossBarList[i-1] = itemView.findViewById(barId);
@@ -116,8 +112,14 @@ public class RaidAdapter extends RecyclerView.Adapter<RaidAdapter.ViewHolder> {
                 bossNameList[i].setText(boss.getName());
                 bossHardnessList[i].setText("배율: " + String.format("%.1f", boss.getHardness()));
                 bossBarList[i].setProgress((int)(boss.getHardness() * 10));
-                bossImageList[i].setImageResource(boss.getImageId());
+                bossImageList[i].setImageResource(
+                        getIdentifierFromResource("boss_" + boss.getImgName(), "drawable"));
             }
+        }
+
+        int getIdentifierFromResource(String name, String defType){
+            return context.getResources().getIdentifier(
+                    name, defType, context.getPackageName());
         }
     }
 

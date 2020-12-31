@@ -20,10 +20,6 @@ public class LeaderInformation {
         return recordList;
     }
 
-    public void setRecordList(List<Record> recordList) {
-        this.recordList = recordList;
-    }
-
     public void addList(Record r) {
         recordList.add(r);
     }

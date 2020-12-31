@@ -1,6 +1,5 @@
 package org.techtown.gtguildraid.Adapters;
 
-import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +16,7 @@ import java.util.List;
 public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.ViewHolder> {
     private List<GuildMember> memberList;
 
-    public MemberAdapter(Activity context, List<GuildMember> memberList){
+    public MemberAdapter(List<GuildMember> memberList){
         this.memberList = memberList;
         notifyDataSetChanged();
     }

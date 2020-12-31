@@ -55,7 +55,7 @@ public class MemberCurrentFragment extends Fragment {
         currentCnt.setText((memberList.size() + 1) + "/30");
 
         recyclerView.setLayoutManager(linearLayoutManager);
-        adapter = new MemberAdapter(getActivity(), memberList);
+        adapter = new MemberAdapter(memberList);
         recyclerView.setAdapter(adapter);
 
         createButton.setOnClickListener(new View.OnClickListener() {

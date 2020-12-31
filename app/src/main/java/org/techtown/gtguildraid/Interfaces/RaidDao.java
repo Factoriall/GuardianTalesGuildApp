@@ -39,8 +39,8 @@ public abstract class RaidDao {
     @Query("UPDATE raid SET name = :sName, startDay = :startDate, endDay = :endDate WHERE raidId = :sID")
     public abstract void updateRaid(int sID, String sName, Date startDate, Date endDate);
 
-    @Query("UPDATE boss SET name = :sName, hardness = :hardness, imageId = :imageId WHERE bossId = :sID")
-    public abstract void updateBoss(int sID, String sName, int imageId, double hardness);
+    @Query("UPDATE boss SET name = :sName, hardness = :hardness, imgName = :imgName WHERE bossId = :sID")
+    public abstract void updateBoss(int sID, String sName, String imgName, double hardness);
 
     public void insertRaidWithBosses(Raid raid, List<Boss> bosses) {
         int id = (int)insertRaid(raid);

@@ -22,8 +22,8 @@ public class Boss implements Serializable {
     @ColumnInfo(name = "hardness")
     private double hardness;
 
-    @ColumnInfo(name = "imageId")
-    private int imageId;
+    @ColumnInfo(name = "imgName")
+    private String imgName;
 
     public int getBossId() {
         return bossId;
@@ -57,7 +57,11 @@ public class Boss implements Serializable {
         this.hardness = hardness;
     }
 
-    public int getImageId() { return imageId; }
+    public String getImgName() {
+        return imgName;
+    }
 
-    public void setImageId(int imageId) { this.imageId = imageId; }
+    public void setImgName(String imgName) {
+        this.imgName = imgName;
+    }
 }

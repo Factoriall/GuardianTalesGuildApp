@@ -15,7 +15,9 @@ import org.techtown.gtguildraid.Models.LeaderInformation;
 import org.techtown.gtguildraid.Models.Record;
 import org.techtown.gtguildraid.R;
 
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 
 public class StatisticLeaderAdapter extends RecyclerView.Adapter<StatisticLeaderAdapter.ViewHolder>{
     private List<LeaderInformation> leaderList;
@@ -80,7 +82,7 @@ public class StatisticLeaderAdapter extends RecyclerView.Adapter<StatisticLeader
             int imageId = context.getResources().getIdentifier(
                     "character_" + leader.getEnglishName(), "drawable", context.getPackageName());
             leaderImage.setImageResource(imageId);
-            hitNum.setText(intToStr(records.size()));
+            hitNum.setText(Integer.toString(records.size()));
 
             int total = 0;
             int min = MAX_NUM;
@@ -94,15 +96,11 @@ public class StatisticLeaderAdapter extends RecyclerView.Adapter<StatisticLeader
             int average = total / records.size();
             double stdev = getStandardDeviation(average, records, isAdjustMode);
 
-            totalDamage.setText(intToStr(total));
-            averageDamage.setText(intToStr(average));
-            minDamage.setText(intToStr(min));
-            maxDamage.setText(intToStr(max));
+            totalDamage.setText(getStandardNumberFormat(total));
+            averageDamage.setText(getStandardNumberFormat(average));
+            minDamage.setText(getStandardNumberFormat(min));
+            maxDamage.setText(getStandardNumberFormat(max));
             stDev.setText(String.format("%.2f", stdev));
-        }
-
-        private String intToStr(int num){
-            return Integer.toString(num);
         }
 
         private double getStandardDeviation(int average, List<Record> records, boolean isAdjustMode) {
@@ -120,6 +118,10 @@ public class StatisticLeaderAdapter extends RecyclerView.Adapter<StatisticLeader
                 return (int) (record.getDamage() * record.getBoss().getHardness());
 
             return record.getDamage();
+        }
+
+        private String getStandardNumberFormat(int num){
+            return NumberFormat.getNumberInstance(Locale.US).format(num);
         }
     }
 }

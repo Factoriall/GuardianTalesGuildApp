@@ -19,7 +19,26 @@ public class BossBottomSheetDialog extends BottomSheetDialogFragment {
     private BottomSheetListener mListener;
     private LinearLayout mGallery;
     private LayoutInflater mInflater;
-    private int[] mImgIds;
+
+    private class imageInfo{
+        String imgName;
+        int imgId;
+
+        public imageInfo(String imgName, int imgId) {
+            this.imgName = imgName;
+            this.imgId = imgId;
+        }
+
+        public String getImgName() {
+            return imgName;
+        }
+
+        public int getImgId() {
+            return imgId;
+        }
+    }
+
+    private imageInfo[] mImgIds;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -31,7 +50,7 @@ public class BossBottomSheetDialog extends BottomSheetDialogFragment {
     }
 
     public interface BottomSheetListener{
-        void onImageClicked(int imgId);
+        void onImageClicked(String imgId);
     }
 
     public BossBottomSheetDialog(Fragment fragment){
@@ -39,13 +58,16 @@ public class BossBottomSheetDialog extends BottomSheetDialogFragment {
     }
 
     private void initData() {
-        mImgIds = new int[] {
-                R.drawable.boss_1, R.drawable.boss_2, R.drawable.boss_3, R.drawable.boss_4,
-                R.drawable.boss_bug, R.drawable.boss_cyborg,
-                R.drawable.boss_devil, R.drawable.boss_fairy, R.drawable.boss_gast,
-                R.drawable.boss_harvester, R.drawable.boss_invader, R.drawable.boss_madpanda,
-                R.drawable.boss_mino, R.drawable.boss_monster, R.drawable.boss_sapa,
-                R.drawable.boss_shadow, R.drawable.boss_slime
+        mImgIds = new imageInfo[] {
+                new imageInfo("1", R.drawable.boss_1), new imageInfo("2", R.drawable.boss_2),
+                new imageInfo("3", R.drawable.boss_3), new imageInfo("4", R.drawable.boss_4),
+                new imageInfo("bug", R.drawable.boss_bug), new imageInfo("cyborg", R.drawable.boss_cyborg),
+                new imageInfo("devil", R.drawable.boss_devil), new imageInfo("fairy", R.drawable.boss_fairy),
+                new imageInfo("gast", R.drawable.boss_gast), new imageInfo("harvester", R.drawable.boss_harvester),
+                new imageInfo("invader", R.drawable.boss_invader), new imageInfo("madpanda", R.drawable.boss_madpanda),
+                new imageInfo("mino", R.drawable.boss_mino), new imageInfo("monster", R.drawable.boss_monster),
+                new imageInfo("sapa", R.drawable.boss_sapa), new imageInfo("shadow", R.drawable.boss_shadow),
+                new imageInfo("slime", R.drawable.boss_slime)
         };
     }
 
@@ -56,7 +78,7 @@ public class BossBottomSheetDialog extends BottomSheetDialogFragment {
             View mView = mInflater.inflate(R.layout.dialog_gallery_item, mGallery, false);
             final ImageView img = (ImageView) mView
                     .findViewById(R.id.id_index_gallery_item_image);
-            img.setImageResource(mImgIds[i]);
+            img.setImageResource(mImgIds[i].getImgId());
 
             mGallery.addView(mView);
 
@@ -64,7 +86,7 @@ public class BossBottomSheetDialog extends BottomSheetDialogFragment {
             img.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mListener.onImageClicked(mImgIds[finalI]);
+                    mListener.onImageClicked(mImgIds[finalI].getImgName());
                     dismiss();
                 }
             });
