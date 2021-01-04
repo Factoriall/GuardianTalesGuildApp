@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
@@ -29,7 +30,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
-import org.techtown.gtguildraid.Adapters.DialogSpinnerAdapter;
+import org.techtown.gtguildraid.Adapters.DialogImageSpinnerAdapter;
+import org.techtown.gtguildraid.Adapters.DialogRoundSpinnerAdapter;
 import org.techtown.gtguildraid.Adapters.RecordAdapter;
 import org.techtown.gtguildraid.Models.Boss;
 import org.techtown.gtguildraid.Models.Hero;
@@ -54,7 +56,7 @@ public class RecordCardFragment extends Fragment {
 
     SwipeRefreshLayout swipeRefreshLayout;
     RecyclerView recyclerView;
-    DialogSpinnerAdapter elementAdapter;
+    DialogImageSpinnerAdapter elementAdapter;
     LinearLayoutManager linearLayoutManager;
     RoomDB database;
     RecordAdapter adapter;
@@ -108,7 +110,7 @@ public class RecordCardFragment extends Fragment {
         }
 
         List<String> elementList = Arrays.asList(elementKoreanArray);
-        elementAdapter = new DialogSpinnerAdapter(getContext(), R.layout.spinner_value_layout, elementList, elementImageList);
+        elementAdapter = new DialogImageSpinnerAdapter(getContext(), R.layout.spinner_value_layout, elementList, elementImageList);
     }
 
     @Override
@@ -198,7 +200,8 @@ public class RecordCardFragment extends Fragment {
 
         Spinner bossSpinner = dialog.findViewById(R.id.bossSpinner);
         EditText damage = dialog.findViewById(R.id.damage);
-        EditText level = dialog.findViewById(R.id.level);
+        Spinner roundSpinner = dialog.findViewById(R.id.roundSpinner);
+        CheckBox isLastHit = dialog.findViewById(R.id.isLastHit);
 
         Raid raid = database.raidDao().getCurrentRaid(new Date());
 
@@ -214,9 +217,9 @@ public class RecordCardFragment extends Fragment {
         }
         final int[] selectedBossId = {0};
 
-        DialogSpinnerAdapter bossDialogSpinnerAdapter = new DialogSpinnerAdapter(getContext(), R.layout.spinner_value_layout, bossNames, bossImages);
+        DialogImageSpinnerAdapter bossSpinnerAdapter = new DialogImageSpinnerAdapter(getContext(), R.layout.spinner_value_layout, bossNames, bossImages);
 
-        bossSpinner.setAdapter(bossDialogSpinnerAdapter);
+        bossSpinner.setAdapter(bossSpinnerAdapter);
         bossSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -227,6 +230,20 @@ public class RecordCardFragment extends Fragment {
             public void onNothingSelected(AdapterView<?> adapterView) {
             }
         });
+
+        List<String> rounds = new ArrayList<>();
+        int[] levelPerRound = {50, 50, 55, 55, 60, 60};
+        for(int i=1; i<=40; i++){
+            int round = i;
+            final int START_NUM = 65;
+            final int START_IDX = 7;
+            int level = (round <= levelPerRound.length) ? levelPerRound[round - 1] : START_NUM + (round - START_IDX);
+            rounds.add(i + " (" + level + ")");
+        }
+
+        //
+        DialogRoundSpinnerAdapter roundSpinnerAdapter = new DialogRoundSpinnerAdapter(getContext(), R.layout.spinner_value_layout2, rounds);
+        roundSpinner.setAdapter(roundSpinnerAdapter);
 
         //원소 및 영웅 스피너 생성
         Spinner elements;
@@ -263,7 +280,7 @@ public class RecordCardFragment extends Fragment {
                     heroList.add(hero.getKoreanName());
                     imageList.add(imageId);
                 }
-                SpinnerAdapter adapter = new DialogSpinnerAdapter(getContext(), R.layout.spinner_value_layout, heroList, imageList);
+                SpinnerAdapter adapter = new DialogImageSpinnerAdapter(getContext(), R.layout.spinner_value_layout, heroList, imageList);
                 heroNames.setAdapter(adapter);
 
                 if (isEditing) {
@@ -283,8 +300,9 @@ public class RecordCardFragment extends Fragment {
 
         if (isEditing) {
             damage.setText(Integer.toString(record.getDamage()));
-            level.setText(Integer.toString(record.getLevel()));
+            roundSpinner.setSelection(record.getRound() - 1);
             String bossName = record.getBoss().getName();
+            isLastHit.setChecked(record.isLastHit());
 
             Hero leader = record.getLeader();
             elements.setSelection(leader.getElement());
@@ -308,29 +326,34 @@ public class RecordCardFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 String sDamage = damage.getText().toString().trim();
-                String sLevel = level.getText().toString().trim();
 
                 Integer iHeroId;
                 iHeroId = heroIds.get(elements.getSelectedItemPosition())
                             .get(heroNames.getSelectedItemPosition());
 
-                if (!sDamage.equals("") && !sLevel.equals("")) {
+                if (!sDamage.equals("")) {
                     dialog.dismiss();
                     if (isEditing) {//수정 중이면 업데이트
                         database.recordDao().updateRecord(record.getRecordId(),
-                                Integer.parseInt(sDamage), selectedBossId[0], Integer.parseInt(sLevel), iHeroId);
+                                Integer.parseInt(sDamage), selectedBossId[0],
+                                roundSpinner.getSelectedItemPosition() + 1,
+                                iHeroId, isLastHit.isChecked());
                     } else {//새로운 데이터 생성
                         Record record = new Record(memberId, raidId, day);
                         record.setDamage(Integer.parseInt(sDamage));
                         record.setBossId(selectedBossId[0]);
                         record.setLeaderId(iHeroId);
-                        record.setLevel(Integer.parseInt(sLevel));
+                        record.setRound(roundSpinner.getSelectedItemPosition() + 1);
+                        Log.d("roundSpinnerPos", Integer.toString(
+                                roundSpinner.getSelectedItemPosition() + 1));
+                        record.setLastHit(isLastHit.isChecked());
 
                         //recordList 갱신
                         database.recordDao().insertRecord(record);
                     }
                     recordList.clear();
-                    recordList.addAll(database.recordDao().getCertainDayRecordsWithBossAndLeader(memberId, raidId, day));
+                    recordList.addAll(database.recordDao().
+                            getCertainDayRecordsWithBossAndLeader(memberId, raidId, day));
 
                     setFabVisibility();
 

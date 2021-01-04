@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
@@ -20,14 +21,15 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="3"
+            android:layout_weight="2"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/bossText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="보스:"
+                android:layout_marginLeft="10dp"
+                android:text="보스 이름:"
                 android:textSize="20sp" />
 
             <Spinner
@@ -44,49 +46,70 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/levelText"
+                android:id="@+id/roundText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="레벨:"
+                android:layout_marginLeft="10dp"
+                android:text="회차 - 레벨:"
                 android:textSize="20sp" />
 
-            <EditText
-                android:id="@+id/level"
+            <Spinner
+                android:id="@+id/roundSpinner"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:background="@android:drawable/editbox_background"
-                android:ems="10"
-                android:imeOptions="actionNext"
-                android:inputType="number"
-                android:maxLength="3" />
+                android:layout_height="50dp" />
         </LinearLayout>
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/damageText"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="데미지:"
-            android:textSize="20sp" />
+            android:layout_weight="3"
+            android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/damage"
-            android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/damageText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="데미지:"
+                android:textSize="20sp"
+                tools:layout_marginLeft="10dp" />
+
+            <EditText
+                android:id="@+id/damage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:drawable/editbox_background"
+                android:digits="0123456789,-"
+                android:gravity="top"
+                android:hint="데미지 입력"
+                android:imeOptions="actionDone"
+                android:inputType="number"
+                android:maxLength="10"
+                android:padding="12dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:background="@android:drawable/editbox_background"
-            android:digits="0123456789,-"
-            android:gravity="top"
-            android:hint="데미지"
-            android:imeOptions="actionDone"
-            android:inputType="number"
-            android:maxLength="10"
-            android:padding="12dp" />
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <CheckBox
+                android:id="@+id/isLastHit"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_margin="10dp"
+                android:gravity="center"
+                android:text="막타\n여부" />
+        </LinearLayout>
+
     </LinearLayout>
 
     <TextView

@@ -24,7 +24,7 @@ import org.techtown.gtguildraid.Models.Record;
 
 
 //Add database entities
-@Database(entities = {GuildMember.class, Boss.class, Raid.class, Hero.class, Record.class}, version = 8, exportSchema = false)
+@Database(entities = {GuildMember.class, Boss.class, Raid.class, Hero.class, Record.class}, version = 9, exportSchema = false)
 @TypeConverters(DateConverter.class)
 public abstract class RoomDB extends RoomDatabase {
     private static RoomDB database;
@@ -67,6 +67,23 @@ public abstract class RoomDB extends RoomDatabase {
         }
     };
 
+    static final Migration MIGRATION_8_9 = new Migration(8, 9) {//record의 level을 round로 교체
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            database.execSQL("CREATE TABLE Record_backup "
+                    + "(recordId INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, memberId INTEGER NOT NULL, raidId INTEGER NOT NULL, " +
+                    "day INTEGER NOT NULL, bossId INTEGER NOT NULL, leaderId INTEGER NOT NULL, damage INTEGER NOT NULL)");
+            database.execSQL("INSERT INTO Record_backup "
+                    + "SELECT recordId, memberId, raidId, day, bossId, leaderId, damage FROM Record");
+            database.execSQL("DROP TABLE Record");
+            database.execSQL("ALTER TABLE Record_backup RENAME TO Record");
+            database.execSQL("ALTER TABLE Record " +
+                    "ADD COLUMN round INTEGER NOT NULL DEFAULT 1");
+            database.execSQL("ALTER TABLE Record " +
+                    "ADD COLUMN isLastHit INTEGER NOT NULL DEFAULT 0");
+        }
+    };
+
     public synchronized static RoomDB getInstance(Context context){
         if(database == null){//initialize
             database = Room.databaseBuilder(context.getApplicationContext()
@@ -76,6 +93,7 @@ public abstract class RoomDB extends RoomDatabase {
                     .addMigrations(MIGRATION_5_6)
                     .addMigrations(MIGRATION_6_7)
                     .addMigrations(MIGRATION_7_8)
+                    .addMigrations(MIGRATION_8_9)
                     .build();
         }
         else{

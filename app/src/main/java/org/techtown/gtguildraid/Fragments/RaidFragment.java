@@ -293,7 +293,7 @@ public class RaidFragment extends Fragment implements BossBottomSheetDialog.Bott
                                 Boss boss = new Boss();
                                 boss.setName("보스" + i);
                                 boss.setHardness(1.0f);
-                                String imageName = "boss_" + i;
+                                String imageName = Integer.toString(i);
                                 boss.setImgName(imageName);
 
                                 bosses.add(boss);

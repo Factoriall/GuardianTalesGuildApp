@@ -40,9 +40,9 @@ public abstract class RecordDao {
     @Query("SELECT * FROM Hero WHERE heroId = :heroId")
     public abstract Hero getHero(int heroId);
 
-    @Query("UPDATE Record SET damage = :damage, bossId = :bossId, level = :level, leaderId = :leaderId" +
+    @Query("UPDATE Record SET damage = :damage, bossId = :bossId, round = :round, leaderId = :leaderId, isLastHit = :isLastHit" +
             " WHERE recordID = :rId")
-    public abstract void updateRecord(int rId, int damage, int bossId, int level, int leaderId);
+    public abstract void updateRecord(int rId, int damage, int bossId, int round, int leaderId, boolean isLastHit);
 
     public List<Record> getCertainDayRecordsWithBossAndLeader(int memberId, int raidId, int day) {
         List<Record> records = getCertainDayRecords(memberId, raidId, day);

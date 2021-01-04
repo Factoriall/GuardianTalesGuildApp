@@ -18,10 +18,11 @@ public class Record implements Serializable {
     private int memberId;
     private int raidId;
     private int day;
+    private int round;
+    private int damage;
+    private boolean isLastHit;
 
     private int bossId;
-    private int level;
-    private int damage;
     @Ignore
     public Boss boss;
 
@@ -84,9 +85,11 @@ public class Record implements Serializable {
         this.bossId = bossId;
     }
 
-    public int getLevel() { return level; }
+    public int getRound() { return round; }
 
-    public void setLevel(int level) { this.level = level; }
+    public void setRound(int round) {
+        this.round = round;
+    }
 
     public int getDamage() {
         return damage;
@@ -110,5 +113,13 @@ public class Record implements Serializable {
 
     public void setLeader(Hero leader) {
         this.leader = leader;
+    }
+
+    public boolean isLastHit() {
+        return isLastHit;
+    }
+
+    public void setLastHit(boolean lastHit) {
+        isLastHit = lastHit;
     }
 }

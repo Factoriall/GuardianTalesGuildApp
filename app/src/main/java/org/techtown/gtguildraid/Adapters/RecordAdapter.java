@@ -56,8 +56,10 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder
         TextView damage;
         TextView level;
         TextView hardness;
+        TextView round;
         ImageView bossImage;
         ImageView leaderImage;
+        ImageView lastHit;
         LinearLayout adjustLayout;
         TextView bossName;
         RoomDB database;
@@ -71,17 +73,20 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder
 
             //heroes = new ImageView[4];
             damage = itemView.findViewById(R.id.damage);
+            round = itemView.findViewById(R.id.round);
             level = itemView.findViewById(R.id.level);
             hardness = itemView.findViewById(R.id.hardness);
             bossName = itemView.findViewById(R.id.bossName);
             bossImage = itemView.findViewById(R.id.bossImage);
             adjustLayout = itemView.findViewById(R.id.adjustLayout);
             leaderImage = itemView.findViewById(R.id.leaderImage);
+            lastHit = itemView.findViewById(R.id.lastHit);
         }
 
         public void setItem(Record record) {
             hardness.setText(new DecimalFormat("#.#").format(record.getBoss().getHardness()));
-            level.setText(Integer.toString(record.getLevel()));
+            round.setText(record.getRound() + "회차");
+            level.setText(getLevelFromRound(record.getRound()));
             bossName.setText(record.getBoss().getName());
             bossImage.setImageResource(getIdentifierFromResource(
                     "boss_" + record.getBoss().getImgName(), "drawable"));
@@ -100,6 +105,19 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder
             String leaderName = record.getLeader().getEnglishName();
             leaderImage.setImageResource(getIdentifierFromResource(
                     "character_" + leaderName, "drawable"));
+
+            if(record.isLastHit())
+                lastHit.setVisibility(View.VISIBLE);
+            else
+                lastHit.setVisibility(View.GONE);
+        }
+
+        private String getLevelFromRound(int round) {
+            int[] levelPerRound = {50, 50, 55, 55, 60, 60};
+            final int START_NUM = 65;
+            final int START_IDX = 7;
+
+            return Integer.toString(round <= levelPerRound.length ? levelPerRound[round - 1] : START_NUM + (round - START_IDX));
         }
 
         int getIdentifierFromResource(String name, String defType){
