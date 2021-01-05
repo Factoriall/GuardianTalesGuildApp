@@ -11,11 +11,9 @@ import org.techtown.gtguildraid.Fragments.StatisticBoss2Fragment;
 public class StatisticBossPagerAdapter extends FragmentStatePagerAdapter {
     private static final int ITEM_SIZE = 4;
     private int raidId;
-    private boolean isChecked;
 
-    public void setData(int raidId, boolean isChecked){
+    public void setData(int raidId){
         this.raidId = raidId;
-        this.isChecked = isChecked;
     }
 
     public StatisticBossPagerAdapter(@NonNull FragmentManager fragmentManager) {
@@ -25,12 +23,7 @@ public class StatisticBossPagerAdapter extends FragmentStatePagerAdapter {
     @NonNull
     @Override
     public Fragment getItem(int position) {
-        return StatisticBoss2Fragment.newInstance(position, raidId, isChecked);
-    }
-
-    @Override
-    public int getItemPosition(Object object) {
-        return POSITION_NONE;
+        return StatisticBoss2Fragment.newInstance(position, raidId);
     }
 
     @Override

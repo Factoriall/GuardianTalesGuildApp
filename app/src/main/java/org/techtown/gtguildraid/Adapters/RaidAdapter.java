@@ -1,7 +1,6 @@
 package org.techtown.gtguildraid.Adapters;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,7 +75,6 @@ public class RaidAdapter extends RecyclerView.Adapter<RaidAdapter.ViewHolder> {
             context = itemView.getContext();
 
             for(int i=1; i<=4; i++){
-                Resources res = context.getResources();
                 int nameId = getIdentifierFromResource("boss" + i, "id");
                 int barId = getIdentifierFromResource("progressBar" + i, "id");
                 int hardnessId = getIdentifierFromResource("hardness" + i, "id");

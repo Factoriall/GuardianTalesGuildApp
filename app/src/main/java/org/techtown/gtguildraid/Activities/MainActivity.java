@@ -73,9 +73,14 @@ public class MainActivity extends AppCompatActivity {
                             getSupportFragmentManager().beginTransaction().replace(R.id.container, raidFragment).commit();
                             return true;
                         case R.id.recordTab:
-                            Boolean raidExist = database.raidDao().isCurrentRaidExist(new Date());
-                            if(!raidExist){
+                            Boolean isRaidExist = database.raidDao().isCurrentRaidExist(new Date());
+                            if(!isRaidExist){
                                 Toast.makeText(MainActivity.this, "레이드 정보를 입력하세요!", Toast.LENGTH_LONG).show();
+                                return false;
+                            }
+                            else if(database.raidDao().getCurrentRaid(new Date())
+                                    .getStartDay().compareTo(new Date()) > 0){
+                                Toast.makeText(MainActivity.this, "아직 레이드가 시작되지 않았습니다!", Toast.LENGTH_LONG).show();
                                 return false;
                             }
                             getSupportFragmentManager().beginTransaction().replace(R.id.container, recordFragment).commit();
@@ -88,8 +93,9 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
 
-        Boolean isExist = database.raidDao().isCurrentRaidExist(new Date());
-        if(isExist) {
+        Boolean isAccessible = database.raidDao().isCurrentRaidExist(new Date())
+                && database.raidDao().getCurrentRaid(new Date()).getStartDay().compareTo(new Date()) <= 0;
+        if(isAccessible) {
             getSupportFragmentManager().beginTransaction().replace(R.id.container, recordFragment).commit();
             bottomNavigationView.setSelectedItemId(R.id.recordTab);
         }

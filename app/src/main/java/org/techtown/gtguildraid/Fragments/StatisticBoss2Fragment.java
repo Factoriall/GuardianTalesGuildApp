@@ -2,6 +2,7 @@ package org.techtown.gtguildraid.Fragments;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,19 +44,16 @@ public class StatisticBoss2Fragment extends Fragment {
     final int BOSS_2 = 1;
     final int BOSS_3 = 2;
     final int BOSS_4 = 3;
-    final int DAY_IN_SECONDS = 1000 * 3600 * 24;
-    final int MAX_DURATION = 14;
 
     RoomDB database;
     int raidId;
     int position;
-    boolean isAdjustMode;
 
     StatisticBossLeaderAdapter adapter;
     TextView averageDamage;
     TextView stDev;
     TextView hitNum;
-    CombinedChartClass chart;
+    CombinedChartClass overallChart;
     RecyclerView recyclerView;
 
     private class CombinedChartClass{
@@ -63,8 +61,11 @@ public class StatisticBoss2Fragment extends Fragment {
         private int xAxisNum;
         private List<Record> records;
 
-        public CombinedChartClass(CombinedChart chart, int xAxisNum) {
+        public CombinedChartClass(CombinedChart chart) {
             this.chart = chart;
+        }
+
+        public void setxAxisNum(int xAxisNum) {
             this.xAxisNum = xAxisNum;
         }
 
@@ -112,7 +113,7 @@ public class StatisticBoss2Fragment extends Fragment {
             final ArrayList<String> xAxisLabel = new ArrayList<>();
             xAxisLabel.add("");
             for(int i=1; i<=xAxisNum; i++)
-                xAxisLabel.add("Level " + i);
+                xAxisLabel.add(i + "회차");
             xAxis.setValueFormatter(new ValueFormatter() {
                 @Override
                 public String getFormattedValue(float value) {
@@ -138,23 +139,15 @@ public class StatisticBoss2Fragment extends Fragment {
 
             int[] numArray = new int[xAxisNum];
 
-            for(Record r : records) {
-                int rawDamage = r.getDamage();
-                if(isAdjustMode) {
-                    Boss b = r.getBoss();
-                    numArray[r.getDay() - 1] += (int) (rawDamage * b.getHardness());
-                }
-                else
-                    numArray[r.getDay() - 1] += (rawDamage);
+            for(Record r : records)
+                numArray[r.getRound() - 1]++;
+
+            for (int i = 0; i < xAxisNum; i++) {
+                entries.add(new Entry(i + 1f, numArray[i]));
             }
 
-            LineDataSet set = new LineDataSet(entries, "평균 데미지");
-            set.setValueFormatter(new ValueFormatter() {
-                @Override
-                public String getFormattedValue(float value) {
-                    return String.format("%d", value);
-                }
-            });
+            LineDataSet set = new LineDataSet(entries, "친 횟수");
+
             int lineColor = getResources().getColor(R.color.line_chart_color);
             set.setColor(lineColor);
             set.setLineWidth(2.5f);
@@ -179,14 +172,8 @@ public class StatisticBoss2Fragment extends Fragment {
             }
 
             for(Record r : records) {
-                BarEntry e = entries.get(r.getDay() - 1);
-                int rawDamage = r.getDamage();
-                if(isAdjustMode) {
-                    Boss b = r.getBoss();
-                    e.setY( e.getY() + (int) (rawDamage * b.getHardness()) );
-                }
-                else
-                    e.setY( e.getY() + rawDamage );
+                BarEntry e = entries.get(r.getRound() - 1);
+                e.setY( e.getY() + r.getDamage() );
             }
 
             BarDataSet set = new BarDataSet(entries, "총 딜량");
@@ -210,12 +197,11 @@ public class StatisticBoss2Fragment extends Fragment {
         }
     }
 
-    public static StatisticBoss2Fragment newInstance(int position, int raidId, boolean isChecked) {
+    public static StatisticBoss2Fragment newInstance(int position, int raidId) {
         StatisticBoss2Fragment fragment = new StatisticBoss2Fragment();
         Bundle args = new Bundle();
         args.putInt("position", position);
         args.putInt("raidId", raidId);
-        args.putBoolean("isChecked", isChecked);
 
         fragment.setArguments(args);
         return fragment;
@@ -228,16 +214,16 @@ public class StatisticBoss2Fragment extends Fragment {
         database = RoomDB.getInstance(getActivity());
         if (getArguments() != null) {
             raidId = getArguments().getInt("raidId");
-            isAdjustMode = getArguments().getBoolean("isChecked");
             position = getArguments().getInt("position");
         }
         averageDamage = view.findViewById(R.id.averageDamage);
         stDev = view.findViewById(R.id.stDev);
         hitNum = view.findViewById(R.id.hitNum);
-        chart = new CombinedChartClass(view.findViewById(R.id.chart), 10);
         recyclerView = view.findViewById(R.id.recyclerView);
+        overallChart = new CombinedChartClass(view.findViewById(R.id.chart));
 
         setView(position);
+        Log.d("bossPosition", "pos: " + position);
         
         return view;
     }
@@ -262,45 +248,44 @@ public class StatisticBoss2Fragment extends Fragment {
 
     private void setBossData(Boss boss) {
         int bossId = boss.getBossId();
+        Log.d("bossName", boss.getName());
 
-        List<Record> records = database.recordDao().getAllRecordsWithOneBossAndLeader(raidId, bossId);
+        List<Record> records = database.recordDao().getAllRecordsWith1BossLeaderOrdered(raidId, bossId);
+        if(records.size() != 0)
+            overallChart.setxAxisNum(records.get(records.size() - 1).getRound());
+        else
+            overallChart.setxAxisNum(1);
 
-        int damage = getDamageFromList(records, isAdjustMode);
+        int damage = getDamageFromList(records);
         int average = 0;
         if(records.size() != 0)
             average = damage / records.size();
         hitNum.setText(Integer.toString(records.size()));
         averageDamage.setText(NumberFormat.getNumberInstance(Locale.US)
                 .format(average));
-        stDev.setText(String.format("%.2f", getStandardDeviation(average, records, isAdjustMode)));
+        Log.d("setBoss", "rec num: " + records.size());
+        stDev.setText(getCV(average, records));
 
-        //setChartData(records);
+        overallChart.setRecords(records);
+        overallChart.setCombinedChartUi();
         //recyclerView
-
     }
 
-    private double getStandardDeviation(int average, List<Record> records, boolean isAdjustMode) {
-        int devSquared = 0;
+    private String getCV(int average, List<Record> records) {
+        long devSquared = 0;
         for(Record r : records){
-            devSquared += (getAdjustDamage(r, isAdjustMode) - average)
-                    * (getAdjustDamage(r, isAdjustMode) - average);
+            devSquared += ((long)(r.getDamage() - average) * (long)(r.getDamage() - average));
         }
+        double stDev = Math.sqrt(devSquared / (double) records.size());
 
-        return Math.sqrt(devSquared / (float) records.size());
+        return String.format("%.2f", stDev / average * 100.0f);
     }
 
-    private int getDamageFromList(List<Record> records, boolean isAdjustMode) {
+    private int getDamageFromList(List<Record> records) {
         int damage = 0;
         for(Record r: records)
-            damage += getAdjustDamage(r, isAdjustMode);
+            damage += r.getDamage();
 
         return damage;
-    }
-
-    private int getAdjustDamage(Record record, boolean isAdjustMode) {
-        if(isAdjustMode)
-            return (int) (record.getDamage() * record.getBoss().getHardness());
-
-        return record.getDamage();
     }
 }

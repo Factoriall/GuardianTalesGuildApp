@@ -21,6 +21,7 @@
             android:layout_margin="20dp"
             android:background="@drawable/bg_tablayout"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:tl_divider_color="@color/colorPrimaryDark"
@@ -38,16 +39,6 @@
 
         </com.flyco.tablayout.SlidingTabLayout>
 
-        <Switch
-            android:id="@+id/adjustSwitch"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="20dp"
-            android:text="배율"
-            android:textColor="#FFFFFF"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <org.techtown.gtguildraid.Etc.CustomViewPager

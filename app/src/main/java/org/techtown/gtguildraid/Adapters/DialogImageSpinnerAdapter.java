@@ -40,10 +40,10 @@ public class DialogImageSpinnerAdapter extends ArrayAdapter<String> {
         LayoutInflater inflater = (LayoutInflater)ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View row = inflater.inflate(R.layout.spinner_value_layout, parent, false);
 
-        TextView textView = (TextView) row.findViewById(R.id.spinnerTextView);
+        TextView textView = row.findViewById(R.id.spinnerTextView);
         textView.setText(contentArray.get(position));
 
-        ImageView imageView = (ImageView)row.findViewById(R.id.spinnerImages);
+        ImageView imageView = row.findViewById(R.id.spinnerImages);
         imageView.setImageResource(imageArray.get(position));
 
         return row;

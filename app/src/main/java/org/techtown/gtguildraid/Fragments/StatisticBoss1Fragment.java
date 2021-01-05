@@ -4,8 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
-import android.widget.Switch;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,7 +23,6 @@ import java.util.List;
 public class StatisticBoss1Fragment extends Fragment {
     RoomDB database;
     int raidId;
-    boolean isAdjustMode;
 
     public StatisticBoss1Fragment() {
         // Required empty public constructor
@@ -45,8 +42,6 @@ public class StatisticBoss1Fragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_statistic_boss_1, container, false);
         database = RoomDB.getInstance(getActivity());
-        Switch adjustSwitch = view.findViewById(R.id.adjustSwitch);
-        isAdjustMode = adjustSwitch.isChecked();
         if (getArguments() != null) {
             raidId = getArguments().getInt("raidId");
         }
@@ -55,8 +50,8 @@ public class StatisticBoss1Fragment extends Fragment {
         List<Boss> bossList = database.raidDao().getBossesList(raidId);
         String[] tabStringArray = new String[4];
         for(int i=0; i<4; i++){
-            if(bossList.get(i).getName().length() > 2)
-                tabStringArray[i] = bossList.get(i).getName().substring(0,2);
+            if(bossList.get(i).getName().length() > 5)
+                tabStringArray[i] = bossList.get(i).getName().substring(0,5);
             else
                 tabStringArray[i] = bossList.get(i).getName();
         }
@@ -66,7 +61,7 @@ public class StatisticBoss1Fragment extends Fragment {
 
         StatisticBossPagerAdapter adapter = new StatisticBossPagerAdapter(getChildFragmentManager());
 
-        adapter.setData(raidId, isAdjustMode);
+        adapter.setData(raidId);
 
         viewPager.setPagingEnabled(false);
         viewPager.setAdapter(adapter);
@@ -83,21 +78,8 @@ public class StatisticBoss1Fragment extends Fragment {
             }
         });
 
-        //adjustSwitch 설정
-        adjustSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if(isAdjustMode != isChecked) {
-                    isAdjustMode = isChecked;
-                    adapter.setData(raidId, isAdjustMode);
-                    adapter.notifyDataSetChanged();
-                }
-            }
-        });
-
         tabLayout.setViewPager(viewPager, tabStringArray);
 
         return view;
-
     }
 }

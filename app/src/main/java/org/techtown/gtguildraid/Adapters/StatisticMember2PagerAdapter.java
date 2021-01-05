@@ -30,11 +30,6 @@ public class StatisticMember2PagerAdapter extends FragmentStatePagerAdapter {
     }
 
     @Override
-    public int getItemPosition(Object object) {
-        return POSITION_NONE;
-    }
-
-    @Override
     public int getCount() {
         return ITEM_SIZE;
     }
