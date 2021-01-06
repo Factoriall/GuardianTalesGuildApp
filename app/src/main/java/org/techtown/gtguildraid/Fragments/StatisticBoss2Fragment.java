@@ -11,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.mikephil.charting.charts.CombinedChart;
@@ -30,6 +31,7 @@ import com.github.mikephil.charting.formatter.ValueFormatter;
 
 import org.techtown.gtguildraid.Adapters.StatisticBossLeaderAdapter;
 import org.techtown.gtguildraid.Models.Boss;
+import org.techtown.gtguildraid.Models.LeaderInformation;
 import org.techtown.gtguildraid.Models.Record;
 import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.Utils.RoomDB;
@@ -217,7 +219,7 @@ public class StatisticBoss2Fragment extends Fragment {
             position = getArguments().getInt("position");
         }
         averageDamage = view.findViewById(R.id.averageDamage);
-        stDev = view.findViewById(R.id.stDev);
+        stDev = view.findViewById(R.id.CV);
         hitNum = view.findViewById(R.id.hitNum);
         recyclerView = view.findViewById(R.id.recyclerView);
         overallChart = new CombinedChartClass(view.findViewById(R.id.chart));
@@ -268,7 +270,30 @@ public class StatisticBoss2Fragment extends Fragment {
 
         overallChart.setRecords(records);
         overallChart.setCombinedChartUi();
+        setLeaderCard(records);
         //recyclerView
+    }
+
+    private void setLeaderCard(List<Record> records) {
+        List<LeaderInformation> memberLeaderList = new ArrayList<>();
+        for(Record r : records){
+            boolean isMatched = false;
+            for(LeaderInformation info : memberLeaderList){
+                if(info.isMatched(r.getLeader())) {
+                    info.addList(r);
+                    isMatched = true;
+                    break;
+                }
+            }
+            if(!isMatched)
+                memberLeaderList.add(new LeaderInformation(r.getLeader(), r));
+        }
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setNestedScrollingEnabled(false);
+        adapter = new StatisticBossLeaderAdapter(memberLeaderList);
+
+        recyclerView.setAdapter(adapter);
     }
 
     private String getCV(int average, List<Record> records) {

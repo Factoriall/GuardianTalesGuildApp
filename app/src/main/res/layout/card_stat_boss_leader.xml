@@ -79,7 +79,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_margin="3dp"
+                android:layout_margin="5dp"
                 android:orientation="vertical">
 
                 <LinearLayout
@@ -106,7 +106,7 @@
                         android:id="@+id/stdevText"
                         android:layout_width="100dp"
                         android:layout_height="wrap_content"
-                        android:text="표준편차"
+                        android:text="변동계수"
                         android:textColor="#FFFFFF" />
                 </LinearLayout>
 
@@ -130,7 +130,7 @@
 
 
                     <TextView
-                        android:id="@+id/stDev"
+                        android:id="@+id/CV"
                         android:layout_width="100dp"
                         android:layout_height="wrap_content"
                         android:text="100" />

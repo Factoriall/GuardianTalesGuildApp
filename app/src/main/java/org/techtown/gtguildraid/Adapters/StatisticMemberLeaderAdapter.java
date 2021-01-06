@@ -50,7 +50,11 @@ public class StatisticMemberLeaderAdapter extends RecyclerView.Adapter<Statistic
 
     static class ViewHolder extends RecyclerView.ViewHolder{
         private static final int MAX_NUM = 1234567890;
+        final String[] elementArray
+                = new String[]{"normal", "fire", "water", "earth", "light", "dark", "basic"};
+
         ImageView leaderImage;
+        ImageView leaderElement;
         TextView leaderName;
         TextView totalDamage;
         TextView hitNum;
@@ -64,13 +68,14 @@ public class StatisticMemberLeaderAdapter extends RecyclerView.Adapter<Statistic
             super(itemView);
 
             leaderImage = itemView.findViewById(R.id.leaderImage);
+            leaderElement = itemView.findViewById(R.id.leaderElement);
             leaderName = itemView.findViewById(R.id.leaderName);
             hitNum = itemView.findViewById(R.id.hitNum);
             totalDamage = itemView.findViewById(R.id.totalDamage);
             averageDamage = itemView.findViewById(R.id.averageDamage);
             minDamage = itemView.findViewById(R.id.minDamage);
             maxDamage = itemView.findViewById(R.id.maxDamage);
-            stDev = itemView.findViewById(R.id.stDev);
+            stDev = itemView.findViewById(R.id.CV);
             context = itemView.getContext();
         }
 
@@ -79,9 +84,12 @@ public class StatisticMemberLeaderAdapter extends RecyclerView.Adapter<Statistic
             List<Record> records = info.getRecordList();
 
             leaderName.setText(leader.getKoreanName());
-            int imageId = context.getResources().getIdentifier(
+            int leaderElementId = context.getResources().getIdentifier(
+                    "element_" + elementArray[leader.getElement()], "drawable", context.getPackageName());
+            leaderElement.setImageResource(leaderElementId);
+            int leaderImageId = context.getResources().getIdentifier(
                     "character_" + leader.getEnglishName(), "drawable", context.getPackageName());
-            leaderImage.setImageResource(imageId);
+            leaderImage.setImageResource(leaderImageId);
             hitNum.setText(Integer.toString(records.size()));
 
             int total = 0;
@@ -94,23 +102,22 @@ public class StatisticMemberLeaderAdapter extends RecyclerView.Adapter<Statistic
                 max = Math.max(max, adjustDamage);
             }
             int average = total / records.size();
-            double stdev = getStandardDeviation(average, records, isAdjustMode);
 
             totalDamage.setText(getStandardNumberFormat(total));
             averageDamage.setText(getStandardNumberFormat(average));
             minDamage.setText(getStandardNumberFormat(min));
             maxDamage.setText(getStandardNumberFormat(max));
-            stDev.setText(String.format("%.2f", stdev));
+            stDev.setText(getCV(average, records));
         }
 
-        private double getStandardDeviation(int average, List<Record> records, boolean isAdjustMode) {
-            int devSquared = 0;
+        private String getCV(int average, List<Record> records) {
+            long devSquared = 0;
             for(Record r : records){
-                devSquared += (getAdjustDamage(r, isAdjustMode) - average)
-                        * (getAdjustDamage(r, isAdjustMode) - average);
+                devSquared += ((long)(r.getDamage() - average) * (long)(r.getDamage() - average));
             }
+            double stDev = Math.sqrt(devSquared / (double) records.size());
 
-            return Math.sqrt(devSquared / (float) records.size());
+            return String.format("%.2f", stDev / average * 100.0f);
         }
 
         private int getAdjustDamage(Record record, boolean isAdjustMode) {

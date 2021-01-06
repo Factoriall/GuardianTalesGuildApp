@@ -179,7 +179,7 @@
                         android:id="@+id/textView24"
                         android:layout_width="80dp"
                         android:layout_height="wrap_content"
-                        android:text="표준편차"
+                        android:text="변동계수"
                         android:textColor="#FFFFFF" />
                 </LinearLayout>
 
@@ -205,7 +205,7 @@
                         android:textSize="18sp" />
 
                     <TextView
-                        android:id="@+id/stDev"
+                        android:id="@+id/CV"
                         android:layout_width="80dp"
                         android:layout_height="wrap_content"
                         android:text="100"
