@@ -81,6 +81,7 @@ public class StatisticBoss2Fragment extends Fragment {
             chart.setDrawBarShadow(false);
             chart.setHighlightFullBarEnabled(false);
             chart.setExtraOffsets(0, 0, 0, 10);
+            chart.animateXY(2000, 2000);
 
             // draw bars behind lines
             chart.setDrawOrder(new DrawOrder[]{
@@ -169,16 +170,24 @@ public class StatisticBoss2Fragment extends Fragment {
         private BarData generateBarData(){ // 평균 딜량 그래프
             ArrayList<BarEntry> entries = new ArrayList<>();
 
-            for(int i=0; i<xAxisNum; i++){
+            for(int i=0; i<xAxisNum; i++) {
                 entries.add(new BarEntry(i + 1f, 0));
             }
 
+            int[] numArray = new int[xAxisNum];
             for(Record r : records) {
                 BarEntry e = entries.get(r.getRound() - 1);
                 e.setY( e.getY() + r.getDamage() );
+                numArray[r.getRound() - 1]++;
             }
 
-            BarDataSet set = new BarDataSet(entries, "총 딜량");
+            int idx = 0;
+            for(BarEntry e : entries){
+                if(numArray[idx] != 0)
+                    e.setY(e.getY() / numArray[idx++]);
+            }
+
+            BarDataSet set = new BarDataSet(entries, "평균 딜량");
 
             int barColor = getResources().getColor(R.color.bar_chart_color);
             set.setValueFormatter(new ValueFormatter() {
@@ -253,15 +262,19 @@ public class StatisticBoss2Fragment extends Fragment {
         Log.d("bossName", boss.getName());
 
         List<Record> records = database.recordDao().getAllRecordsWith1BossLeaderOrdered(raidId, bossId);
+        int xAxisNum;
         if(records.size() != 0)
-            overallChart.setxAxisNum(records.get(records.size() - 1).getRound());
+            xAxisNum = records.get(records.size() - 1).getRound();
         else
-            overallChart.setxAxisNum(1);
+            xAxisNum = 1;
+        overallChart.setxAxisNum(xAxisNum);
 
         int damage = getDamageFromList(records);
         int average = 0;
+        Log.d("damage", "" + damage);
         if(records.size() != 0)
             average = damage / records.size();
+        Log.d("average", "" + average);
         hitNum.setText(Integer.toString(records.size()));
         averageDamage.setText(NumberFormat.getNumberInstance(Locale.US)
                 .format(average));
@@ -271,7 +284,6 @@ public class StatisticBoss2Fragment extends Fragment {
         overallChart.setRecords(records);
         overallChart.setCombinedChartUi();
         setLeaderCard(records);
-        //recyclerView
     }
 
     private void setLeaderCard(List<Record> records) {
@@ -289,7 +301,7 @@ public class StatisticBoss2Fragment extends Fragment {
                 memberLeaderList.add(new LeaderInformation(r.getLeader(), r));
         }
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setNestedScrollingEnabled(false);
         adapter = new StatisticBossLeaderAdapter(memberLeaderList);
 

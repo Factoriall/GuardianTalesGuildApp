@@ -28,6 +28,8 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder
         this.isChecked = isChecked;
     }
 
+    public void setChecked(boolean isChecked) {this.isChecked = isChecked;}
+
     @NonNull
     @Override
     public RecordAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

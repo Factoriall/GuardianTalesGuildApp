@@ -61,7 +61,7 @@ public class StatisticMemberLeaderAdapter extends RecyclerView.Adapter<Statistic
         TextView averageDamage;
         TextView minDamage;
         TextView maxDamage;
-        TextView stDev;
+        TextView CV;
         Context context;
 
         public ViewHolder(@NonNull View itemView) {
@@ -75,7 +75,7 @@ public class StatisticMemberLeaderAdapter extends RecyclerView.Adapter<Statistic
             averageDamage = itemView.findViewById(R.id.averageDamage);
             minDamage = itemView.findViewById(R.id.minDamage);
             maxDamage = itemView.findViewById(R.id.maxDamage);
-            stDev = itemView.findViewById(R.id.CV);
+            CV = itemView.findViewById(R.id.CV);
             context = itemView.getContext();
         }
 
@@ -107,13 +107,13 @@ public class StatisticMemberLeaderAdapter extends RecyclerView.Adapter<Statistic
             averageDamage.setText(getStandardNumberFormat(average));
             minDamage.setText(getStandardNumberFormat(min));
             maxDamage.setText(getStandardNumberFormat(max));
-            stDev.setText(getCV(average, records));
+            CV.setText(getCV(average, records, isAdjustMode));
         }
 
-        private String getCV(int average, List<Record> records) {
+        private String getCV(int average, List<Record> records, boolean isAdjustMode) {
             long devSquared = 0;
             for(Record r : records){
-                devSquared += ((long)(r.getDamage() - average) * (long)(r.getDamage() - average));
+                devSquared += ((long)(getAdjustDamage(r, isAdjustMode) - average) * (long)((getAdjustDamage(r, isAdjustMode) - average)));
             }
             double stDev = Math.sqrt(devSquared / (double) records.size());
 

@@ -1,6 +1,8 @@
 package org.techtown.gtguildraid.Fragments;
 
 import android.app.Dialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -13,9 +15,11 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,10 +34,13 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import org.angmarch.views.NiceSpinner;
+import org.angmarch.views.OnSpinnerItemSelectedListener;
 import org.techtown.gtguildraid.Adapters.DialogImageSpinnerAdapter;
 import org.techtown.gtguildraid.Adapters.DialogRoundSpinnerAdapter;
 import org.techtown.gtguildraid.Adapters.RecordAdapter;
 import org.techtown.gtguildraid.Models.Boss;
+import org.techtown.gtguildraid.Models.GuildMember;
 import org.techtown.gtguildraid.Models.Hero;
 import org.techtown.gtguildraid.Models.Raid;
 import org.techtown.gtguildraid.Models.Record;
@@ -43,6 +50,7 @@ import org.techtown.gtguildraid.Utils.RoomDB;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -63,24 +71,62 @@ public class RecordCardFragment extends Fragment {
 
     TextView totalDamage;
     FloatingActionButton fab;
+    Switch adjustSwitch;
+    NiceSpinner memberSpinner;
 
     List<Record> recordList = new ArrayList<>();
-    private int memberId;
     private int raidId;
     private int day;
-    private boolean isChecked;
     private ArrayList<ArrayList<Integer>> heroIds;
-
+    List<GuildMember> members;
     int selectedHeroId;
     int selectedHeroElement;
+    private Boolean isAdjustMode = true;
+    private int sMemberIdx = 0;
 
-    public static RecordCardFragment newInstance(int counter, int memberId, int raidId, boolean isChecked) {
+    SharedPreferences pref;
+
+    private class MemberForSpinner implements Comparable<MemberForSpinner>{
+        private String name;
+        private int id;
+        private int todayRemain;
+
+        public MemberForSpinner(String name, int id, int todayRemain){
+            this.name = name;
+            this.id = id;
+            this.todayRemain = todayRemain;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public int getTodayRemain() {
+            return todayRemain;
+        }
+
+        public void setTodayRemain(int todayRemain) {
+            this.todayRemain = todayRemain;
+        }
+
+        @Override
+        public int compareTo(MemberForSpinner member) {
+            return member.getTodayRemain() - todayRemain;
+        }
+    }
+
+
+    List<MemberForSpinner> memberList = new ArrayList<>();
+
+    public static RecordCardFragment newInstance(int counter, int raidId) {
         RecordCardFragment fragment = new RecordCardFragment();
         Bundle args = new Bundle();
         args.putInt("day", counter + 1);
-        args.putInt("memberId", memberId);
         args.putInt("raidId", raidId);
-        args.putBoolean("isChecked", isChecked);
 
         fragment.setArguments(args);
         return fragment;
@@ -90,6 +136,7 @@ public class RecordCardFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        pref = this.getActivity().getSharedPreferences("pref", Context.MODE_PRIVATE);
         database = RoomDB.getInstance(getActivity());
 
         List<Hero> heroList = database.heroDao().getAllHeroes();
@@ -116,34 +163,62 @@ public class RecordCardFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (getArguments() != null) {
-            memberId = getArguments().getInt("memberId");
             raidId = getArguments().getInt("raidId");
             day = getArguments().getInt("day");
-            isChecked = getArguments().getBoolean("isChecked");
         }
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_record_recycler, container, false);
-        Log.d("RecordMemberInfo", database.memberDao().getMember(memberId).getName());
+        memberSpinner = view.findViewById(R.id.nickname);
+        adjustSwitch = view.findViewById(R.id.adjustSwitch);
+        members = database.memberDao().getCurrentMembers();
+
+        setMemberSpinner();
 
         linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView = view.findViewById(R.id.recordRecyclerView);
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
-        recordList = database.recordDao().getCertainDayRecordsWithBossAndLeader(memberId, raidId, day);
+        recordList = database.recordDao().getCertainDayRecordsWithBossAndLeader(
+                memberList.get(sMemberIdx).getId(), raidId, day);
 
         recyclerView.setLayoutManager(linearLayoutManager);
-        adapter = new RecordAdapter(isChecked);
+        adapter = new RecordAdapter(isAdjustMode);
         adapter.setItems(recordList);
         recyclerView.setAdapter(adapter);
+
+        memberSpinner.setOnSpinnerItemSelectedListener(new OnSpinnerItemSelectedListener() {
+            @Override
+            public void onItemSelected(NiceSpinner parent, View view, int position, long id) {
+                if (sMemberIdx != position) {
+                    sMemberIdx = position;
+                    recordList = database.recordDao().getCertainDayRecordsWithBossAndLeader(
+                            memberList.get(sMemberIdx).getId(), raidId, day);
+                    adapter.setItems(recordList);
+                    setTotalDamage(isAdjustMode);
+
+                    adapter.notifyDataSetChanged();
+                }
+            }
+        });
+
+        adjustSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                isAdjustMode = isChecked;
+                adapter.setChecked(isAdjustMode);
+                setTotalDamage(isAdjustMode);
+                adapter.notifyDataSetChanged();
+            }
+        });
 
         TextView damageText = view.findViewById(R.id.damageText);
         damageText.setText(day + "일차 총 데미지");
         totalDamage = view.findViewById(R.id.totalDamage);
-        setTotalDamage(isChecked);
+        setTotalDamage(isAdjustMode);
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                refreshList();
+                refreshView();
             }
         });
 
@@ -164,6 +239,50 @@ public class RecordCardFragment extends Fragment {
         return view;
     }
 
+    private void setMemberSpinner() {
+        memberList.clear();
+        for (GuildMember m : members) {
+            memberList.add(new MemberForSpinner(m.getName(), m.getID(),
+                    getRemainedRecord(m.getID(), raidId)));
+        }
+
+        Collections.sort(memberList);
+
+        List<String> memberNameList = new ArrayList<>();
+        for(MemberForSpinner m : memberList){
+            memberNameList.add(m.getName() + " - " + m.getTodayRemain());
+        }
+
+        memberSpinner.attachDataSource(memberNameList);
+
+        if(memberNameList.size() == 1){
+            memberSpinner.setText(memberNameList.get(0));
+        }
+    }
+
+    private void refreshSpinnerItem(int rIdx) {
+        MemberForSpinner rMember = memberList.get(rIdx);
+        rMember.setTodayRemain(getRemainedRecord(database.memberDao()
+                .getMember(rMember.getId()).getID(), raidId));
+        memberList.set(rIdx, rMember);
+
+        Collections.sort(memberList);
+
+        List<String> memberNameList = new ArrayList<>();
+
+        int newSelectedIdx = 0;
+        int idx = 0;
+        for(MemberForSpinner m : memberList){
+            if(m.getId() == rMember.getId())
+                newSelectedIdx = idx;
+            memberNameList.add(m.getName() + " - " + m.getTodayRemain());
+            idx++;
+        }
+
+        memberSpinner.attachDataSource(memberNameList);
+        memberSpinner.setSelectedIndex(newSelectedIdx);
+    }
+
     private void setTotalDamage(Boolean isChecked) {
         int total = 0;
         for (Record record : recordList) {
@@ -176,18 +295,21 @@ public class RecordCardFragment extends Fragment {
         totalDamage.setText(NumberFormat.getNumberInstance(Locale.US).format(total));
     }
 
-    private void refreshList() {
+    private void refreshView() {
         recordList.clear();
-        recordList.addAll(database.recordDao().getCertainDayRecordsWithBossAndLeader(memberId, raidId, day));
-        setTotalDamage(isChecked);
+        recordList.addAll(database.recordDao().getCertainDayRecordsWithBossAndLeader(
+                memberList.get(sMemberIdx).getId(), raidId, day));
+        setTotalDamage(isAdjustMode);
         adapter.notifyDataSetChanged();
+
+        refreshSpinnerItem(sMemberIdx);
 
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 swipeRefreshLayout.setRefreshing(false);
             }
-        }, 1000);
+        }, 500);
     }
 
     private void updateCard(Boolean isEditing, Record record) {
@@ -198,12 +320,16 @@ public class RecordCardFragment extends Fragment {
         dialog.getWindow().setLayout(width, height);
         dialog.show();
 
+        TextView dialogInfo = dialog.findViewById(R.id.dialogInfo);
         Spinner bossSpinner = dialog.findViewById(R.id.bossSpinner);
         EditText damage = dialog.findViewById(R.id.damage);
         Spinner roundSpinner = dialog.findViewById(R.id.roundSpinner);
         CheckBox isLastHit = dialog.findViewById(R.id.isLastHit);
 
         Raid raid = database.raidDao().getCurrentRaid(new Date());
+
+        dialogInfo.setText(database.memberDao().getMember(memberList.get(sMemberIdx).getId()).getName() + "/"
+                        + day + "일차");
 
         //보스 스피너 생성
         List<Boss> bosses = database.raidDao().getBossesList(raid.getRaidId());
@@ -231,6 +357,7 @@ public class RecordCardFragment extends Fragment {
             }
         });
 
+        //회차 스피너 생성
         List<String> rounds = new ArrayList<>();
         int[] levelPerRound = {50, 50, 55, 55, 60, 60};
         for(int i=1; i<=40; i++){
@@ -238,12 +365,12 @@ public class RecordCardFragment extends Fragment {
             final int START_NUM = 65;
             final int START_IDX = 7;
             int level = (round <= levelPerRound.length) ? levelPerRound[round - 1] : START_NUM + (round - START_IDX);
-            rounds.add(i + " (" + level + ")");
+            rounds.add(level + "(" + i + ")");
         }
 
-        //
         DialogRoundSpinnerAdapter roundSpinnerAdapter = new DialogRoundSpinnerAdapter(getContext(), R.layout.spinner_value_layout2, rounds);
         roundSpinner.setAdapter(roundSpinnerAdapter);
+        roundSpinner.setSelection(pref.getInt("currentRound" + raidId, 0));
 
         //원소 및 영웅 스피너 생성
         Spinner elements;
@@ -332,6 +459,10 @@ public class RecordCardFragment extends Fragment {
                             .get(heroNames.getSelectedItemPosition());
 
                 if (!sDamage.equals("")) {
+                    SharedPreferences.Editor editor = pref.edit();
+                    editor.putInt("currentRound" + raidId, roundSpinner.getSelectedItemPosition());
+                    editor.commit();
+
                     dialog.dismiss();
                     if (isEditing) {//수정 중이면 업데이트
                         database.recordDao().updateRecord(record.getRecordId(),
@@ -339,11 +470,12 @@ public class RecordCardFragment extends Fragment {
                                 roundSpinner.getSelectedItemPosition() + 1,
                                 iHeroId, isLastHit.isChecked());
                     } else {//새로운 데이터 생성
-                        Record record = new Record(memberId, raidId, day);
+                        Record record = new Record(memberList.get(sMemberIdx).getId(), raidId, day);
                         record.setDamage(Integer.parseInt(sDamage));
                         record.setBossId(selectedBossId[0]);
                         record.setLeaderId(iHeroId);
                         record.setRound(roundSpinner.getSelectedItemPosition() + 1);
+
                         Log.d("roundSpinnerPos", Integer.toString(
                                 roundSpinner.getSelectedItemPosition() + 1));
                         record.setLastHit(isLastHit.isChecked());
@@ -353,7 +485,7 @@ public class RecordCardFragment extends Fragment {
                     }
                     recordList.clear();
                     recordList.addAll(database.recordDao().
-                            getCertainDayRecordsWithBossAndLeader(memberId, raidId, day));
+                            getCertainDayRecordsWithBossAndLeader(memberList.get(sMemberIdx).getId(), raidId, day));
 
                     setFabVisibility();
 
@@ -428,6 +560,13 @@ public class RecordCardFragment extends Fragment {
             super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
         }
     };
+
+    private int getRemainedRecord(int id, int raidId) {
+        List<Record> recordList = database.recordDao()
+                .getCertainDayRecords(id, raidId, day);
+
+        return MAX_SIZE - recordList.size();
+    }
 
     int getIdentifierFromResource(String name, String defType){
         return getResources().getIdentifier(

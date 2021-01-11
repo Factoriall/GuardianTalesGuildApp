@@ -186,7 +186,7 @@
                     android:id="@+id/lastHit"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:src="@drawable/clear_icon"
+                    android:src="@drawable/icon_clear"
                     card_view:layout_constraintBottom_toBottomOf="@+id/bossImage"
                     card_view:layout_constraintEnd_toEndOf="@+id/bossImage"
                     card_view:layout_constraintStart_toStartOf="@+id/bossImage"

@@ -13,7 +13,7 @@
         android:layout_height="55dp"
         app:cardBackgroundColor="#45403A"
         app:cardCornerRadius="0dp"
-        app:layout_constraintEnd_toEndOf="@+id/switchCard"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -108,122 +108,13 @@
         </androidx.cardview.widget.CardView>
     </androidx.cardview.widget.CardView>
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/membersCard"
-        android:layout_width="0dp"
-        android:layout_height="60dp"
-        app:cardBackgroundColor="#45403A"
-        app:cardCornerRadius="0dp"
-        app:layout_constraintEnd_toStartOf="@+id/switchCard"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/termCard">
-
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginBottom="5dp">
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:id="@+id/people_icon"
-                        android:layout_width="100dp"
-                        android:layout_height="match_parent"
-                        android:background="#D8B38E"
-                        android:padding="10dp"
-                        android:src="@drawable/icon_profile" />
-
-                    <org.angmarch.views.NiceSpinner
-                        android:id="@+id/nickname"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-
-                        android:dropDownWidth="300dp"
-                        android:gravity="center"
-                        android:textSize="20sp"
-                        android:textStyle="bold"
-                        app:arrowTint="#FFFFFF"
-                        app:backgroundSelector="@drawable/bg_spinner"
-                        app:popupTextAlignment="start"
-                        app:textTint="#FFFFFF" />
-                </LinearLayout>
-
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-
-    </androidx.cardview.widget.CardView>
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/switchCard"
-        android:layout_width="70dp"
-        android:layout_height="0dp"
-        app:cardBackgroundColor="#45403A"
-        app:cardCornerRadius="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/tabs"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/termCard">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginRight="5dp"
-            android:layout_marginBottom="5dp"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/textView6"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#D8B38E"
-                android:gravity="center"
-                android:text="배율"
-                android:textColor="#3C3C3C" />
-
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#2D2F34">
-
-                <Switch
-                    android:id="@+id/adjustSwitch"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checked="true"
-                    android:showText="true"
-                    android:switchTextAppearance="@style/switchStyle"
-                    android:textOff="OFF"
-                    android:textOn="ON"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </LinearLayout>
-
-    </androidx.cardview.widget.CardView>
-
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/membersCard"
+        app:layout_constraintTop_toBottomOf="@+id/termCard"
         app:tabBackground="@drawable/tab_color_selector"
         app:tabIndicatorHeight="0dp"
         app:tabMode="scrollable"

@@ -32,19 +32,19 @@ public interface MemberDao {
     @Query("SELECT * FROM member WHERE ID = :sID")
     GuildMember getMember(int sID);
 
-    @Query("SELECT * FROM member")
+    @Query("SELECT * FROM member ORDER BY name")
     List<GuildMember> getAllMembers();
 
-    @Query("SELECT * FROM member WHERE isResigned = 0")
+    @Query("SELECT * FROM member WHERE isResigned = 0 ORDER BY name")
     List<GuildMember> getCurrentMembers();
 
-    @Query("SELECT * FROM member WHERE isResigned = 0 AND isMe = 0")
+    @Query("SELECT * FROM member WHERE isResigned = 0 AND isMe = 0 ORDER BY name")
     List<GuildMember> getCurrentMembersWithoutMe();
 
     @Query("SELECT * FROM member WHERE isMe = 1")
     GuildMember getMe();
 
-    @Query("SELECT * FROM member WHERE isResigned = 1 AND isMe = 0")
+    @Query("SELECT * FROM member WHERE isResigned = 1 AND isMe = 0 ORDER BY name")
     List<GuildMember> getResignedMembers();
 
 }

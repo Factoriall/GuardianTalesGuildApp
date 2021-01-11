@@ -88,9 +88,11 @@ public class StatisticMember2Fragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 if(isAdjustMode != isChecked) {
+                    int current = viewPager.getCurrentItem();
                     isAdjustMode = isChecked;
                     adapter.setData(memberId, raidId, isAdjustMode);
-                    adapter.notifyDataSetChanged();
+                    viewPager.setAdapter(adapter);
+                    viewPager.setCurrentItem(current, false);
                 }
             }
         });

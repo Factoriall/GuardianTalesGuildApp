@@ -166,6 +166,7 @@ public class StatisticMember3Fragment extends Fragment {
             xAxis.setAxisMaximum(data.getXMax() + 0.8f);
 
             chart.setData(data);
+            chart.animateXY(2000, 2000);
             chart.invalidate();
         }
 

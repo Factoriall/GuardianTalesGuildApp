@@ -276,8 +276,6 @@ public class RaidFragment extends Fragment implements BossBottomSheetDialog.Bott
                     cal.setTime(sDate);
                     cal.add(Calendar.DATE, 14);
                     eDate = cal.getTime();
-                    Date aEnd = adjustEndTime(eDate);
-
                     if(!sName.equals("")){
                         dialog.dismiss();
 
