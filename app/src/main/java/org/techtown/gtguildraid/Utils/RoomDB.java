@@ -11,11 +11,13 @@ import androidx.room.TypeConverters;
 import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
+import org.techtown.gtguildraid.Interfaces.FavoritesDao;
 import org.techtown.gtguildraid.Interfaces.HeroDao;
 import org.techtown.gtguildraid.Interfaces.MemberDao;
 import org.techtown.gtguildraid.Interfaces.RaidDao;
 import org.techtown.gtguildraid.Interfaces.RecordDao;
 import org.techtown.gtguildraid.Models.Boss;
+import org.techtown.gtguildraid.Models.Favorites;
 import org.techtown.gtguildraid.Models.GuildMember;
 import org.techtown.gtguildraid.Models.Hero;
 import org.techtown.gtguildraid.Models.Raid;
@@ -24,7 +26,7 @@ import org.techtown.gtguildraid.Models.Record;
 
 
 //Add database entities
-@Database(entities = {GuildMember.class, Boss.class, Raid.class, Hero.class, Record.class}, version = 9, exportSchema = false)
+@Database(entities = {GuildMember.class, Boss.class, Raid.class, Hero.class, Record.class, Favorites.class}, version = 10, exportSchema = false)
 @TypeConverters(DateConverter.class)
 public abstract class RoomDB extends RoomDatabase {
     private static RoomDB database;
@@ -84,6 +86,14 @@ public abstract class RoomDB extends RoomDatabase {
         }
     };
 
+    static final Migration MIGRATION_9_10 = new Migration(9, 10) {//favorites 새로 생성
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            database.execSQL("CREATE TABLE Favorites " +
+                    "(heroId INTEGER PRIMARY KEY NOT NULL)");
+        }
+    };
+
     public synchronized static RoomDB getInstance(Context context){
         if(database == null){//initialize
             database = Room.databaseBuilder(context.getApplicationContext()
@@ -94,6 +104,7 @@ public abstract class RoomDB extends RoomDatabase {
                     .addMigrations(MIGRATION_6_7)
                     .addMigrations(MIGRATION_7_8)
                     .addMigrations(MIGRATION_8_9)
+                    .addMigrations(MIGRATION_9_10)
                     .build();
         }
         else{
@@ -107,4 +118,5 @@ public abstract class RoomDB extends RoomDatabase {
     public abstract RaidDao raidDao();
     public abstract RecordDao recordDao();
     public abstract HeroDao heroDao();
+    public abstract FavoritesDao favoritesDao();
 }
