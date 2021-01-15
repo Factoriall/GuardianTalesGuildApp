@@ -45,7 +45,7 @@
                     android:saveEnabled="false"
                     android:textStyle="bold"
                     app:arrowTint="#FFFFFF"
-                    app:backgroundSelector="@drawable/bg_spinner"
+                    app:backgroundSelector="@drawable/bg_spinner_nice"
                     app:popupTextAlignment="start"
                     app:textTint="#FFFFFF" />
 

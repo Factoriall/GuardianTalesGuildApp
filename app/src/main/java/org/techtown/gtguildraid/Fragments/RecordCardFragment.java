@@ -334,7 +334,7 @@ public class RecordCardFragment extends Fragment {
 
         Raid raid = database.raidDao().getCurrentRaid(new Date());
 
-        dialogInfo.setText(database.memberDao().getMember(memberList.get(sMemberIdx).getId()).getName() + "/"
+        dialogInfo.setText(database.memberDao().getMember(memberList.get(sMemberIdx).getId()).getName() + " / "
                         + day + "일차");
 
         //보스 스피너 생성
@@ -448,13 +448,13 @@ public class RecordCardFragment extends Fragment {
             }
         }
 
-        refreshFavorites(elements, heroNames, favoritesList);
+        refreshFavorites(elements, favoritesList);
 
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 database.favoritesDao().insert(new Favorites(selectedHeroId));
-                refreshFavorites(elements, heroNames, favoritesList);
+                refreshFavorites(elements, favoritesList);
             }
         });
 
@@ -521,9 +521,11 @@ public class RecordCardFragment extends Fragment {
         });
     }
 
-    private void refreshFavorites(Spinner elements, Spinner heroNames, LinearLayout favoritesList) {
+    private void refreshFavorites(Spinner elements, LinearLayout favoritesList) {
         favoritesList.removeAllViews();
         List<Favorites> favs = database.favoritesDao().getAllFavoritesAndHero();
+
+        boolean isFirst = true;
         for(Favorites fav : favs) {
             LayoutInflater vi = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View v = vi.inflate(R.layout.button_favorites, null);
@@ -548,6 +550,13 @@ public class RecordCardFragment extends Fragment {
                 }
             });
             favoritesList.addView(v);
+            if(!isFirst) {
+                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)v.getLayoutParams();
+                params.setMargins(10, 0, 0, 0);
+                v.setLayoutParams(params);
+            }
+            else
+                isFirst = false;
         }
     }
 

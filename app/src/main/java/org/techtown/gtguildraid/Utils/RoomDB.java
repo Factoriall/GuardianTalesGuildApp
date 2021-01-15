@@ -26,7 +26,7 @@ import org.techtown.gtguildraid.Models.Record;
 
 
 //Add database entities
-@Database(entities = {GuildMember.class, Boss.class, Raid.class, Hero.class, Record.class, Favorites.class}, version = 10, exportSchema = false)
+@Database(entities = {GuildMember.class, Boss.class, Raid.class, Hero.class, Record.class, Favorites.class}, version = 11, exportSchema = false)
 @TypeConverters(DateConverter.class)
 public abstract class RoomDB extends RoomDatabase {
     private static RoomDB database;
@@ -94,6 +94,19 @@ public abstract class RoomDB extends RoomDatabase {
         }
     };
 
+    static final Migration MIGRATION_10_11 = new Migration(10, 11) {//favorites의 
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            database.execSQL("CREATE TABLE Favorites_backup " +
+                    "(favoritesId INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
+                    "heroId INTEGER NOT NULL)");
+            database.execSQL("INSERT INTO Favorites_backup(heroId) "
+                    + "SELECT heroId FROM Favorites");
+            database.execSQL("DROP TABLE Favorites");
+            database.execSQL("ALTER TABLE Favorites_backup RENAME TO Favorites");
+        }
+    };
+
     public synchronized static RoomDB getInstance(Context context){
         if(database == null){//initialize
             database = Room.databaseBuilder(context.getApplicationContext()
@@ -105,6 +118,7 @@ public abstract class RoomDB extends RoomDatabase {
                     .addMigrations(MIGRATION_7_8)
                     .addMigrations(MIGRATION_8_9)
                     .addMigrations(MIGRATION_9_10)
+                    .addMigrations(MIGRATION_10_11)
                     .build();
         }
         else{

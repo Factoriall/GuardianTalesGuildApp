@@ -20,22 +20,11 @@ public abstract class FavoritesDao {
     @Delete
     public abstract void delete(Favorites f);
 
-    @Query("SELECT * FROM Favorites WHERE heroId = :heroId")
-    public abstract Favorites getFavorites(int heroId);
-
     @Query("SELECT * FROM Favorites")
     public abstract List<Favorites> getAllFavorites();
 
     @Query("SELECT * FROM Hero WHERE heroId = :heroId")
     public abstract Hero getHero(int heroId);
-
-    public Favorites getFavoriteAndHero(int heroId) {
-        Favorites f = getFavorites(heroId);
-        Hero hero = getHero(f.getHeroId());
-        f.setHero(hero);
-
-        return f;
-    }
 
     public List<Favorites> getAllFavoritesAndHero(){
         List<Favorites> list = getAllFavorites();

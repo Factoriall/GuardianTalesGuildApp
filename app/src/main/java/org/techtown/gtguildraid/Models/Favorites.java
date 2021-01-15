@@ -8,7 +8,9 @@ import java.io.Serializable;
 
 @Entity(tableName = "favorites")
 public class Favorites implements Serializable {
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
+    private int favoritesId;
+
     private int heroId;
 
     @Ignore
@@ -16,6 +18,14 @@ public class Favorites implements Serializable {
 
     public Favorites(int heroId){
         this.heroId = heroId;
+    }
+
+    public int getFavoritesId() {
+        return favoritesId;
+    }
+
+    public void setFavoritesId(int favoritesId) {
+        this.favoritesId = favoritesId;
     }
 
     public int getHeroId() {
