@@ -25,7 +25,7 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 
 import org.techtown.gtguildraid.Models.Hero;
-import org.techtown.gtguildraid.Models.LeaderInformation;
+import org.techtown.gtguildraid.Models.LeaderInfo;
 import org.techtown.gtguildraid.Models.Record;
 import org.techtown.gtguildraid.R;
 
@@ -35,9 +35,9 @@ import java.util.List;
 import java.util.Locale;
 
 public class StatisticBossLeaderAdapter extends RecyclerView.Adapter<StatisticBossLeaderAdapter.ViewHolder> {
-    private List<LeaderInformation> leaderList;
+    private List<LeaderInfo> leaderList;
 
-    public StatisticBossLeaderAdapter(List<LeaderInformation> records) {
+    public StatisticBossLeaderAdapter(List<LeaderInfo> records) {
         this.leaderList = records;
     }
 
@@ -52,7 +52,7 @@ public class StatisticBossLeaderAdapter extends RecyclerView.Adapter<StatisticBo
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        LeaderInformation leader = leaderList.get(position);
+        LeaderInfo leader = leaderList.get(position);
         holder.setItem(leader);
     }
 
@@ -229,10 +229,10 @@ public class StatisticBossLeaderAdapter extends RecyclerView.Adapter<StatisticBo
             context = itemView.getContext();
         }
 
-        public void setItem(LeaderInformation info) {
+        public void setItem(LeaderInfo info) {
             Hero leader = info.getLeader();
             List<Record> records = info.getRecordList();
-            if(records.size() != 0)
+            if (records.size() != 0)
                 chart.setxAxisNum(records.get(records.size() - 1).getRound());
             else
                 chart.setxAxisNum(1);

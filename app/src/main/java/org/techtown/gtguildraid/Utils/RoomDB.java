@@ -94,7 +94,7 @@ public abstract class RoomDB extends RoomDatabase {
         }
     };
 
-    static final Migration MIGRATION_10_11 = new Migration(10, 11) {//favorites의 
+    static final Migration MIGRATION_10_11 = new Migration(10, 11) {//favorites의
         @Override
         public void migrate(SupportSQLiteDatabase database) {
             database.execSQL("CREATE TABLE Favorites_backup " +

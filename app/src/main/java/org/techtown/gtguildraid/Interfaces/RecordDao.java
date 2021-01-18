@@ -25,11 +25,18 @@ public abstract class RecordDao {
     @Query("SELECT * FROM Record WHERE memberId = :memberId AND raidId = :raidId")
     public abstract List<Record> getCertainMemberRecords(int memberId, int raidId);
 
+    @Query("SELECT * FROM Record WHERE memberId = :memberId AND raidId = :raidId AND round >= :round")
+    public abstract List<Record> getCertainMemberRoundRecords(int memberId, int raidId, int round);
+
     @Query("SELECT * FROM Record WHERE memberId = :memberId AND raidId = :raidId AND day = :day")
     public abstract List<Record> getCertainDayRecords(int memberId, int raidId, int day);
 
     @Query("SELECT * FROM Record WHERE memberId = :memberId AND raidId = :raidId AND bossId = :bossId")
     public abstract List<Record> getCertainBossRecords(int memberId, int raidId, int bossId);
+
+    @Query("SELECT * FROM Record WHERE memberId = :memberId AND raidId = :raidId AND bossId = :bossId " +
+            "AND round >= :round")
+    public abstract List<Record> getCertainBossRoundRecords(int memberId, int raidId, int bossId, int round);
 
     @Query("SELECT * FROM Record WHERE raidId = :raidId AND bossId = :bossId")
     public abstract List<Record> getAllMemberBossRecords(int raidId, int bossId);
@@ -116,7 +123,33 @@ public abstract class RecordDao {
 
     public List<Record> getMemberRecordsWithOneBossAndLeader(int memberId, int raidId, int bossId) {
         List<Record> records = getCertainBossRecords(memberId, raidId, bossId);
-        for(Record record: records){
+        for (Record record : records) {
+            Boss boss = getBoss(record.getBossId());
+            record.setBoss(boss);
+
+            Hero hero = getHero(record.getLeaderId());
+            record.setLeader(hero);
+        }
+
+        return records;
+    }
+
+    public List<Record> getMemberRoundRecordsWithOneBossAndLeader(int memberId, int raidId, int bossId, int round) {
+        List<Record> records = getCertainBossRoundRecords(memberId, raidId, bossId, round);
+        for (Record record : records) {
+            Boss boss = getBoss(record.getBossId());
+            record.setBoss(boss);
+
+            Hero hero = getHero(record.getLeaderId());
+            record.setLeader(hero);
+        }
+
+        return records;
+    }
+
+    public List<Record> getCertainMemberRoundRecordsWithOneBossAndLeader(int memberId, int raidId, int round) {
+        List<Record> records = getCertainMemberRoundRecords(memberId, raidId, round);
+        for (Record record : records) {
             Boss boss = getBoss(record.getBossId());
             record.setBoss(boss);
 

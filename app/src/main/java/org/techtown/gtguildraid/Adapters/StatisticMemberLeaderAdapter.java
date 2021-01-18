@@ -11,7 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.techtown.gtguildraid.Models.Hero;
-import org.techtown.gtguildraid.Models.LeaderInformation;
+import org.techtown.gtguildraid.Models.LeaderInfo;
 import org.techtown.gtguildraid.Models.Record;
 import org.techtown.gtguildraid.R;
 
@@ -20,10 +20,10 @@ import java.util.List;
 import java.util.Locale;
 
 public class StatisticMemberLeaderAdapter extends RecyclerView.Adapter<StatisticMemberLeaderAdapter.ViewHolder>{
-    private List<LeaderInformation> leaderList;
+    private List<LeaderInfo> leaderList;
     private boolean isAdjustMode;
 
-    public StatisticMemberLeaderAdapter(List<LeaderInformation> records, boolean isAdjustMode){
+    public StatisticMemberLeaderAdapter(List<LeaderInfo> records, boolean isAdjustMode) {
         this.leaderList = records;
         this.isAdjustMode = isAdjustMode;
     }
@@ -39,7 +39,7 @@ public class StatisticMemberLeaderAdapter extends RecyclerView.Adapter<Statistic
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        LeaderInformation leader = leaderList.get(position);
+        LeaderInfo leader = leaderList.get(position);
         holder.setItem(leader, isAdjustMode);
     }
 
@@ -79,7 +79,7 @@ public class StatisticMemberLeaderAdapter extends RecyclerView.Adapter<Statistic
             context = itemView.getContext();
         }
 
-        public void setItem(LeaderInformation info, boolean isAdjustMode){
+        public void setItem(LeaderInfo info, boolean isAdjustMode) {
             Hero leader = info.getLeader();
             List<Record> records = info.getRecordList();
 

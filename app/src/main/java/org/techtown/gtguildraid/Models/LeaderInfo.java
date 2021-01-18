@@ -3,11 +3,11 @@ package org.techtown.gtguildraid.Models;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LeaderInformation {
+public class LeaderInfo {
     private Hero leader;
     private List<Record> recordList = new ArrayList<>();
 
-    public LeaderInformation(Hero leader, Record r) {
+    public LeaderInfo(Hero leader, Record r) {
         this.leader = leader;
         recordList.add(r);
     }

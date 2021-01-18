@@ -31,7 +31,7 @@ import com.github.mikephil.charting.formatter.ValueFormatter;
 
 import org.techtown.gtguildraid.Adapters.StatisticBossLeaderAdapter;
 import org.techtown.gtguildraid.Models.Boss;
-import org.techtown.gtguildraid.Models.LeaderInformation;
+import org.techtown.gtguildraid.Models.LeaderInfo;
 import org.techtown.gtguildraid.Models.Record;
 import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.Utils.RoomDB;
@@ -287,10 +287,10 @@ public class StatisticBoss2Fragment extends Fragment {
     }
 
     private void setLeaderCard(List<Record> records) {
-        List<LeaderInformation> memberLeaderList = new ArrayList<>();
+        List<LeaderInfo> memberLeaderList = new ArrayList<>();
         for(Record r : records){
             boolean isMatched = false;
-            for(LeaderInformation info : memberLeaderList){
+            for(LeaderInfo info : memberLeaderList){
                 if(info.isMatched(r.getLeader())) {
                     info.addList(r);
                     isMatched = true;
@@ -298,7 +298,7 @@ public class StatisticBoss2Fragment extends Fragment {
                 }
             }
             if(!isMatched)
-                memberLeaderList.add(new LeaderInformation(r.getLeader(), r));
+                memberLeaderList.add(new LeaderInfo(r.getLeader(), r));
         }
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
