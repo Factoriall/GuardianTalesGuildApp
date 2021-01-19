@@ -90,11 +90,11 @@ public class StatisticFragment extends Fragment {
 
         new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
             if(position == 0)
-                tab.setText("개인별 기록");
-            else if(position == 1)
-                tab.setText("보스별 기록");
-            else
                 tab.setText("순위표");
+            else if(position == 1)
+                tab.setText("개인별 기록");
+            else
+                tab.setText("보스별 기록");
         }).attach();
         viewPager.setUserInputEnabled(false);
     }

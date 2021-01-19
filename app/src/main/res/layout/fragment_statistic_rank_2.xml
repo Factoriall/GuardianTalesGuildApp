@@ -22,7 +22,6 @@
             android:layout_margin="20dp"
             android:layout_marginTop="5dp"
             android:background="@drawable/bg_tablayout"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:tl_divider_color="@color/colorPrimaryDark"
@@ -40,17 +39,30 @@
 
         </com.flyco.tablayout.SlidingTabLayout>
 
-        <Switch
-            android:id="@+id/adjustSwitch"
+        <com.llollox.androidtoggleswitch.widgets.ToggleSwitch
+            android:id="@+id/toggleSwitch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
-            android:text="전체/평균"
-            android:textColor="#FFFFFF"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/slidingTabLayout"
+            app:textToggleLeft="전체"
+            app:textToggleRight="평균" />
+
+        <Switch
+            android:id="@+id/adjustSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="5dp"
+            android:text="배율"
+            android:textColor="#FFFFFF"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/slidingTabLayout" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 

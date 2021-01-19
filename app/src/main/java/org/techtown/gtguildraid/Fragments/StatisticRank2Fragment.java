@@ -13,6 +13,9 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import com.flyco.tablayout.SlidingTabLayout;
+import com.flyco.tablayout.listener.OnTabSelectListener;
+import com.google.android.material.tabs.TabLayout;
+import com.llollox.androidtoggleswitch.widgets.ToggleSwitch;
 
 import org.techtown.gtguildraid.Adapters.StatisticMember2PagerAdapter;
 import org.techtown.gtguildraid.Adapters.StatisticRank2PagerAdapter;
@@ -25,6 +28,7 @@ public class StatisticRank2Fragment extends Fragment {
     private int bossPosition;
     private int raidId;
     boolean isAverageMode;
+    boolean isAdjustMode;
 
     public static StatisticRank2Fragment newInstance(int position, int raidId) {
         StatisticRank2Fragment fragment = new StatisticRank2Fragment();
@@ -41,13 +45,21 @@ public class StatisticRank2Fragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_statistic_rank_2, container, false);
         database = RoomDB.getInstance(getActivity());
-        Switch avgSwitch = view.findViewById(R.id.adjustSwitch);
-        isAverageMode = avgSwitch.isChecked();
+        ToggleSwitch toggleSwitch = view.findViewById(R.id.toggleSwitch);
+        Switch adjustSwitch = view.findViewById(R.id.adjustSwitch);
+        toggleSwitch.setCheckedPosition(0);
+        isAverageMode = false;
+        isAdjustMode = adjustSwitch.isChecked();
 
         if (getArguments() != null) {
             raidId = getArguments().getInt("raidId");
             bossPosition = getArguments().getInt("position");
         }
+
+        if(bossPosition == 0)
+            adjustSwitch.setVisibility(View.VISIBLE);
+        else
+            adjustSwitch.setVisibility(View.GONE);
 
         String[] tabStringArray = new String[5];
         tabStringArray[0] = "전체";
@@ -64,7 +76,7 @@ public class StatisticRank2Fragment extends Fragment {
         StatisticRank2PagerAdapter adapter
                 = new StatisticRank2PagerAdapter(getChildFragmentManager());
 
-        adapter.setData(raidId, bossPosition, isAverageMode);
+        adapter.setData(raidId, bossPosition, isAverageMode, isAdjustMode);
         viewPager.setPagingEnabled(false);
         viewPager.setAdapter(adapter);
 
@@ -81,21 +93,32 @@ public class StatisticRank2Fragment extends Fragment {
             }
         });
 
-        //adjustSwitch 설정
-        avgSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        tabLayout.setViewPager(viewPager, tabStringArray);
+
+
+        adjustSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if(isAverageMode != isChecked) {
-                    int current = viewPager.getCurrentItem();
-                    isAverageMode = isChecked;
-                    adapter.setData(raidId, bossPosition, isAverageMode);
-                    viewPager.setAdapter(adapter);
-                    viewPager.setCurrentItem(current, false);
-                }
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                int current = viewPager.getCurrentItem();
+                isAdjustMode = b;
+                adapter.setData(raidId, bossPosition, isAverageMode, isAdjustMode);
+                viewPager.setAdapter(adapter);
+                viewPager.setCurrentItem(current, false);
             }
         });
 
-        tabLayout.setViewPager(viewPager, tabStringArray);
+        //toggleSwitch 설정
+        toggleSwitch.setOnChangeListener(new ToggleSwitch.OnChangeListener() {
+            @Override
+            public void onToggleSwitchChanged(int i) {
+                int current = viewPager.getCurrentItem();
+                isAverageMode = i == 1;
+                adapter.setData(raidId, bossPosition, isAverageMode, isAdjustMode);
+                viewPager.setAdapter(adapter);
+                viewPager.setCurrentItem(current, false);
+            }
+        });
+
 
         return view;
     }

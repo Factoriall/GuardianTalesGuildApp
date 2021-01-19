@@ -27,6 +27,7 @@ import com.github.mikephil.charting.data.CombinedData;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.LargeValueFormatter;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 
 import org.techtown.gtguildraid.Adapters.StatisticBossLeaderAdapter;
@@ -283,10 +284,10 @@ public class StatisticBoss2Fragment extends Fragment {
 
         overallChart.setRecords(records);
         overallChart.setCombinedChartUi();
-        setLeaderCard(records);
+        setLeaderCard(records, xAxisNum);
     }
 
-    private void setLeaderCard(List<Record> records) {
+    private void setLeaderCard(List<Record> records, int xAxisNum) {
         List<LeaderInfo> memberLeaderList = new ArrayList<>();
         for(Record r : records){
             boolean isMatched = false;
@@ -303,7 +304,7 @@ public class StatisticBoss2Fragment extends Fragment {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setNestedScrollingEnabled(false);
-        adapter = new StatisticBossLeaderAdapter(memberLeaderList);
+        adapter = new StatisticBossLeaderAdapter(memberLeaderList, xAxisNum);
 
         recyclerView.setAdapter(adapter);
     }

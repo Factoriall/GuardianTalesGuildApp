@@ -13,9 +13,10 @@ import org.techtown.gtguildraid.Fragments.StatisticRank1Fragment;
 public class StatisticPagerAdapter extends FragmentStateAdapter {
     private static final int ITEM_SIZE = 3;
 
-    private static final int MEMBER = 0;
-    private static final int BOSS = 1;
-    private static final int RANK = 2;
+    private static final int RANK = 0;
+    private static final int MEMBER = 1;
+    private static final int BOSS = 2;
+
     private int raidId;
 
     public void setData(int raidId){
@@ -30,12 +31,12 @@ public class StatisticPagerAdapter extends FragmentStateAdapter {
     @Override
     public Fragment createFragment(int position) {
         switch(position) {
+            case RANK:
+                return StatisticRank1Fragment.newInstance(raidId);
             case MEMBER:
                 return StatisticMember1Fragment.newInstance(raidId);
             case BOSS:
                 return StatisticBoss1Fragment.newInstance(raidId);
-            case RANK:
-                return StatisticRank1Fragment.newInstance(raidId);
         }
         return null;
     }

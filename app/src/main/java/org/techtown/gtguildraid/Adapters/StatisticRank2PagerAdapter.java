@@ -16,21 +16,23 @@ public class StatisticRank2PagerAdapter extends FragmentStatePagerAdapter {
     private int raidId;
     private int bossPosition;
     private boolean isAverageMode;
+    private boolean isAdjustMode;
 
     public StatisticRank2PagerAdapter(@NonNull FragmentManager fragmentManager) {
         super(fragmentManager, FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
     }
 
-    public void setData(int raidId, int bossPosition, boolean isAverageMode){
+    public void setData(int raidId, int bossPosition, boolean isAverageMode, boolean isAdjustMode){
         this.raidId = raidId;
         this.bossPosition = bossPosition;
         this.isAverageMode = isAverageMode;
+        this.isAdjustMode = isAdjustMode;
     }
 
     @NonNull
     @Override
     public Fragment getItem(int levelPosition) {
-        return StatisticRank3Fragment.newInstance(raidId, bossPosition, levelPosition, isAverageMode);
+        return StatisticRank3Fragment.newInstance(raidId, bossPosition, levelPosition, isAverageMode, isAdjustMode);
     }
 
     @Override

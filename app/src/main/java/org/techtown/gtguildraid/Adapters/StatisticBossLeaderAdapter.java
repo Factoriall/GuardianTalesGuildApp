@@ -22,6 +22,7 @@ import com.github.mikephil.charting.data.CombinedData;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.LargeValueFormatter;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 
 import org.techtown.gtguildraid.Models.Hero;
@@ -36,9 +37,11 @@ import java.util.Locale;
 
 public class StatisticBossLeaderAdapter extends RecyclerView.Adapter<StatisticBossLeaderAdapter.ViewHolder> {
     private List<LeaderInfo> leaderList;
+    private int xNum;
 
-    public StatisticBossLeaderAdapter(List<LeaderInfo> records) {
+    public StatisticBossLeaderAdapter(List<LeaderInfo> records, int xAxisNum) {
         this.leaderList = records;
+        this.xNum = xAxisNum;
     }
 
     @NonNull
@@ -53,7 +56,7 @@ public class StatisticBossLeaderAdapter extends RecyclerView.Adapter<StatisticBo
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         LeaderInfo leader = leaderList.get(position);
-        holder.setItem(leader);
+        holder.setItem(leader, xNum);
     }
 
     @Override
@@ -121,6 +124,7 @@ public class StatisticBossLeaderAdapter extends RecyclerView.Adapter<StatisticBo
                 leftAxis.setGridColor(context.getResources().getColor(R.color.bar_chart_color));
                 leftAxis.setTextColor(context.getResources().getColor(R.color.bar_chart_color));
                 leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
+                leftAxis.setValueFormatter(new LargeValueFormatter());
 
                 XAxis xAxis = chart.getXAxis();
                 xAxis.setGridColor(Color.WHITE);
@@ -229,11 +233,11 @@ public class StatisticBossLeaderAdapter extends RecyclerView.Adapter<StatisticBo
             context = itemView.getContext();
         }
 
-        public void setItem(LeaderInfo info) {
+        public void setItem(LeaderInfo info, int xAxisNum) {
             Hero leader = info.getLeader();
             List<Record> records = info.getRecordList();
             if (records.size() != 0)
-                chart.setxAxisNum(records.get(records.size() - 1).getRound());
+                chart.setxAxisNum(xAxisNum);
             else
                 chart.setxAxisNum(1);
 

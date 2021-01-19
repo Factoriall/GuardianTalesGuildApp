@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.techtown.gtguildraid.Adapters.StatisticRankCardAdapter;
+import org.techtown.gtguildraid.Models.Boss;
 import org.techtown.gtguildraid.Models.GuildMember;
 import org.techtown.gtguildraid.Models.RankInfo;
 import org.techtown.gtguildraid.Models.Record;
@@ -29,15 +30,17 @@ public class StatisticRank3Fragment extends Fragment {
     private int bossPosition;
     private int levelPosition;
     private boolean isAverageMode;
+    private boolean isAdjustMode;
     StatisticRankCardAdapter adapter;
 
-    public static Fragment newInstance(int raidId, int bossPosition, int levelPosition, boolean isAverageMode) {
+    public static Fragment newInstance(int raidId, int bossPosition, int levelPosition, boolean isAverageMode, boolean isAdjustMode) {
         StatisticRank3Fragment fragment = new StatisticRank3Fragment();
         Bundle args = new Bundle();
         args.putInt("raidId", raidId);
         args.putInt("bossPosition", bossPosition);
         args.putInt("levelPosition", levelPosition);
         args.putBoolean("isAverageMode", isAverageMode);
+        args.putBoolean("isAdjustMode", isAdjustMode);
 
         fragment.setArguments(args);
         return fragment;
@@ -53,6 +56,7 @@ public class StatisticRank3Fragment extends Fragment {
             bossPosition = getArguments().getInt("bossPosition");
             levelPosition = getArguments().getInt("levelPosition");
             isAverageMode = getArguments().getBoolean("isAverageMode");
+            isAdjustMode =  getArguments().getBoolean("isAdjustMode", false);
         }
 
         database = RoomDB.getInstance(getActivity());
@@ -81,8 +85,13 @@ public class StatisticRank3Fragment extends Fragment {
 
             RankInfo ri = new RankInfo(m.getName(), recordList.size());
 
-            for(Record r : recordList)
-                ri.addDamage(r.getDamage());
+            for(Record r : recordList) {
+                if(isAdjustMode) {
+                    ri.addDamage((int) (r.getDamage() * r.getBoss().getHardness()));
+                }
+                else
+                    ri.addDamage(r.getDamage());
+            }
 
             ri.setFinalDamage(isAverageMode);
             rankInfos.add(ri);

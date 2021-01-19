@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:layout_margin="2dp"
-        app:cardBackgroundColor="@color/info_card_out"
+        app:cardBackgroundColor="@color/record_card_out"
         app:cardCornerRadius="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -20,7 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="5dp"
-            app:cardBackgroundColor="@color/line_chart_color">
+            app:cardBackgroundColor="@color/record_card_in">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -32,21 +32,24 @@
                     android:layout_width="60dp"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:text="순위" />
+                    android:text="순위"
+                    android:textColor="#FFFFFF" />
 
                 <TextView
                     android:id="@+id/memberName"
                     android:layout_width="140dp"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:text="멤버 이름" />
+                    android:text="멤버 이름"
+                    android:textColor="#FFFFFF" />
 
                 <TextView
                     android:id="@+id/hitNum"
                     android:layout_width="30dp"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:text="횟수" />
+                    android:text="횟수"
+                    android:textColor="#FFFFFF" />
 
                 <TextView
                     android:id="@+id/damage"
@@ -54,7 +57,8 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="데미지" />
+                    android:text="데미지"
+                    android:textColor="#FFFFFF" />
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>
