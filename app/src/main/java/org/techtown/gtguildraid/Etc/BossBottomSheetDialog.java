@@ -67,7 +67,8 @@ public class BossBottomSheetDialog extends BottomSheetDialogFragment {
                 new imageInfo("invader", R.drawable.boss_invader), new imageInfo("madpanda", R.drawable.boss_madpanda),
                 new imageInfo("mino", R.drawable.boss_mino), new imageInfo("monster", R.drawable.boss_monster),
                 new imageInfo("sapa", R.drawable.boss_sapa), new imageInfo("shadow", R.drawable.boss_shadow),
-                new imageInfo("slime", R.drawable.boss_slime)
+                new imageInfo("slime", R.drawable.boss_slime), new imageInfo("elpaba", R.drawable.boss_elpaba),
+                new imageInfo("chief", R.drawable.boss_chief)
         };
     }
 

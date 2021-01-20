@@ -198,8 +198,9 @@ public class RecordCardFragment extends Fragment {
                             memberList.get(sMemberIdx).getId(), raidId, day);
                     adapter.setItems(recordList);
                     setTotalDamage(isAdjustMode);
-
                     adapter.notifyDataSetChanged();
+
+                    setFabVisibility();
                 }
             }
         });

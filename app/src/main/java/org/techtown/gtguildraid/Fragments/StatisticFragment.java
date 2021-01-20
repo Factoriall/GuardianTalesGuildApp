@@ -60,16 +60,16 @@ public class StatisticFragment extends Fragment {
         }
 
         spinner.attachDataSource(raidNameList);
-        Log.d("selectIndex", (String) spinner.getSelectedItem());
-
         spinner.setOnSpinnerItemSelectedListener(new OnSpinnerItemSelectedListener() {
             @Override
             public void onItemSelected(NiceSpinner parent, View view, int position, long id) {
-                Log.d("spinner position", Integer.toString(position));
                 if (position != 0)
                     setView(raids.get(position - 1));
             }
         });
+
+        spinner.setSelectedIndex(raids.size() - 1);
+        setView(raids.get(raids.size() - 1));
 
         return view;
     }

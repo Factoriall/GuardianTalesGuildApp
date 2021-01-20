@@ -26,7 +26,7 @@ import org.techtown.gtguildraid.Models.Record;
 
 
 //Add database entities
-@Database(entities = {GuildMember.class, Boss.class, Raid.class, Hero.class, Record.class, Favorites.class}, version = 11, exportSchema = false)
+@Database(entities = {GuildMember.class, Boss.class, Raid.class, Hero.class, Record.class, Favorites.class}, version = 13, exportSchema = false)
 @TypeConverters(DateConverter.class)
 public abstract class RoomDB extends RoomDatabase {
     private static RoomDB database;
@@ -94,7 +94,7 @@ public abstract class RoomDB extends RoomDatabase {
         }
     };
 
-    static final Migration MIGRATION_10_11 = new Migration(10, 11) {//favorites의
+    static final Migration MIGRATION_10_11 = new Migration(10, 11) {//favorites의 데이터 변경
         @Override
         public void migrate(SupportSQLiteDatabase database) {
             database.execSQL("CREATE TABLE Favorites_backup " +
@@ -104,6 +104,23 @@ public abstract class RoomDB extends RoomDatabase {
                     + "SELECT heroId FROM Favorites");
             database.execSQL("DROP TABLE Favorites");
             database.execSQL("ALTER TABLE Favorites_backup RENAME TO Favorites");
+        }
+    };
+
+    static final Migration MIGRATION_11_12 = new Migration(11, 12) {//hero 데이터 업데이트
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            database.execSQL("INSERT INTO hero (koreanName, englishName, element, star, role) "
+                    + "VALUES ('네바', 'neva', 4, 2, 1), "
+                    + "('루', 'rue', 4, 3, 4), "
+                    + "('가브리엘', 'gabriel', 4, 3, 4)");
+        }
+    };
+
+    static final Migration MIGRATION_12_13 = new Migration(12, 13) {//루 데이터 고치기
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            database.execSQL("UPDATE hero SET element = 3, role = 1 WHERE heroId = 50");
         }
     };
 
@@ -119,6 +136,8 @@ public abstract class RoomDB extends RoomDatabase {
                     .addMigrations(MIGRATION_8_9)
                     .addMigrations(MIGRATION_9_10)
                     .addMigrations(MIGRATION_10_11)
+                    .addMigrations(MIGRATION_11_12)
+                    .addMigrations(MIGRATION_12_13)
                     .build();
         }
         else{

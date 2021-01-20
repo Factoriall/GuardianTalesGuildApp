@@ -67,6 +67,8 @@ public class StatisticRank1Fragment extends Fragment {
                 tab.setText(bossesInRaid.get(position - 1).getName());
         }).attach();
 
+        viewPager.setUserInputEnabled(false);
+
         return view;
     }
 }
