@@ -115,7 +115,18 @@ public class RecordCardFragment extends Fragment {
 
         @Override
         public int compareTo(MemberForSpinner member) {
-            return member.getTodayRemain() - todayRemain;
+            if(todayRemain == 0){
+                if(member.todayRemain == 0)
+                    return 0;
+                else
+                    return 1;
+            }
+            else{
+                if(member.todayRemain == 0)
+                    return -1;
+                else
+                    return 0;
+            }
         }
     }
 
@@ -186,16 +197,14 @@ public class RecordCardFragment extends Fragment {
         memberSpinner.setOnSpinnerItemSelectedListener(new OnSpinnerItemSelectedListener() {
             @Override
             public void onItemSelected(NiceSpinner parent, View view, int position, long id) {
-                if (sMemberIdx != position) {
-                    sMemberIdx = position;
-                    recordList = database.recordDao().getCertainDayRecordsWithBossAndLeader(
-                            memberList.get(sMemberIdx).getId(), raidId, day);
-                    adapter.setItems(recordList);
-                    setTotalDamage();
-                    adapter.notifyDataSetChanged();
+                sMemberIdx = position;
+                recordList = database.recordDao().getCertainDayRecordsWithBossAndLeader(
+                        memberList.get(sMemberIdx).getId(), raidId, day);
+                adapter.setItems(recordList);
+                setTotalDamage();
+                adapter.notifyDataSetChanged();
 
-                    setFabVisibility();
-                }
+                setFabVisibility();
             }
         });
 
@@ -237,16 +246,13 @@ public class RecordCardFragment extends Fragment {
 
         memberSpinner.attachDataSource(memberNameList);
 
-        if(memberNameList.size() == 1){
+        if(memberNameList.size() == 1)
             memberSpinner.setText(memberNameList.get(0));
-        }
     }
 
     private void refreshSpinnerItem(int rIdx) {
-        MemberForSpinner rMember = memberList.get(rIdx);
-        rMember.setTodayRemain(getRemainedRecord(database.memberDao()
-                .getMember(rMember.getId()).getID(), raidId));
-        memberList.set(rIdx, rMember);
+        int prevMemberId = memberList.get(rIdx).getId();
+        memberList.get(rIdx).setTodayRemain(getRemainedRecord(prevMemberId, raidId));
 
         Collections.sort(memberList);
 
@@ -255,7 +261,7 @@ public class RecordCardFragment extends Fragment {
         int newSelectedIdx = 0;
         int idx = 0;
         for(MemberForSpinner m : memberList){
-            if(m.getId() == rMember.getId())
+            if(m.getId() == prevMemberId)
                 newSelectedIdx = idx;
             memberNameList.add(m.getName() + " - " + m.getTodayRemain());
             idx++;
@@ -292,7 +298,7 @@ public class RecordCardFragment extends Fragment {
         Raid raid = database.raidDao().getCurrentRaid(new Date());
 
         dialogInfo.setText(database.memberDao().getMember(memberList.get(sMemberIdx).getId()).getName() + " / "
-                        + day + "일차");
+                + day + "일차");
 
         //보스 스피너 생성
         List<Boss> bosses = database.raidDao().getBossesList(raid.getRaidId());
@@ -372,13 +378,13 @@ public class RecordCardFragment extends Fragment {
                 }
                 SpinnerAdapter adapter = new DialogImageSpinnerAdapter(getContext(), R.layout.spinner_value_layout, heroList, imageList);
                 heroNames.setAdapter(adapter);
-                    for (int j = 0; j < elementHeroes.size(); j++) {
-                        if (selectedHeroId == elementHeroes.get(j).getHeroId()) {
-                            Log.d("setSelection", elementHeroes.get(j).getKoreanName());
-                            heroNames.setSelection(j);
-                            break;
-                        }
+                for (int j = 0; j < elementHeroes.size(); j++) {
+                    if (selectedHeroId == elementHeroes.get(j).getHeroId()) {
+                        Log.d("setSelection", elementHeroes.get(j).getKoreanName());
+                        heroNames.setSelection(j);
+                        break;
                     }
+                }
 
             }
 
@@ -428,7 +434,7 @@ public class RecordCardFragment extends Fragment {
 
                 Integer iHeroId;
                 iHeroId = heroIds.get(elements.getSelectedItemPosition())
-                            .get(heroNames.getSelectedItemPosition());
+                        .get(heroNames.getSelectedItemPosition());
 
                 if (!sDamage.equals("")) {
                     SharedPreferences.Editor editor = pref.edit();
@@ -459,10 +465,11 @@ public class RecordCardFragment extends Fragment {
                     recordList.addAll(database.recordDao().
                             getCertainDayRecordsWithBossAndLeader(memberList.get(sMemberIdx).getId(), raidId, day));
 
+                    adapter.notifyDataSetChanged();
+
                     setFabVisibility();
                     setTotalDamage();
-
-                    adapter.notifyDataSetChanged();
+                    refreshSpinnerItem(sMemberIdx);
                 } else {
                     showToast("데미지 및 보스 레벨을 입력하세요!");
                 }
@@ -536,6 +543,7 @@ public class RecordCardFragment extends Fragment {
                     recordList.remove(position);
                     adapter.notifyItemRemoved(position);
                     setTotalDamage();
+                    refreshSpinnerItem(sMemberIdx);
                     Snackbar.make(recyclerView, deletedInfo, 2000)
                             .setAction("취소", new View.OnClickListener() {
                                 @Override
@@ -544,6 +552,7 @@ public class RecordCardFragment extends Fragment {
                                     recordList.add(position, selected);
                                     adapter.notifyItemInserted(position);
                                     setTotalDamage();
+                                    refreshSpinnerItem(sMemberIdx);
                                 }
                             }).show();
                     new Handler().postDelayed(new Runnable() {

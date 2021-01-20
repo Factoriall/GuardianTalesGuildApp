@@ -373,7 +373,7 @@ public class StatisticMember3Fragment extends Fragment {
                 memberLeaderList.add(new LeaderInfo(r.getLeader(), r));
         }
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setNestedScrollingEnabled(false);
         adapter = new StatisticMemberLeaderAdapter(memberLeaderList, isAdjustMode);
 

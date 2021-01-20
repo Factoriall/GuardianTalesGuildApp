@@ -38,7 +38,7 @@ public class MemberResignedFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        ViewGroup view = (ViewGroup) inflater.inflate(R.layout.fragment_res_member, container, false);
+        ViewGroup view = (ViewGroup) inflater.inflate(R.layout.fragment_member_resigned, container, false);
 
         database = RoomDB.getInstance(getActivity());
 

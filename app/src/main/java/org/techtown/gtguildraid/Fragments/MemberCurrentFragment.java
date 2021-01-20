@@ -41,7 +41,7 @@ public class MemberCurrentFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        ViewGroup view = (ViewGroup) inflater.inflate(R.layout.fragment_cur_member, container, false);
+        ViewGroup view = (ViewGroup) inflater.inflate(R.layout.fragment_member_current, container, false);
 
         Button createButton = view.findViewById(R.id.createButton);
         currentCnt = view.findViewById(R.id.currentCnt);
