@@ -22,13 +22,6 @@ import java.util.Locale;
 
 public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder> {
     private List<Record> recordList;
-    private static boolean isChecked;
-    
-    public RecordAdapter(boolean isChecked) {
-        this.isChecked = isChecked;
-    }
-
-    public void setChecked(boolean isChecked) {this.isChecked = isChecked;}
 
     @NonNull
     @Override
@@ -57,12 +50,10 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder
     static class ViewHolder extends RecyclerView.ViewHolder {
         TextView damage;
         TextView level;
-        TextView hardness;
         TextView round;
         ImageView bossImage;
         ImageView leaderImage;
         ImageView lastHit;
-        LinearLayout adjustLayout;
         TextView bossName;
         RoomDB database;
         Context context;
@@ -77,32 +68,20 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder
             damage = itemView.findViewById(R.id.damage);
             round = itemView.findViewById(R.id.round);
             level = itemView.findViewById(R.id.level);
-            hardness = itemView.findViewById(R.id.hardness);
             bossName = itemView.findViewById(R.id.bossName);
             bossImage = itemView.findViewById(R.id.bossImage);
-            adjustLayout = itemView.findViewById(R.id.adjustLayout);
             leaderImage = itemView.findViewById(R.id.leaderImage);
             lastHit = itemView.findViewById(R.id.lastHit);
         }
 
         public void setItem(Record record) {
-            hardness.setText(new DecimalFormat("#.#").format(record.getBoss().getHardness()));
             round.setText(record.getRound() + "회차");
             level.setText(getLevelFromRound(record.getRound()));
             bossName.setText(record.getBoss().getName());
             bossImage.setImageResource(getIdentifierFromResource(
                     "boss_" + record.getBoss().getImgName(), "drawable"));
 
-            if(isChecked){
-                adjustLayout.setVisibility(View.VISIBLE);
-                hardness.setText(new DecimalFormat("#.#").format(record.getBoss().getHardness()));
-                damage.setText(NumberFormat.getNumberInstance(Locale.US).format((int)(record.getDamage() * record.getBoss().getHardness())));
-            }
-            else{
-                adjustLayout.setVisibility(View.INVISIBLE);
-                hardness.setText(new DecimalFormat("#.#").format(record.getBoss().getHardness()));
-                damage.setText(NumberFormat.getNumberInstance(Locale.US).format(record.getDamage()));
-            }
+            damage.setText(NumberFormat.getNumberInstance(Locale.US).format(record.getDamage()));
 
             String leaderName = record.getLeader().getEnglishName();
             leaderImage.setImageResource(getIdentifierFromResource(

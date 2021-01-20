@@ -69,54 +69,6 @@
 
         </androidx.cardview.widget.CardView>
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/switchCard"
-            android:layout_width="70dp"
-            android:layout_height="match_parent"
-            app:cardBackgroundColor="#45403A"
-            app:cardCornerRadius="0dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="5dp"
-                android:layout_marginBottom="5dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/textView6"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="#D8B38E"
-                    android:gravity="center"
-                    android:text="배율"
-                    android:textColor="#3C3C3C" />
-
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="#2D2F34">
-
-                    <Switch
-                        android:id="@+id/adjustSwitch"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:checked="true"
-                        android:showText="true"
-                        android:switchTextAppearance="@style/switchStyle"
-                        android:textOff="OFF"
-                        android:textOn="ON"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-            </LinearLayout>
-
-        </androidx.cardview.widget.CardView>
     </LinearLayout>
 
     <LinearLayout
@@ -126,10 +78,8 @@
         android:layout_marginStart="5dp"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="5dp"
-        android:layout_marginBottom="5dp"
         android:background="#6A5A46"
         android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/swipeRefreshLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/memberLayout">
@@ -174,33 +124,22 @@
 
     </LinearLayout>
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/swipeRefreshLayout"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recordRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:orientation="vertical"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/TotalDamageCard">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recordRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="visible"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:listitem="@layout/card_record" />
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        app:layout_constraintTop_toBottomOf="@+id/TotalDamageCard"
+        tools:listitem="@layout/card_record" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="20dp"
-        android:layout_marginRight="20dp"
         android:layout_marginBottom="20dp"
         android:clickable="true"
         android:src="@drawable/icon_add"

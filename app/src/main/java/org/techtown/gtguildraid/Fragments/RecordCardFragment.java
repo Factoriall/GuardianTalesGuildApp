@@ -31,7 +31,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -66,7 +65,6 @@ public class RecordCardFragment extends Fragment {
     final String[] elementKoreanArray = new String[]{"1성", "화", "수", "지", "광", "암", "무"};
     final String[] elementEnglishArray = new String[]{"normal", "fire", "water", "earth", "light", "dark", "basic"};
 
-    SwipeRefreshLayout swipeRefreshLayout;
     RecyclerView recyclerView;
     DialogImageSpinnerAdapter elementAdapter;
     LinearLayoutManager linearLayoutManager;
@@ -75,7 +73,6 @@ public class RecordCardFragment extends Fragment {
 
     TextView totalDamage;
     FloatingActionButton fab;
-    Switch adjustSwitch;
     NiceSpinner memberSpinner;
 
     List<Record> recordList = new ArrayList<>();
@@ -85,7 +82,6 @@ public class RecordCardFragment extends Fragment {
     List<GuildMember> members;
     int selectedHeroId;
     int selectedHeroElement;
-    private Boolean isAdjustMode = true;
     private int sMemberIdx = 0;
 
     SharedPreferences pref;
@@ -173,19 +169,17 @@ public class RecordCardFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_record_recycler, container, false);
         memberSpinner = view.findViewById(R.id.nickname);
-        adjustSwitch = view.findViewById(R.id.adjustSwitch);
         members = database.memberDao().getCurrentMembers();
 
         setMemberSpinner();
 
         linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView = view.findViewById(R.id.recordRecyclerView);
-        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
         recordList = database.recordDao().getCertainDayRecordsWithBossAndLeader(
                 memberList.get(sMemberIdx).getId(), raidId, day);
 
         recyclerView.setLayoutManager(linearLayoutManager);
-        adapter = new RecordAdapter(isAdjustMode);
+        adapter = new RecordAdapter();
         adapter.setItems(recordList);
         recyclerView.setAdapter(adapter);
 
@@ -197,7 +191,7 @@ public class RecordCardFragment extends Fragment {
                     recordList = database.recordDao().getCertainDayRecordsWithBossAndLeader(
                             memberList.get(sMemberIdx).getId(), raidId, day);
                     adapter.setItems(recordList);
-                    setTotalDamage(isAdjustMode);
+                    setTotalDamage();
                     adapter.notifyDataSetChanged();
 
                     setFabVisibility();
@@ -205,27 +199,10 @@ public class RecordCardFragment extends Fragment {
             }
         });
 
-        adjustSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                isAdjustMode = isChecked;
-                adapter.setChecked(isAdjustMode);
-                setTotalDamage(isAdjustMode);
-                adapter.notifyDataSetChanged();
-            }
-        });
-
         TextView damageText = view.findViewById(R.id.damageText);
         damageText.setText(day + "일차 총 데미지");
         totalDamage = view.findViewById(R.id.totalDamage);
-        setTotalDamage(isAdjustMode);
-
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                refreshView();
-            }
-        });
+        setTotalDamage();
 
         fab = view.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -288,33 +265,12 @@ public class RecordCardFragment extends Fragment {
         memberSpinner.setSelectedIndex(newSelectedIdx);
     }
 
-    private void setTotalDamage(Boolean isChecked) {
+    private void setTotalDamage() {
         int total = 0;
-        for (Record record : recordList) {
-            if (isChecked)
-                total += (int) (record.getDamage() * record.getBoss().getHardness());
-            else
-                total += record.getDamage();
-        }
+        for (Record record : recordList)
+            total += record.getDamage();
 
         totalDamage.setText(NumberFormat.getNumberInstance(Locale.US).format(total));
-    }
-
-    private void refreshView() {
-        recordList.clear();
-        recordList.addAll(database.recordDao().getCertainDayRecordsWithBossAndLeader(
-                memberList.get(sMemberIdx).getId(), raidId, day));
-        setTotalDamage(isAdjustMode);
-        adapter.notifyDataSetChanged();
-
-        refreshSpinnerItem(sMemberIdx);
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                swipeRefreshLayout.setRefreshing(false);
-            }
-        }, 500);
     }
 
     private void updateCard(Boolean isEditing, Record record) {
@@ -504,6 +460,7 @@ public class RecordCardFragment extends Fragment {
                             getCertainDayRecordsWithBossAndLeader(memberList.get(sMemberIdx).getId(), raidId, day));
 
                     setFabVisibility();
+                    setTotalDamage();
 
                     adapter.notifyDataSetChanged();
                 } else {
@@ -578,6 +535,7 @@ public class RecordCardFragment extends Fragment {
                     database.recordDao().deleteRecord(selected);
                     recordList.remove(position);
                     adapter.notifyItemRemoved(position);
+                    setTotalDamage();
                     Snackbar.make(recyclerView, deletedInfo, 2000)
                             .setAction("취소", new View.OnClickListener() {
                                 @Override
@@ -585,6 +543,7 @@ public class RecordCardFragment extends Fragment {
                                     database.recordDao().insertRecord(selected);
                                     recordList.add(position, selected);
                                     adapter.notifyItemInserted(position);
+                                    setTotalDamage();
                                 }
                             }).show();
                     new Handler().postDelayed(new Runnable() {

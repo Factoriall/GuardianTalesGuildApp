@@ -43,36 +43,6 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/adjustLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:orientation="horizontal"
-                    android:visibility="visible"
-                    card_view:layout_constraintBottom_toTopOf="@+id/linearLayout3"
-                    card_view:layout_constraintStart_toEndOf="@+id/linearLayout4">
-
-                    <TextView
-                        android:id="@+id/multiplyText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginRight="5dp"
-                        android:text="x"
-                        android:textColor="#ED554A"
-                        android:textSize="18sp" />
-
-                    <TextView
-                        android:id="@+id/hardness"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="1.6"
-                        android:textColor="#F15347"
-                        android:textSize="20sp" />
-
-                </LinearLayout>
-
-                <LinearLayout
                     android:id="@+id/linearLayout3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
