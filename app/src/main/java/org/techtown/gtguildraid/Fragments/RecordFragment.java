@@ -58,10 +58,10 @@ public class RecordFragment extends Fragment {
 
         raidName.setText(raid.getName());
         raidTerm.setText((new SimpleDateFormat(dateFormat).format(raid.getStartDay()) + "~" +
-                new SimpleDateFormat(dateFormat).format(raid.getEndDay())));
+                new SimpleDateFormat(dateFormat).format(adjustEndTime(raid.getEndDay()))));
 
         vAdapter = new ViewPagerAdapter(getChildFragmentManager(), getLifecycle());
-        setViewPager(getIntegerFromToday());
+        setViewPager(getIntegerFromToday() == -1 ? 0 : getIntegerFromToday());
 
         new TabLayoutMediator(tabLayout, viewPager, true, (tab, position) -> {
             tab.setText("Day " + (position + 1) + "\n" + getRaidDate(position));
@@ -72,15 +72,17 @@ public class RecordFragment extends Fragment {
         LinearLayout tabStrip = ((LinearLayout)tabLayout.getChildAt(0));
         for(int i=getIntegerFromToday()+1; i<VIEWPAGER_NUM; i++){
             tabStrip.getChildAt(i).setBackgroundColor(Color.GRAY);
-            tabStrip.getChildAt(i).setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    return true;
-                }
-            });
         }
 
         return view;
+    }
+
+    private Date adjustEndTime(Date endDay) {
+        Calendar end = Calendar.getInstance();
+        end.setTime(endDay);
+        end.add(Calendar.DATE, -2);
+
+        return end.getTime();
     }
 
     private void setViewPager(int day) {

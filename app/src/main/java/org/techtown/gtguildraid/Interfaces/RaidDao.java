@@ -27,6 +27,9 @@ public abstract class RaidDao {
     @Query("SELECT EXISTS(SELECT * FROM Raid WHERE endDay > :today)")
     public abstract Boolean isCurrentRaidExist(Date today);
 
+    @Query("SELECT EXISTS(SELECT * FROM Raid WHERE startDay <= :today AND endDay > :today)")
+    public abstract Boolean isStartedRaidExist(Date today);
+
     @Query("SELECT * FROM Raid WHERE endDay > :today")
     public abstract Raid getCurrentRaid(Date today);
 

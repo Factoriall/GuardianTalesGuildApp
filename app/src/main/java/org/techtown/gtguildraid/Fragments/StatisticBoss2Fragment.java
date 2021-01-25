@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.CombinedChart;
 import com.github.mikephil.charting.charts.CombinedChart.DrawOrder;
 import com.github.mikephil.charting.components.Legend;
@@ -56,15 +57,15 @@ public class StatisticBoss2Fragment extends Fragment {
     TextView averageDamage;
     TextView stDev;
     TextView hitNum;
-    CombinedChartClass overallChart;
+    BarChartClass overallChart;
     RecyclerView recyclerView;
 
-    private class CombinedChartClass{
-        private CombinedChart chart;
+    private class BarChartClass{
+        private BarChart chart;
         private int xAxisNum;
         private List<Record> records;
 
-        public CombinedChartClass(CombinedChart chart) {
+        public BarChartClass(BarChart chart) {
             this.chart = chart;
         }
 
@@ -76,18 +77,13 @@ public class StatisticBoss2Fragment extends Fragment {
             this.records = records;
         }
 
-        public void setCombinedChartUi(){ //CombinedChart의 ui 설정
+        public void setBarChartUi(){ //BarChart의 ui 설정
             chart.getDescription().setEnabled(false);
             chart.setDrawGridBackground(false);
             chart.setDrawBarShadow(false);
             chart.setHighlightFullBarEnabled(false);
             chart.setExtraOffsets(0, 0, 0, 10);
             chart.animateXY(2000, 2000);
-
-            // draw bars behind lines
-            chart.setDrawOrder(new DrawOrder[]{
-                    DrawOrder.BAR, DrawOrder.LINE
-            });
 
             Legend l = chart.getLegend();
             l.setWordWrapEnabled(true);
@@ -97,15 +93,13 @@ public class StatisticBoss2Fragment extends Fragment {
             l.setDrawInside(false);
             l.setTextColor(Color.WHITE);
 
-            YAxis rightAxis = chart.getAxisRight();
-            rightAxis.setDrawGridLines(false);
-            rightAxis.setTextColor(getResources().getColor(R.color.line_chart_color));
-            rightAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
-
             YAxis leftAxis = chart.getAxisLeft();
             leftAxis.setGridColor(getResources().getColor(R.color.bar_chart_color));
             leftAxis.setTextColor(getResources().getColor(R.color.bar_chart_color));
             leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
+
+            YAxis rightAxis = chart.getAxisRight();
+            rightAxis.setEnabled(false);
 
             XAxis xAxis = chart.getXAxis();
             xAxis.setGridColor(Color.WHITE);
@@ -125,10 +119,7 @@ public class StatisticBoss2Fragment extends Fragment {
                 }
             });
 
-            CombinedData data = new CombinedData();
-
-            data.setData(generateLineData());
-            data.setData(generateBarData());
+            BarData data = generateBarData();
 
             xAxis.setAxisMaximum(data.getXMax() + 0.8f);
 
@@ -136,37 +127,6 @@ public class StatisticBoss2Fragment extends Fragment {
             chart.invalidate();
         }
 
-        private LineData generateLineData(){ // 횟수 그래프
-            LineData d = new LineData();
-
-            ArrayList<Entry> entries = new ArrayList<>();
-
-            int[] numArray = new int[xAxisNum];
-
-            for(Record r : records)
-                numArray[r.getRound() - 1]++;
-
-            for (int i = 0; i < xAxisNum; i++) {
-                entries.add(new Entry(i + 1f, numArray[i]));
-            }
-
-            LineDataSet set = new LineDataSet(entries, "친 횟수");
-
-            int lineColor = getResources().getColor(R.color.line_chart_color);
-            set.setColor(lineColor);
-            set.setLineWidth(2.5f);
-            set.setCircleColor(lineColor);
-            set.setCircleRadius(5f);
-            set.setFillColor(lineColor);
-            set.setDrawValues(true);
-            set.setValueTextSize(10f);
-            set.setValueTextColor(lineColor);
-
-            set.setAxisDependency(YAxis.AxisDependency.RIGHT);
-            d.addDataSet(set);
-
-            return d;
-        }
 
         private BarData generateBarData(){ // 평균 딜량 그래프
             ArrayList<BarEntry> entries = new ArrayList<>();
@@ -175,17 +135,23 @@ public class StatisticBoss2Fragment extends Fragment {
                 entries.add(new BarEntry(i + 1f, 0));
             }
 
+            int[] damageArray = new int[xAxisNum];
             int[] numArray = new int[xAxisNum];
+            Log.d("getround", "xaxisnum:" + xAxisNum);
+            Log.d("getround", "recordNum:" + records.size());
             for(Record r : records) {
-                BarEntry e = entries.get(r.getRound() - 1);
-                e.setY( e.getY() + r.getDamage() );
+                Log.d("getround", "" + r.getRound());
+                damageArray[r.getRound() - 1] += r.getDamage();
                 numArray[r.getRound() - 1]++;
             }
 
             int idx = 0;
             for(BarEntry e : entries){
                 if(numArray[idx] != 0)
-                    e.setY(e.getY() / numArray[idx++]);
+                    e.setY(damageArray[idx] / numArray[idx]);
+                else
+                    e.setY(0);
+                idx++;
             }
 
             BarDataSet set = new BarDataSet(entries, "평균 딜량");
@@ -198,8 +164,7 @@ public class StatisticBoss2Fragment extends Fragment {
                 }
             });
             set.setColor(barColor);
-            set.setValueTextColor(barColor);
-            set.setValueTextSize(10f);
+            set.setDrawValues(false);
 
             set.setAxisDependency(YAxis.AxisDependency.LEFT);
 
@@ -232,7 +197,7 @@ public class StatisticBoss2Fragment extends Fragment {
         stDev = view.findViewById(R.id.CV);
         hitNum = view.findViewById(R.id.hitNum);
         recyclerView = view.findViewById(R.id.recyclerView);
-        overallChart = new CombinedChartClass(view.findViewById(R.id.chart));
+        overallChart = new BarChartClass(view.findViewById(R.id.chart));
 
         setView(position);
         Log.d("bossPosition", "pos: " + position);
@@ -283,7 +248,7 @@ public class StatisticBoss2Fragment extends Fragment {
         stDev.setText(getCV(average, records));
 
         overallChart.setRecords(records);
-        overallChart.setCombinedChartUi();
+        overallChart.setBarChartUi();
         setLeaderCard(records, xAxisNum);
     }
 

@@ -24,6 +24,7 @@ import org.techtown.gtguildraid.Utils.RoomDB;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -68,8 +69,14 @@ public class StatisticFragment extends Fragment {
             }
         });
 
-        spinner.setSelectedIndex(raids.size() - 1);
-        setView(raids.get(raids.size() - 1));
+        if(database.raidDao().isStartedRaidExist(new Date())) {
+            spinner.setSelectedIndex(raidNameList.size() - 1);
+            setView(raids.get(raids.size() - 1));
+        }
+        else if(raids.size() >= 2){
+            spinner.setSelectedIndex(raidNameList.size() - 2);
+            setView(raids.get(raids.size() - 2));
+        }
 
         return view;
     }

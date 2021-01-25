@@ -152,13 +152,13 @@
                         android:text="레벨별 딜링 기록"
                         android:textColor="#FFFFFF" />
 
-                    <com.github.mikephil.charting.charts.CombinedChart
+                    <com.github.mikephil.charting.charts.BarChart
                         android:id="@+id/chart"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_margin="10dp">
 
-                    </com.github.mikephil.charting.charts.CombinedChart>
+                    </com.github.mikephil.charting.charts.BarChart>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 

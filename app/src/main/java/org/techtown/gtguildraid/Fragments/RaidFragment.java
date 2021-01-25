@@ -272,10 +272,7 @@ public class RaidFragment extends Fragment implements BossBottomSheetDialog.Bott
                 Date eDate;
                 try {
                     sDate = new SimpleDateFormat(dateFormat).parse(startDate.getText().toString().trim());
-                    Calendar cal = Calendar.getInstance();
-                    cal.setTime(sDate);
-                    cal.add(Calendar.DATE, 14);
-                    eDate = cal.getTime();
+                    eDate = getEndDate(sDate);
                     if(!sName.equals("")){
                         dialog.dismiss();
 
@@ -311,6 +308,13 @@ public class RaidFragment extends Fragment implements BossBottomSheetDialog.Bott
                 }
             }
         });
+    }
+
+    private Date getEndDate(Date sDate) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(sDate);
+        cal.add(Calendar.DATE, 15);
+        return cal.getTime();
     }
 
     private void refreshView() {
@@ -353,7 +357,7 @@ public class RaidFragment extends Fragment implements BossBottomSheetDialog.Bott
     private Date adjustEndTime(Date eDate) {
         Calendar end = Calendar.getInstance();
         end.setTime(eDate);
-        end.add(Calendar.DATE, -1);
+        end.add(Calendar.DATE, -2);
 
         return end.getTime();
     }
