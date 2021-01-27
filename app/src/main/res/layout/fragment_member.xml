@@ -103,11 +103,9 @@
             android:id="@+id/tabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/background_light"
+            app:tabBackground="@drawable/tab_color_selector3"
             app:tabGravity="fill"
-            app:tabMode="fixed"
-            app:tabSelectedTextColor="@color/colorAccent"
-            app:tabTextColor="@color/colorPrimary" />
+            app:tabMode="fixed" />
     </com.google.android.material.appbar.AppBarLayout>
 
 

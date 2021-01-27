@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -28,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MemberResignedFragment extends Fragment {
+    TextView resignCnt;
     RecyclerView recyclerView;
     List<GuildMember> memberList = new ArrayList<>();
     LinearLayoutManager linearLayoutManager;
@@ -48,6 +50,9 @@ public class MemberResignedFragment extends Fragment {
         recyclerView.setLayoutManager(linearLayoutManager);
         adapter = new MemberAdapter(memberList);
         recyclerView.setAdapter(adapter);
+
+        resignCnt = view.findViewById(R.id.resignCnt);
+        resignCnt.setText(memberList.size()+"명");
 
         MySwipeHelper swipeHelper = new MySwipeHelper(getActivity(), recyclerView, 200) {
             @Override
@@ -124,11 +129,11 @@ public class MemberResignedFragment extends Fragment {
 
                 memberList.clear();
                 memberList.addAll(database.memberDao().getResignedMembers());
+                resignCnt.setText(memberList.size()+"명");
 
                 adapter.notifyDataSetChanged();
             }
         });
-        showToast("Update click");
     }
 
     private void recoverMember(int pos) {
@@ -142,6 +147,7 @@ public class MemberResignedFragment extends Fragment {
         database.memberDao().setIsResigned(m.getID(), false);
 
         memberList.remove(pos);
+        resignCnt.setText(memberList.size()+"명");
 
         adapter.notifyItemRemoved(pos);
         adapter.notifyItemRangeChanged(pos, memberList.size());
@@ -153,10 +159,10 @@ public class MemberResignedFragment extends Fragment {
         database.memberDao().delete(m);
 
         memberList.remove(pos);
+        resignCnt.setText(memberList.size()+"명");
 
         adapter.notifyItemRemoved(pos);
         adapter.notifyItemRangeChanged(pos, memberList.size());
-        showToast("Delete click");
     }
 
     private void showToast(String msg){

@@ -8,6 +8,8 @@
     <color name="tab_background_unselected">#687DB3</color>
     <color name="tab_background_selected2">#3F51B5</color>
     <color name="tab_background_unselected2">#2A315A</color>
+    <color name="tab_background_selected3">#454545</color>
+    <color name="tab_background_unselected3">#222222</color>
     <color name="spinner_bg">#2D2F34</color>
     <color name="record_card_out">#15233d</color>
     <color name="record_card_in">#687DB3</color>
@@ -16,4 +18,5 @@
     <color name="bg_text">#2D2F34</color>
     <color name="bar_chart_color">#423118</color>
     <color name="line_chart_color">#D8B38E</color>
+
 </resources>

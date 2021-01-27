@@ -3,7 +3,7 @@ package org.techtown.gtguildraid.Models;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LeaderInfo {
+public class LeaderInfo implements Comparable<LeaderInfo>{
     private Hero leader;
     private List<Record> recordList = new ArrayList<>();
 
@@ -26,5 +26,10 @@ public class LeaderInfo {
 
     public boolean isMatched(Hero leader) {
         return this.leader.getHeroId() == leader.getHeroId();
+    }
+
+    @Override
+    public int compareTo(LeaderInfo leaderInfo) {
+        return leaderInfo.recordList.size() - recordList.size();
     }
 }

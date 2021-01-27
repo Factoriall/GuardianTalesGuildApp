@@ -15,8 +15,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.charts.CombinedChart;
-import com.github.mikephil.charting.charts.CombinedChart.DrawOrder;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.XAxis.XAxisPosition;
@@ -24,11 +22,6 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.data.CombinedData;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.formatter.LargeValueFormatter;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 
 import org.techtown.gtguildraid.Adapters.StatisticBossLeaderAdapter;
@@ -40,6 +33,7 @@ import org.techtown.gtguildraid.Utils.RoomDB;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -96,6 +90,7 @@ public class StatisticBoss2Fragment extends Fragment {
             YAxis leftAxis = chart.getAxisLeft();
             leftAxis.setGridColor(getResources().getColor(R.color.bar_chart_color));
             leftAxis.setTextColor(getResources().getColor(R.color.bar_chart_color));
+
             leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
 
             YAxis rightAxis = chart.getAxisRight();
@@ -266,6 +261,7 @@ public class StatisticBoss2Fragment extends Fragment {
             if(!isMatched)
                 memberLeaderList.add(new LeaderInfo(r.getLeader(), r));
         }
+        Collections.sort(memberLeaderList);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setNestedScrollingEnabled(false);

@@ -24,6 +24,7 @@ import org.techtown.gtguildraid.Utils.RoomDB;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -89,7 +90,7 @@ public class StatisticFragment extends Fragment {
         TextView raidTerm = view.findViewById(R.id.raidTerm);
 
         raidTerm.setText((new SimpleDateFormat(dateFormat).format(raid.getStartDay()) + "~" +
-                new SimpleDateFormat(dateFormat).format(raid.getEndDay())));
+                new SimpleDateFormat(dateFormat).format(getEndTime(raid.getStartDay()))));
 
         sAdapter = new StatisticPagerAdapter(getChildFragmentManager(), getLifecycle());
 
@@ -104,6 +105,14 @@ public class StatisticFragment extends Fragment {
                 tab.setText("보스별 기록");
         }).attach();
         viewPager.setUserInputEnabled(false);
+    }
+
+    private Date getEndTime(Date day) {
+        Calendar end = Calendar.getInstance();
+        end.setTime(day);
+        end.add(Calendar.DATE, 13);
+
+        return end.getTime();
     }
 
     private void setViewPager(Raid raid) {

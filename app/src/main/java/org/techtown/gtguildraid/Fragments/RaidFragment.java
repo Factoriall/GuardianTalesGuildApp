@@ -119,6 +119,7 @@ public class RaidFragment extends Fragment implements BossBottomSheetDialog.Bott
         linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView = view.findViewById(R.id.raidRecyclerView);
         recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setNestedScrollingEnabled(false);
 
         adapter = new RaidAdapter(pastRaids);
         recyclerView.setAdapter(adapter);

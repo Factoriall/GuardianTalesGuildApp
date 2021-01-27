@@ -2,6 +2,7 @@ package org.techtown.gtguildraid.Fragments;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -172,6 +173,7 @@ public class StatisticMember3Fragment extends Fragment {
 
         private LineData generateLineData(){ // 기여도 그래프
             LineData d = new LineData();
+            Log.d("xAxisNum", "" + xAxisNum);
 
             ArrayList<Entry> entries = new ArrayList<>();
 
@@ -372,6 +374,7 @@ public class StatisticMember3Fragment extends Fragment {
             if(!isMatched)
                 memberLeaderList.add(new LeaderInfo(r.getLeader(), r));
         }
+        Collections.sort(memberLeaderList);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setNestedScrollingEnabled(false);
@@ -443,7 +446,7 @@ public class StatisticMember3Fragment extends Fragment {
         int differentDays = (int) ((today.getTime() - startDate.getTime()) / DAY_IN_SECONDS);
 
         if (differentDays < 0)
-            return -1;
+            return 0;
         else if(differentDays > MAX_DURATION)
             return MAX_DURATION;
         return differentDays;

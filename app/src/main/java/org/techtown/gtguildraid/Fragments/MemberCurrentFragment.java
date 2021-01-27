@@ -186,12 +186,11 @@ public class MemberCurrentFragment extends Fragment {
                 database.memberDao().update(sID, uName, uRemark);
 
                 memberList.clear();
-                memberList.addAll(database.memberDao().getCurrentMembers());
+                memberList.addAll(database.memberDao().getCurrentMembersWithoutMe());
 
                 adapter.notifyDataSetChanged();
             }
         });
-        showToast("Update click");
     }
 
     private void resignMember(int pos) {
@@ -204,7 +203,6 @@ public class MemberCurrentFragment extends Fragment {
 
         adapter.notifyItemRemoved(pos);
         adapter.notifyItemRangeChanged(pos, memberList.size());
-        showToast("Resign click");
     }
 
     private void deleteMember(int pos) {
@@ -216,7 +214,6 @@ public class MemberCurrentFragment extends Fragment {
 
         adapter.notifyItemRemoved(pos);
         adapter.notifyItemRangeChanged(pos, memberList.size());
-        showToast("Delete click");
     }
 
     private void showToast(String msg){

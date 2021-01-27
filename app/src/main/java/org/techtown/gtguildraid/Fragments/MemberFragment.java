@@ -3,6 +3,7 @@ package org.techtown.gtguildraid.Fragments;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,13 +53,14 @@ public class MemberFragment extends Fragment {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 int position = tab.getPosition();
+                Log.d("tabSelected", "" + position);
                 Fragment selected = null;
                 if(position == 0)
                     selected = memberCurrentFragment;
                 else if(position == 1)
                     selected = memberResignedFragment;
 
-                getFragmentManager().beginTransaction().replace(R.id.childContainer, selected).commit();
+                getChildFragmentManager().beginTransaction().replace(R.id.childContainer, selected).commit();
             }
 
             @Override

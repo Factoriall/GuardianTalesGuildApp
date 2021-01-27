@@ -118,6 +118,8 @@ public class StatisticBossLeaderAdapter extends RecyclerView.Adapter<StatisticBo
                 YAxis rightAxis = chart.getAxisRight();
                 rightAxis.setDrawGridLines(false);
                 rightAxis.setTextColor(context.getResources().getColor(R.color.line_chart_color));
+                rightAxis.setGranularity(1.0f);
+                rightAxis.setGranularityEnabled(true);
                 rightAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
 
                 YAxis leftAxis = chart.getAxisLeft();
