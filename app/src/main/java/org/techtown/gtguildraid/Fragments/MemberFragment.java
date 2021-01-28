@@ -1,13 +1,19 @@
 package org.techtown.gtguildraid.Fragments;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,9 +22,12 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.tabs.TabLayout;
 
+import org.techtown.gtguildraid.Models.GuildMember;
 import org.techtown.gtguildraid.R;
+import org.techtown.gtguildraid.Utils.RoomDB;
 
 public class MemberFragment extends Fragment {
+    RoomDB database;
     ViewGroup view;
     MemberCurrentFragment memberCurrentFragment;
     MemberResignedFragment memberResignedFragment;
@@ -28,9 +37,12 @@ public class MemberFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         view = (ViewGroup) inflater.inflate(R.layout.fragment_member, container, false);
+        database = RoomDB.getInstance(getActivity());
 
         SharedPreferences pref = getActivity().getSharedPreferences("pref", Activity.MODE_PRIVATE);
-        String nickname = pref.getString("nickname", "");
+
+        GuildMember me = database.memberDao().getMe();
+        String nickname = me.getName();
         String guildName = pref.getString("guildName", "");
 
         TextView myName = view.findViewById(R.id.myName);
@@ -38,6 +50,72 @@ public class MemberFragment extends Fragment {
 
         myName.setText(nickname);
         myGuildName.setText(guildName);
+
+        ImageView guildNameEditButton = view.findViewById(R.id.guildNameEditButton);
+        guildNameEditButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final Dialog dialog = new Dialog(getActivity());
+
+                dialog.setContentView(R.layout.dialog_guildname);
+                int width = WindowManager.LayoutParams.MATCH_PARENT;
+                int height = WindowManager.LayoutParams.WRAP_CONTENT;
+                dialog.getWindow().setLayout(width, height);
+                dialog.show();
+
+                EditText dialogGuildName = dialog.findViewById(R.id.guildName);
+                dialogGuildName.setText(pref.getString("guildName", ""));
+
+                Button button = dialog.findViewById(R.id.updateButton);
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        String sName = dialogGuildName.getText().toString().trim();
+                        if(!sName.equals("")) {
+                            pref.edit().putString("guildName", sName).apply();
+                            myGuildName.setText(sName);
+                            dialog.dismiss();
+                        }
+                        else{
+                            showToast("길드명을 입력하세요");
+                        }
+                    }
+                });
+            }
+        });
+        ImageView myNameEditButton = view.findViewById(R.id.myNameEditButton);
+        myNameEditButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final Dialog dialog = new Dialog(getActivity());
+
+                dialog.setContentView(R.layout.dialog_myname);
+                int width = WindowManager.LayoutParams.MATCH_PARENT;
+                int height = WindowManager.LayoutParams.WRAP_CONTENT;
+                dialog.getWindow().setLayout(width, height);
+                dialog.show();
+
+                EditText dialogMyName = dialog.findViewById(R.id.myName);
+                GuildMember me = database.memberDao().getMe();
+                dialogMyName.setText(me.getName());
+
+                Button button = dialog.findViewById(R.id.updateButton);
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        String sName = dialogMyName.getText().toString().trim();
+                        if(!sName.equals("")) {
+                            database.memberDao().update(me.getID(), sName, me.getRemark());
+                            myName.setText(sName);
+                            dialog.dismiss();
+                        }
+                        else{
+                            showToast("닉네임을 입력하세요");
+                        }
+                    }
+                });
+            }
+        });
 
         memberCurrentFragment = new MemberCurrentFragment();
         memberResignedFragment = new MemberResignedFragment();
@@ -71,5 +149,11 @@ public class MemberFragment extends Fragment {
         });
 
         return view;
+    }
+
+
+
+    private void showToast(String msg){
+        Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG).show();
     }
 }

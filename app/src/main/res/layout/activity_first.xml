@@ -20,7 +20,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="길드레이드 체크앱"
+        android:text="길드레이드 딜시트"
         android:textColor="@color/bg_icon"
         android:textSize="40sp"
         android:textStyle="bold"

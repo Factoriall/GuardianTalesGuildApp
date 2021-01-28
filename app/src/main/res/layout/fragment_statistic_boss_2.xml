@@ -100,7 +100,7 @@
                                     android:textColor="#FFFFFF" />
 
                                 <ImageView
-                                    android:id="@+id/imageView6"
+                                    android:id="@+id/help"
                                     android:layout_width="15dp"
                                     android:layout_height="15dp"
                                     android:layout_marginLeft="3dp"

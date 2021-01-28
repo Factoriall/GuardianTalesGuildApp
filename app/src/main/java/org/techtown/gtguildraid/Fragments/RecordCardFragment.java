@@ -61,6 +61,7 @@ import java.util.Locale;
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 
 public class RecordCardFragment extends Fragment {
+    final int DAY_IN_SECONDS = 1000 * 3600 * 24;
     private final int MAX_SIZE = 3;
     final String[] elementKoreanArray = new String[]{"1성", "화", "수", "지", "광", "암", "무"};
     final String[] elementEnglishArray = new String[]{"normal", "fire", "water", "earth", "light", "dark", "basic"};
@@ -298,7 +299,7 @@ public class RecordCardFragment extends Fragment {
         Raid raid = database.raidDao().getCurrentRaid(new Date());
 
         dialogInfo.setText(database.memberDao().getMember(memberList.get(sMemberIdx).getId()).getName() + " / "
-                + day + "일차");
+                + day + "일차 / "+ (isEditing ? "수정\n리더: " + record.getLeader().getKoreanName() : "생성"));
 
         //보스 스피너 생성
         List<Boss> bosses = database.raidDao().getBossesList(raid.getRaidId());
@@ -333,7 +334,9 @@ public class RecordCardFragment extends Fragment {
             int round = i;
             final int START_NUM = 65;
             final int START_IDX = 7;
+            final int MAX_LEVEL = 80;
             int level = (round <= levelPerRound.length) ? levelPerRound[round - 1] : START_NUM + (round - START_IDX);
+            if(level > MAX_LEVEL) level = MAX_LEVEL;
             rounds.add(level + "(" + i + ")");
         }
 
@@ -537,8 +540,8 @@ public class RecordCardFragment extends Fragment {
             int position = viewHolder.getAdapterPosition();
             switch (direction) {
                 case ItemTouchHelper.LEFT:
-                    String deletedInfo = "Day " + recordList.get(position).getDay() + ", #" + (position + 1) + " 삭제";
                     Record selected = recordList.get(position);
+                    String deletedInfo = recordList.get(position).getDay() + "일차, 리더-" + selected.getLeader().getKoreanName() + " 삭제";
                     database.recordDao().deleteRecord(selected);
                     recordList.remove(position);
                     adapter.notifyItemRemoved(position);

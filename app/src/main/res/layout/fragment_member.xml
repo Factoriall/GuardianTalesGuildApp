@@ -29,36 +29,52 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
+                    android:layout_height="38dp"
+                    android:background="@color/info_card_out"
                     android:orientation="horizontal">
 
-                    <ImageView
-                        android:id="@+id/imageView3"
-                        android:layout_width="0dp"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:background="@color/bg_icon"
-                        app:srcCompat="@drawable/icon_flag"
-                        tools:ignore="VectorDrawableCompat" />
+                        android:layout_marginBottom="4dp"
+                        android:orientation="horizontal">
 
-                    <TextView
-                        android:id="@+id/guildName"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="3"
-                        android:background="@color/bg_text"
-                        android:gravity="center"
-                        android:text="길드 이름"
-                        android:textColor="#FFFFFF"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
+                        <ImageView
+                            android:id="@+id/imageView3"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:background="@color/bg_icon"
+                            app:srcCompat="@drawable/icon_flag"
+                            tools:ignore="VectorDrawableCompat" />
+
+                        <TextView
+                            android:id="@+id/guildName"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="3"
+                            android:background="@color/bg_text"
+                            android:gravity="center"
+                            android:text="길드 이름"
+                            android:textColor="#FFFFFF"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+
+                        <ImageView
+                            android:id="@+id/guildNameEditButton"
+                            android:layout_width="34dp"
+                            android:layout_height="match_parent"
+                            android:background="#534633"
+                            android:padding="2dp"
+                            app:srcCompat="@drawable/icon_create"
+                            app:tint="@color/bg_icon" />
+                    </LinearLayout>
+
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
+                    android:layout_height="34dp"
                     android:orientation="horizontal">
 
                     <ImageView
@@ -81,6 +97,15 @@
                         android:textColor="#FFFFFF"
                         android:textSize="20sp"
                         android:textStyle="bold" />
+
+                    <ImageView
+                        android:id="@+id/myNameEditButton"
+                        android:layout_width="34dp"
+                        android:layout_height="34dp"
+                        android:background="#534633"
+                        android:padding="2dp"
+                        app:srcCompat="@drawable/icon_create"
+                        app:tint="@color/bg_icon" />
                 </LinearLayout>
 
             </LinearLayout>

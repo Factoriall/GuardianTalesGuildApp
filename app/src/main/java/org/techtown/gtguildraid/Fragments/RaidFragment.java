@@ -41,7 +41,7 @@ import java.util.Date;
 import java.util.List;
 
 public class RaidFragment extends Fragment implements BossBottomSheetDialog.BottomSheetListener {
-    final String dateFormat = "yyyy-MM-dd";
+    final String dateFormat = "yy/MM/dd";
 
     ViewGroup view;
     RoomDB database;

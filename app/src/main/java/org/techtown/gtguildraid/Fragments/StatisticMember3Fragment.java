@@ -57,7 +57,7 @@ public class StatisticMember3Fragment extends Fragment {
     TextView damage;
     TextView contribution;
     TextView hitNum;
-    TextView rank;
+    TextView average;
     CardView leaderCard;
     CombinedChartClass dpsChart;
     RecyclerView recyclerView;
@@ -296,7 +296,7 @@ public class StatisticMember3Fragment extends Fragment {
         damage = view.findViewById(R.id.damage);
         contribution = view.findViewById(R.id.contribution);
         hitNum = view.findViewById(R.id.hitNum);
-        rank = view.findViewById(R.id.rank);
+        average = view.findViewById(R.id.average);
         leaderCard = view.findViewById(R.id.leaderCard);
         recyclerView = view.findViewById(R.id.recyclerView);
 
@@ -352,9 +352,10 @@ public class StatisticMember3Fragment extends Fragment {
         int memberDamage = getDamageFromList(memberRecords, isAdjustMode);
 
         damage.setText(NumberFormat.getNumberInstance(Locale.US).format(memberDamage));
-        contribution.setText(getPercentage(memberDamage, allDamage) + "%");
+        contribution.setText(getPercentage(memberDamage, allDamage));
         hitNum.setText(Integer.toString(memberRecords.size()));
-        rank.setText(getRank(allRecords, memberDamage, isAdjustMode));
+        average.setText(memberRecords.size() == 0 ? Integer.toString(0) :
+                NumberFormat.getNumberInstance(Locale.US).format(memberDamage / memberRecords.size()));
 
         dpsChart.setRecords(memberRecords, allRecords);
         dpsChart.setCombinedChartUi();
@@ -381,42 +382,6 @@ public class StatisticMember3Fragment extends Fragment {
         adapter = new StatisticMemberLeaderAdapter(memberLeaderList, isAdjustMode);
 
         recyclerView.setAdapter(adapter);
-    }
-
-    private String getRank(List<Record> allRecords, int memberDamage, boolean isAdjustMode) {
-        if(memberDamage == 0)
-            return "-";
-
-        List<MemberTotalDamage> damageList = new ArrayList<>();
-        int mId = -1;
-        int damage = 0;
-        for(Record r : allRecords){
-            if(mId != r.getMemberId()){
-                if(mId != -1)
-                    damageList.add(new MemberTotalDamage(mId, damage));
-                mId = r.getMemberId();
-                damage = 0;
-            }
-
-            if(isAdjustMode) {
-                Boss b = r.getBoss();
-                damage += (int) (r.getDamage() * b.getHardness());
-            }
-            else
-                damage += r.getDamage();
-        }
-        damageList.add(new MemberTotalDamage(mId, damage));
-
-        Collections.sort(damageList);
-
-        int rank = 1;
-        for(MemberTotalDamage d : damageList){
-            if(d.getMemberId() == memberId)
-                break;
-            rank++;
-        }
-
-        return Integer.toString(rank);
     }
 
     private String getPercentage(int memberDamage, int allDamage) {

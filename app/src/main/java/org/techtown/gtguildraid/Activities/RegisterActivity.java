@@ -43,12 +43,11 @@ public class RegisterActivity extends AppCompatActivity {
                 RoomDB database = RoomDB.getInstance(RegisterActivity.this);
                 GuildMember member = new GuildMember();
                 member.setName(cNickname);
-                member.setRemark(cGuildName);
+                member.setRemark("");
                 member.setResigned(false);
                 member.setMe(true);
                 database.memberDao().insert(member);
 
-                editor.putString("nickname", cNickname);
                 editor.putString("guildName", cGuildName);
                 editor.putBoolean("isRegistered", true);
                 editor.commit();
@@ -58,6 +57,11 @@ public class RegisterActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        showToast("닉네임 및 길드 이름 삽입 후 확인 버튼을 눌러주세요");
     }
 
     private void showToast(String message){

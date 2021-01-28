@@ -39,7 +39,7 @@
 
             <TextView
                 android:id="@+id/hitNum"
-                android:layout_width="30dp"
+                android:layout_width="60dp"
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:text="100" />
@@ -51,7 +51,6 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="1,000,000,000"
-                android:textSize="20sp"
                 android:textStyle="bold" />
 
         </LinearLayout>

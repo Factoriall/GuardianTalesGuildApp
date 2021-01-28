@@ -52,6 +52,7 @@ public class RaidAdapter extends RecyclerView.Adapter<RaidAdapter.ViewHolder> {
 
 
     static class ViewHolder extends RecyclerView.ViewHolder{
+        final private String dateFormat = "yy/MM/dd";
         TextView raidName;
         TextView raidTerm;
         TextView[] bossNameList;
@@ -102,8 +103,8 @@ public class RaidAdapter extends RecyclerView.Adapter<RaidAdapter.ViewHolder> {
         public void setItem(Raid raid){
             raidName.setText(raid.getName());
             Date aEnd = adjustEndTime(raid.getEndDay());
-            raidTerm.setText(new SimpleDateFormat("yyyy-MM-dd").format(raid.getStartDay()) + "~"
-                    + new SimpleDateFormat("yyyy-MM-dd").format(aEnd));
+            raidTerm.setText(new SimpleDateFormat(dateFormat).format(raid.getStartDay()) + "~"
+                    + new SimpleDateFormat(dateFormat).format(aEnd));
 
             for(int i=0; i<4; i++) {
                 Boss boss = database.raidDao().getBossesList(raid.getRaidId()).get(i);

@@ -1,11 +1,15 @@
 package org.techtown.gtguildraid.Fragments;
 
+import android.app.Dialog;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -193,6 +197,26 @@ public class StatisticBoss2Fragment extends Fragment {
         hitNum = view.findViewById(R.id.hitNum);
         recyclerView = view.findViewById(R.id.recyclerView);
         overallChart = new BarChartClass(view.findViewById(R.id.chart));
+        ImageView help = view.findViewById(R.id.help);
+        help.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final Dialog dialog = new Dialog(getActivity());
+                dialog.setContentView(R.layout.dialog_cvhelp);
+                int width = WindowManager.LayoutParams.MATCH_PARENT;
+                int height = WindowManager.LayoutParams.WRAP_CONTENT;
+                dialog.getWindow().setLayout(width, height);
+                dialog.show();
+
+                Button button = dialog.findViewById(R.id.button);
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog.dismiss();
+                    }
+                });
+            }
+        });
 
         setView(position);
         Log.d("bossPosition", "pos: " + position);

@@ -8,7 +8,7 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="wrap_content"
         android:layout_margin="2dp"
         app:cardBackgroundColor="@color/record_card_out"
         app:cardCornerRadius="4dp"
@@ -45,7 +45,7 @@
 
                 <TextView
                     android:id="@+id/hitNum"
-                    android:layout_width="30dp"
+                    android:layout_width="60dp"
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:text="횟수"

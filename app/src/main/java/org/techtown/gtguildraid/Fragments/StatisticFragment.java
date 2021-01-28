@@ -30,7 +30,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class StatisticFragment extends Fragment {
-    final private String dateFormat = "yyyy-MM-dd";
+    final private String dateFormat = "yy/MM/dd";
 
     View view;
     TabLayout tabLayout;

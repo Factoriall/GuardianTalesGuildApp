@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -29,7 +30,7 @@ import java.util.Date;
 public class RecordFragment extends Fragment {
     final int VIEWPAGER_NUM = 14;
     final int DAY_IN_SECONDS = 1000 * 3600 * 24;
-    final private String dateFormat = "yyyy-MM-dd";
+    final private String dateFormat = "yy/MM/dd";
 
     RoomDB database;
     TabLayout tabLayout;
@@ -61,7 +62,7 @@ public class RecordFragment extends Fragment {
                 new SimpleDateFormat(dateFormat).format(adjustEndTime(raid.getEndDay()))));
 
         vAdapter = new ViewPagerAdapter(getChildFragmentManager(), getLifecycle());
-        setViewPager(getIntegerFromToday() == -1 ? 0 : getIntegerFromToday());
+        setViewPager(getIntegerFromToday());
 
         new TabLayoutMediator(tabLayout, viewPager, true, (tab, position) -> {
             tab.setText("Day " + (position + 1) + "\n" + getRaidDate(position));
@@ -72,6 +73,12 @@ public class RecordFragment extends Fragment {
         LinearLayout tabStrip = ((LinearLayout)tabLayout.getChildAt(0));
         for(int i=getIntegerFromToday()+1; i<VIEWPAGER_NUM; i++){
             tabStrip.getChildAt(i).setBackgroundColor(Color.GRAY);
+            tabStrip.getChildAt(i).setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    return true;
+                }
+            });
         }
 
         return view;
@@ -98,7 +105,7 @@ public class RecordFragment extends Fragment {
         int differentDays = (int) ((today.getTime() - startDate.getTime()) / DAY_IN_SECONDS);
 
         if (differentDays < 0)
-            return -1;
+            return 0;
         return differentDays;
     }
 

@@ -8,7 +8,7 @@
     <LinearLayout
         android:id="@+id/memberLayout"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -50,7 +50,7 @@
                         <org.angmarch.views.NiceSpinner
                             android:id="@+id/nickname"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="wrap_content"
 
                             android:dropDownWidth="300dp"
                             android:gravity="center"
@@ -73,7 +73,7 @@
     <LinearLayout
         android:id="@+id/TotalDamageCard"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="5dp"
@@ -97,8 +97,7 @@
                 <TextView
                     android:id="@+id/damageText"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="2"
+                    android:layout_height="wrap_content"
                     android:background="#D8B38E"
                     android:gravity="center"
                     android:text="금일 총 데미지"
@@ -108,8 +107,7 @@
                 <TextView
                     android:id="@+id/totalDamage"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
                     android:background="#2D2F34"
                     android:gravity="center"
                     android:text="480,000"
@@ -130,8 +128,10 @@
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/TotalDamageCard"
+        app:layout_constraintVertical_bias="0.0"
         tools:listitem="@layout/card_record" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -140,9 +140,11 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="20dp"
+        android:backgroundTint="@color/bg_icon"
         android:clickable="true"
         android:src="@drawable/icon_add"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:backgroundTint="@color/bg_icon"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
