@@ -92,16 +92,16 @@ public class StatisticMemberLeaderAdapter extends RecyclerView.Adapter<Statistic
             leaderImage.setImageResource(leaderImageId);
             hitNum.setText(Integer.toString(records.size()));
 
-            int total = 0;
-            int min = MAX_NUM;
-            int max = 0;
+            long total = 0;
+            long min = MAX_NUM;
+            long max = 0;
             for(Record r : records){
-                int adjustDamage = getAdjustDamage(r, isAdjustMode);
+                long adjustDamage = getAdjustDamage(r, isAdjustMode);
                 total += adjustDamage;
                 min = Math.min(min, adjustDamage);
                 max = Math.max(max, adjustDamage);
             }
-            int average = total / records.size();
+            long average = total / records.size();
 
             totalDamage.setText(getStandardNumberFormat(total));
             averageDamage.setText(getStandardNumberFormat(average));
@@ -110,7 +110,7 @@ public class StatisticMemberLeaderAdapter extends RecyclerView.Adapter<Statistic
             CV.setText(getCV(average, records, isAdjustMode));
         }
 
-        private String getCV(int average, List<Record> records, boolean isAdjustMode) {
+        private String getCV(long average, List<Record> records, boolean isAdjustMode) {
             long devSquared = 0;
             for(Record r : records){
                 devSquared += ((long)(getAdjustDamage(r, isAdjustMode) - average) * (long)((getAdjustDamage(r, isAdjustMode) - average)));
@@ -120,14 +120,14 @@ public class StatisticMemberLeaderAdapter extends RecyclerView.Adapter<Statistic
             return String.format("%.2f", stDev / average * 100.0f);
         }
 
-        private int getAdjustDamage(Record record, boolean isAdjustMode) {
+        private long getAdjustDamage(Record record, boolean isAdjustMode) {
             if(isAdjustMode)
-                return (int) (record.getDamage() * record.getBoss().getHardness());
+                return (long) (record.getDamage() * record.getBoss().getHardness());
 
             return record.getDamage();
         }
 
-        private String getStandardNumberFormat(int num){
+        private String getStandardNumberFormat(long num){
             return NumberFormat.getNumberInstance(Locale.US).format(num);
         }
     }

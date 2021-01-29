@@ -252,11 +252,11 @@ public class StatisticBossLeaderAdapter extends RecyclerView.Adapter<StatisticBo
             leaderImage.setImageResource(leaderImageId);
             hitNum.setText(Integer.toString(records.size()));
 
-            int total = 0;
+            long total = 0;
             for(Record r : records){
                 total += r.getDamage();
             }
-            int average = total / records.size();
+            long average = total / records.size();
             averageDamage.setText(getStandardNumberFormat(average));
             CV.setText(getCV(average, records));
 
@@ -264,7 +264,7 @@ public class StatisticBossLeaderAdapter extends RecyclerView.Adapter<StatisticBo
             chart.setCombinedChartUi();
         }
 
-        private String getCV(int average, List<Record> records) {
+        private String getCV(long average, List<Record> records) {
             long devSquared = 0;
             for(Record r : records){
                 devSquared += ((long)(r.getDamage() - average) * (long)(r.getDamage() - average));
@@ -274,7 +274,7 @@ public class StatisticBossLeaderAdapter extends RecyclerView.Adapter<StatisticBo
             return String.format("%.2f", stDev / average * 100.0f);
         }
 
-        private String getStandardNumberFormat(int num){
+        private String getStandardNumberFormat(long num){
             return NumberFormat.getNumberInstance(Locale.US).format(num);
         }
     }

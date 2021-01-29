@@ -19,9 +19,10 @@
         android:layout_height="wrap_content"
         android:background="@android:drawable/editbox_background"
         android:gravity="top"
-        android:hint="최대 10글자"
+        android:hint="최대 20글자"
+        android:inputType="text"
         android:imeOptions="actionDone"
-        android:maxLength="10"
+        android:maxLength="20"
         android:padding="12dp" />
 
     <Button

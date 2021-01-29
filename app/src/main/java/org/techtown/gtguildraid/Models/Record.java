@@ -19,7 +19,7 @@ public class Record implements Serializable {
     private int raidId;
     private int day;
     private int round;
-    private int damage;
+    private long damage;
     private boolean isLastHit;
 
     private int bossId;
@@ -91,11 +91,11 @@ public class Record implements Serializable {
         this.round = round;
     }
 
-    public int getDamage() {
+    public long getDamage() {
         return damage;
     }
 
-    public void setDamage(int damage) {
+    public void setDamage(long damage) {
         this.damage = damage;
     }
 

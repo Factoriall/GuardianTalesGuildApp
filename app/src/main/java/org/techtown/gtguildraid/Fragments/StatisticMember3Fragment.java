@@ -70,9 +70,9 @@ public class StatisticMember3Fragment extends Fragment {
 
     private class MemberTotalDamage implements Comparable<MemberTotalDamage>{
         int memberId;
-        int totalDamage;
+        long totalDamage;
 
-        MemberTotalDamage(int memberId, int totalDamage){
+        MemberTotalDamage(int memberId, long totalDamage){
             this.memberId = memberId;
             this.totalDamage = totalDamage;
         }
@@ -85,13 +85,17 @@ public class StatisticMember3Fragment extends Fragment {
             this.memberId = memberId;
         }
 
-        public int getTotalDamage() {
+        public long getTotalDamage() {
             return totalDamage;
         }
 
         @Override
         public int compareTo(MemberTotalDamage m){
-            return m.getTotalDamage() - totalDamage;
+            if(totalDamage - m.getTotalDamage() > 0)
+                return -1;
+            else if(totalDamage - m.getTotalDamage() < 0)
+                return 1;
+            return 0;
         }
     }
 
@@ -177,24 +181,24 @@ public class StatisticMember3Fragment extends Fragment {
 
             ArrayList<Entry> entries = new ArrayList<>();
 
-            int[] allArray = new int[xAxisNum];
-            int[] memberArray = new int[xAxisNum];
+            long[] allArray = new long[xAxisNum];
+            long[] memberArray = new long[xAxisNum];
 
             for(Record r : memberRecords) {
-                int rawDamage = r.getDamage();
+                long rawDamage = r.getDamage();
                 if(isAdjustMode) {
                     Boss b = r.getBoss();
-                    memberArray[r.getDay() - 1] += (int) (rawDamage * b.getHardness());
+                    memberArray[r.getDay() - 1] += (long) (rawDamage * b.getHardness());
                 }
                 else
                     memberArray[r.getDay() - 1] += (rawDamage);
             }
 
             for(Record r : allRecords) {
-                int rawDamage = r.getDamage();
+                long rawDamage = r.getDamage();
                 if(isAdjustMode) {
                     Boss b = r.getBoss();
-                    allArray[r.getDay() - 1] += (int) (rawDamage * b.getHardness());
+                    allArray[r.getDay() - 1] += (long) (rawDamage * b.getHardness());
                 }
                 else
                     allArray[r.getDay() - 1] += (rawDamage);
@@ -239,10 +243,10 @@ public class StatisticMember3Fragment extends Fragment {
 
             for(Record r : memberRecords) {
                 BarEntry e = entries.get(r.getDay() - 1);
-                int rawDamage = r.getDamage();
+                long rawDamage = r.getDamage();
                 if(isAdjustMode) {
                     Boss b = r.getBoss();
-                    e.setY( e.getY() + (int) (rawDamage * b.getHardness()) );
+                    e.setY( e.getY() + (long) (rawDamage * b.getHardness()) );
                 }
                 else
                     e.setY( e.getY() + rawDamage );
@@ -348,8 +352,8 @@ public class StatisticMember3Fragment extends Fragment {
     }
 
     private void setData(List<Record> allRecords, List<Record> memberRecords) {
-        int allDamage = getDamageFromList(allRecords, isAdjustMode);
-        int memberDamage = getDamageFromList(memberRecords, isAdjustMode);
+        long allDamage = getDamageFromList(allRecords, isAdjustMode);
+        long memberDamage = getDamageFromList(memberRecords, isAdjustMode);
 
         damage.setText(NumberFormat.getNumberInstance(Locale.US).format(memberDamage));
         contribution.setText(getPercentage(memberDamage, allDamage));
@@ -384,18 +388,18 @@ public class StatisticMember3Fragment extends Fragment {
         recyclerView.setAdapter(adapter);
     }
 
-    private String getPercentage(int memberDamage, int allDamage) {
+    private String getPercentage(long memberDamage, long allDamage) {
         if(allDamage == 0)
             return "0.00";
         return String.format("%.2f", memberDamage/(double)allDamage * 100);
     }
 
-    private int getDamageFromList(List<Record> records, boolean isAdjustMode) {
-        int damage = 0;
+    private long getDamageFromList(List<Record> records, boolean isAdjustMode) {
+        long damage = 0;
         for(Record r: records){
             if(isAdjustMode) {
                 Boss b = r.getBoss();
-                damage += (int) (r.getDamage() * b.getHardness());
+                damage += (long) (r.getDamage() * b.getHardness());
             }
             else
                 damage += r.getDamage();

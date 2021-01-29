@@ -77,7 +77,10 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder
         public void setItem(Record record) {
             round.setText(record.getRound() + "회차");
             level.setText(getLevelFromRound(record.getRound()));
-            bossName.setText(record.getBoss().getName());
+            String sBossName = record.getBoss().getName();
+            if(sBossName.length() > 7)
+                sBossName = sBossName.substring(0,7) + "..";
+            bossName.setText(sBossName);
             bossImage.setImageResource(getIdentifierFromResource(
                     "boss_" + record.getBoss().getImgName(), "drawable"));
 

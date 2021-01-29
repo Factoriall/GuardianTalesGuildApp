@@ -273,7 +273,7 @@ public class RecordCardFragment extends Fragment {
     }
 
     private void setTotalDamage() {
-        int total = 0;
+        long total = 0;
         for (Record record : recordList)
             total += record.getDamage();
 
@@ -397,7 +397,7 @@ public class RecordCardFragment extends Fragment {
         });
 
         if (isEditing) {
-            damage.setText(Integer.toString(record.getDamage()));
+            damage.setText(Long.toString(record.getDamage()));
             roundSpinner.setSelection(record.getRound() - 1);
             String bossName = record.getBoss().getName();
             isLastHit.setChecked(record.isLastHit());
@@ -452,7 +452,7 @@ public class RecordCardFragment extends Fragment {
                                 iHeroId, isLastHit.isChecked());
                     } else {//새로운 데이터 생성
                         Record record = new Record(memberList.get(sMemberIdx).getId(), raidId, day);
-                        record.setDamage(Integer.parseInt(sDamage));
+                        record.setDamage(Long.parseLong(sDamage));
                         record.setBossId(selectedBossId[0]);
                         record.setLeaderId(iHeroId);
                         record.setRound(roundSpinner.getSelectedItemPosition() + 1);

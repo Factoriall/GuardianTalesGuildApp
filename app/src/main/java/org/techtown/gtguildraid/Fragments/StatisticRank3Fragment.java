@@ -87,7 +87,7 @@ public class StatisticRank3Fragment extends Fragment {
 
             for(Record r : recordList) {
                 if(isAdjustMode) {
-                    ri.addDamage((int) (r.getDamage() * r.getBoss().getHardness()));
+                    ri.addDamage((long) (r.getDamage() * r.getBoss().getHardness()));
                 }
                 else
                     ri.addDamage(r.getDamage());

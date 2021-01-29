@@ -2,16 +2,16 @@ package org.techtown.gtguildraid.Models;
 
 public class RankInfo implements Comparable<RankInfo>{
     String memberName;
-    int damage = 0;
+    long damage = 0;
     int hitNum;
-    int finalDamage;
+    long finalDamage;
 
     public RankInfo(String name, int hitNum){
         memberName = name;
         this.hitNum = hitNum;
     }
 
-    public void addDamage(int d){
+    public void addDamage(long d){
         damage += d;
     }
 
@@ -30,7 +30,7 @@ public class RankInfo implements Comparable<RankInfo>{
         return memberName;
     }
 
-    public int getDamage() {
+    public long getDamage() {
         return damage;
     }
 
@@ -38,12 +38,16 @@ public class RankInfo implements Comparable<RankInfo>{
         return hitNum;
     }
 
-    public int getFinalDamage() {
+    public long getFinalDamage() {
         return finalDamage;
     }
 
     @Override
     public int compareTo(RankInfo rankInfo) {
-        return rankInfo.finalDamage - finalDamage;
+        if(finalDamage - rankInfo.finalDamage > 0)
+            return -1;
+        else if(finalDamage - rankInfo.finalDamage < 0)
+            return 1;
+        return 0;
     }
 }

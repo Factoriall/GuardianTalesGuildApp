@@ -2,13 +2,14 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         android:background="#3F51B5"
         app:layout_constraintEnd_toEndOf="@+id/viewPager"
         app:layout_constraintStart_toStartOf="parent"
@@ -20,7 +21,6 @@
             android:layout_height="30dp"
             android:layout_margin="20dp"
             android:background="@drawable/bg_tablayout"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:tl_divider_color="@color/colorPrimaryDark"
@@ -42,12 +42,14 @@
             android:id="@+id/adjustSwitch"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
             android:layout_marginEnd="20dp"
+            android:layout_marginBottom="10dp"
             android:text="배율"
             android:textColor="#FFFFFF"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/slidingTabLayout" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <org.techtown.gtguildraid.Etc.CustomViewPager

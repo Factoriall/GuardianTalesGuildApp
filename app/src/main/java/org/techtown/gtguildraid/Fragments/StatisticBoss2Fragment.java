@@ -134,8 +134,8 @@ public class StatisticBoss2Fragment extends Fragment {
                 entries.add(new BarEntry(i + 1f, 0));
             }
 
-            int[] damageArray = new int[xAxisNum];
-            int[] numArray = new int[xAxisNum];
+            long[] damageArray = new long[xAxisNum];
+            long[] numArray = new long[xAxisNum];
             Log.d("getround", "xaxisnum:" + xAxisNum);
             Log.d("getround", "recordNum:" + records.size());
             for(Record r : records) {
@@ -254,8 +254,8 @@ public class StatisticBoss2Fragment extends Fragment {
             xAxisNum = 1;
         overallChart.setxAxisNum(xAxisNum);
 
-        int damage = getDamageFromList(records);
-        int average = 0;
+        long damage = getDamageFromList(records);
+        long average = 0;
         Log.d("damage", "" + damage);
         if(records.size() != 0)
             average = damage / records.size();
@@ -294,7 +294,7 @@ public class StatisticBoss2Fragment extends Fragment {
         recyclerView.setAdapter(adapter);
     }
 
-    private String getCV(int average, List<Record> records) {
+    private String getCV(long average, List<Record> records) {
         long devSquared = 0;
         for(Record r : records){
             devSquared += ((long)(r.getDamage() - average) * (long)(r.getDamage() - average));
@@ -304,8 +304,8 @@ public class StatisticBoss2Fragment extends Fragment {
         return String.format("%.2f", stDev / average * 100.0f);
     }
 
-    private int getDamageFromList(List<Record> records) {
-        int damage = 0;
+    private long getDamageFromList(List<Record> records) {
+        long damage = 0;
         for(Record r: records)
             damage += r.getDamage();
 

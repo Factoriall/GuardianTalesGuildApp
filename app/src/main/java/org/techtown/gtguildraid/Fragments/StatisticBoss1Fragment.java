@@ -51,7 +51,7 @@ public class StatisticBoss1Fragment extends Fragment {
         String[] tabStringArray = new String[4];
         for(int i=0; i<4; i++){
             if(bossList.get(i).getName().length() > 5)
-                tabStringArray[i] = bossList.get(i).getName().substring(0,5);
+                tabStringArray[i] = bossList.get(i).getName().substring(0, 5) + "..";
             else
                 tabStringArray[i] = bossList.get(i).getName();
         }

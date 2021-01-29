@@ -3,12 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
     android:orientation="vertical"
     android:padding="5dp">
 
     <TextView
         android:id="@+id/dialogInfo"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:text="XXX / 0일차 "
@@ -17,7 +18,28 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/bossText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:text="보스 이름:"
+            android:textSize="20sp" />
+
+        <Spinner
+            android:id="@+id/bossSpinner"
+            style="@style/spinner_normal_style"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_marginTop="10dp"
         android:orientation="horizontal">
 
@@ -28,39 +50,35 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/bossText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:text="보스 이름:"
-                android:textSize="20sp" />
-
-            <Spinner
-                android:id="@+id/bossSpinner"
-                style="@style/spinner_normal_style"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="4" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="140dp"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <TextView
                 android:id="@+id/roundText"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
                 android:text="레벨(회차):"
                 android:textSize="20sp" />
 
-            <Spinner
-                android:id="@+id/roundSpinner"
-                style="@style/spinner_normal_style"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <Spinner
+                    android:id="@+id/roundSpinner"
+                    style="@style/spinner_normal_style"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+
+                <CheckBox
+                    android:id="@+id/isLastHit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="bottom"
+                    android:layout_margin="10dp"
+                    android:gravity="center"
+                    android:text="막타 여부" />
+            </LinearLayout>
+
         </LinearLayout>
 
     </LinearLayout>
@@ -89,30 +107,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@android:drawable/editbox_background"
-                android:digits="0123456789.,"
+                android:digits="0123456789"
                 android:gravity="top"
                 android:hint="데미지 입력"
                 android:imeOptions="actionDone"
                 android:inputType="numberDecimal"
                 android:maxLength="10"
                 android:padding="12dp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <CheckBox
-                android:id="@+id/isLastHit"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="bottom"
-                android:layout_margin="10dp"
-                android:gravity="center"
-                android:text="막타\n여부" />
         </LinearLayout>
 
     </LinearLayout>
@@ -204,6 +205,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
                 android:orientation="horizontal">
 
                 <org.techtown.gtguildraid.Etc.MySpinner

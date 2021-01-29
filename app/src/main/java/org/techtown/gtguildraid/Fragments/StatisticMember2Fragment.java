@@ -55,8 +55,8 @@ public class StatisticMember2Fragment extends Fragment {
         String[] tabStringArray = new String[5];
         tabStringArray[0] = "전체";
         for(int i=1; i<5; i++){
-            if(bossList.get(i-1).getName().length() > 2)
-                tabStringArray[i] = bossList.get(i-1).getName().substring(0,2);
+            if(bossList.get(i-1).getName().length() > 5)
+                tabStringArray[i] = bossList.get(i-1).getName().substring(0, 5) + "..";
             else
                 tabStringArray[i] = bossList.get(i-1).getName();
         }

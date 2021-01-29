@@ -22,7 +22,7 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        final EditText nickname = findViewById(R.id.raidName);
+        final EditText nickname = findViewById(R.id.myName);
         final EditText guildName = findViewById(R.id.guildName);
 
         Button button = findViewById(R.id.button);
@@ -38,7 +38,6 @@ public class RegisterActivity extends AppCompatActivity {
 
                 SharedPreferences pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
                 SharedPreferences.Editor editor = pref.edit();
-
 
                 RoomDB database = RoomDB.getInstance(RegisterActivity.this);
                 GuildMember member = new GuildMember();
@@ -61,7 +60,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        showToast("닉네임 및 길드 이름 삽입 후 확인 버튼을 눌러주세요");
+        showToast("닉네임 및 길드 이름 삽입 후 시작 버튼을 눌러주세요");
     }
 
     private void showToast(String message){

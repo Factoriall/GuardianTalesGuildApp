@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_margin="5dp"
+    android:layout_margin="10dp"
     app:cardBackgroundColor="#00FFFFFF"
     app:cardCornerRadius="10dp">
 
@@ -54,7 +54,7 @@
                 android:id="@+id/leaderName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
+                android:layout_marginBottom="20dp"
                 android:text="나나나나나나"
                 android:textColor="@color/bg_icon"
                 android:textSize="16sp"
@@ -177,12 +177,6 @@
                         android:text="최대 데미지"
                         android:textColor="#FFFFFF" />
 
-                    <TextView
-                        android:id="@+id/textView24"
-                        android:layout_width="60dp"
-                        android:layout_height="wrap_content"
-                        android:text="변동계수"
-                        android:textColor="#FFFFFF" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -204,12 +198,28 @@
                         android:layout_weight="1"
                         android:text="50,000,000" />
 
-                    <TextView
-                        android:id="@+id/CV"
-                        android:layout_width="60dp"
-                        android:layout_height="wrap_content"
-                        android:text="100.35" />
                 </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textView24"
+                    android:layout_width="60dp"
+                    android:layout_height="match_parent"
+                    android:text="변동계수"
+                    android:textColor="#FFFFFF" />
+
+                <TextView
+                    android:id="@+id/CV"
+                    android:layout_width="60dp"
+                    android:layout_height="wrap_content"
+                    android:text="100.35" />
             </LinearLayout>
         </LinearLayout>
 

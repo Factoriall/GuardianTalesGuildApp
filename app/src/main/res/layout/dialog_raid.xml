@@ -19,6 +19,7 @@
         android:layout_height="wrap_content"
         android:background="@android:drawable/editbox_background"
         android:gravity="top"
+        android:inputType="text"
         android:hint="길드레이드 이름"
         android:maxLength="20"
         android:padding="12dp" />
