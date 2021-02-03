@@ -105,7 +105,7 @@
                         android:id="@+id/stdevText"
                         android:layout_width="100dp"
                         android:layout_height="wrap_content"
-                        android:text="변동계수"
+                        android:text="변동 계수"
                         android:textColor="#FFFFFF" />
                 </LinearLayout>
 

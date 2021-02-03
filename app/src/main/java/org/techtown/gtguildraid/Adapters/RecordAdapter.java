@@ -66,7 +66,6 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder
 
             //heroes = new ImageView[4];
             damage = itemView.findViewById(R.id.damage);
-            round = itemView.findViewById(R.id.round);
             level = itemView.findViewById(R.id.level);
             bossName = itemView.findViewById(R.id.bossName);
             bossImage = itemView.findViewById(R.id.bossImage);
@@ -75,7 +74,6 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder
         }
 
         public void setItem(Record record) {
-            round.setText(record.getRound() + "회차");
             level.setText(getLevelFromRound(record.getRound()));
             String sBossName = record.getBoss().getName();
             if(sBossName.length() > 7)
@@ -101,7 +99,7 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder
             final int START_NUM = 65;
             final int START_IDX = 7;
 
-            return Integer.toString(round <= levelPerRound.length ? levelPerRound[round - 1] : START_NUM + (round - START_IDX));
+            return "Lv." + (round <= levelPerRound.length ? levelPerRound[round - 1] : START_NUM + (round - START_IDX));
         }
 
         int getIdentifierFromResource(String name, String defType){

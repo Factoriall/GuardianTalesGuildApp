@@ -204,20 +204,35 @@
 
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_margin="5dp"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/textView24"
-                    android:layout_width="60dp"
-                    android:layout_height="match_parent"
-                    android:text="변동계수"
-                    android:textColor="#FFFFFF" />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textView24"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="변동 계수"
+                        android:textColor="#FFFFFF" />
+
+                    <ImageView
+                        android:id="@+id/cvhelp"
+                        android:layout_width="10dp"
+                        android:layout_height="10dp"
+                        android:layout_margin="3dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:srcCompat="@drawable/help_icon" />
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/CV"
-                    android:layout_width="60dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="100.35" />
             </LinearLayout>

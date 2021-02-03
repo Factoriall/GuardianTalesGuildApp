@@ -83,7 +83,6 @@ public class StatisticFragment extends Fragment {
     }
 
     private void setView(Raid raid) {
-        Log.d("raidInfo", raid.getName());
         tabLayout.setVisibility(View.VISIBLE);
         viewPager.setVisibility(View.VISIBLE);
 

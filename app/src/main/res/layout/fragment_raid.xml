@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#2A315A"
+    android:background="@color/background_color"
     android:orientation="vertical">
 
     <LinearLayout
@@ -12,18 +12,19 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/currentRaid"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="wrap_content">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/currentTab"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="#1B1B1B"
-                android:orientation="horizontal">
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
                     android:id="@+id/now"
@@ -60,14 +61,18 @@
                 android:layout_height="50dp"
                 android:gravity="center"
                 android:text="없음"
-                android:textColor="#FFFFFF" />
+                android:textColor="#FFFFFF"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/currentTab" />
 
             <LinearLayout
                 android:id="@+id/raidInfo"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:visibility="visible">
+                android:visibility="visible"
+                app:layout_constraintTop_toBottomOf="@+id/notFound">
 
                 <LinearLayout
                     android:id="@+id/briefInfo"
@@ -75,87 +80,74 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
-                    <androidx.cardview.widget.CardView
+                    <LinearLayout
+                        android:id="@+id/infoCard"
                         android:layout_width="0dp"
-                        android:layout_height="60dp"
+                        android:layout_height="match_parent"
                         android:layout_weight="6"
-                        app:cardBackgroundColor="@color/info_card_out"
-                        app:cardCornerRadius="0dp">
+                        android:background="@drawable/bg_info_card"
+                        android:orientation="vertical">
 
-                        <androidx.cardview.widget.CardView
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_margin="4dp">
+                            android:layout_marginLeft="2dp"
+                            android:layout_marginTop="2dp"
+                            android:layout_marginRight="2dp"
+                            android:layout_weight="1"
+                            android:orientation="horizontal">
 
+                            <ImageView
+                                android:id="@+id/imageView5"
+                                android:layout_width="0dp"
+                                android:layout_height="25dp"
+                                android:layout_weight="1"
+                                android:src="@drawable/icon_raid" />
 
-                            <LinearLayout
-                                android:layout_width="match_parent"
+                            <TextView
+                                android:id="@+id/raidName"
+                                android:layout_width="0dp"
                                 android:layout_height="match_parent"
-                                android:orientation="vertical">
+                                android:layout_weight="3"
+                                android:gravity="center_vertical"
+                                android:paddingLeft="20dp"
+                                android:text="길드레이드 이름"
+                                android:textColor="#FFFFFF"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
 
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:layout_weight="1"
-                                    android:orientation="horizontal">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="2dp"
+                            android:layout_marginRight="2dp"
+                            android:layout_marginBottom="2dp"
+                            android:layout_weight="1"
+                            android:orientation="horizontal">
 
-                                    <ImageView
-                                        android:id="@+id/imageView5"
-                                        android:layout_width="0dp"
-                                        android:layout_height="match_parent"
-                                        android:layout_weight="1"
-                                        android:background="@color/bg_icon"
-                                        android:src="@drawable/icon_raid" />
+                            <ImageView
+                                android:id="@+id/imageView3"
+                                android:layout_width="0dp"
+                                android:layout_height="25dp"
+                                android:layout_weight="1"
+                                app:srcCompat="@drawable/icon_time"
+                                tools:ignore="VectorDrawableCompat" />
 
-                                    <TextView
-                                        android:id="@+id/raidName"
-                                        android:layout_width="0dp"
-                                        android:layout_height="match_parent"
-                                        android:layout_weight="3"
-                                        android:background="@color/bg_text"
-                                        android:gravity="center_vertical"
-                                        android:paddingLeft="20dp"
-                                        android:text="길드레이드 이름"
-                                        android:textColor="#FFFFFF"
-                                        android:textSize="18sp"
-                                        android:textStyle="bold" />
-                                </LinearLayout>
+                            <TextView
+                                android:id="@+id/raidTerm"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="3"
+                                android:gravity="center_vertical"
+                                android:paddingLeft="20dp"
+                                android:text="기간"
+                                android:textColor="#FFFFFF"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
 
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:layout_weight="1"
-                                    android:orientation="horizontal">
-
-                                    <ImageView
-                                        android:id="@+id/imageView3"
-                                        android:layout_width="0dp"
-                                        android:layout_height="match_parent"
-                                        android:layout_weight="1"
-                                        android:background="@color/bg_icon"
-                                        app:srcCompat="@drawable/icon_time"
-                                        tools:ignore="VectorDrawableCompat" />
-
-                                    <TextView
-                                        android:id="@+id/raidTerm"
-                                        android:layout_width="0dp"
-                                        android:layout_height="match_parent"
-                                        android:layout_weight="3"
-                                        android:background="@color/bg_text"
-                                        android:gravity="center_vertical"
-                                        android:paddingLeft="20dp"
-                                        android:text="기간"
-                                        android:textColor="#FFFFFF"
-                                        android:textSize="16sp"
-                                        android:textStyle="bold" />
-                                </LinearLayout>
-
-                            </LinearLayout>
-
-                        </androidx.cardview.widget.CardView>
-
-
-                    </androidx.cardview.widget.CardView>
+                    </LinearLayout>
 
                     <ImageView
                         android:id="@+id/currentArrow"
@@ -446,12 +438,12 @@
                 </LinearLayout>
             </LinearLayout>
 
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <LinearLayout
             android:id="@+id/pastRaid"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -479,20 +471,23 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="20dp"
                     android:src="@drawable/icon_arrow_down"
-                    app:tint="#FFFFFF"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="#FFFFFF" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/raidRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="@color/background_color"
                 android:visibility="gone"
                 tools:listitem="@layout/card_raid">
 
             </androidx.recyclerview.widget.RecyclerView>
+
         </LinearLayout>
 
     </LinearLayout>

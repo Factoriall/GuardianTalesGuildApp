@@ -30,11 +30,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/spinner_bg"
-        app:itemBackground="@color/spinner_bg"
+        app:itemBackground="@android:color/transparent"
         app:itemIconTint="@color/bg_icon"
         app:itemTextColor="@color/bg_icon"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/menu_button" />
 </androidx.constraintlayout.widget.ConstraintLayout>

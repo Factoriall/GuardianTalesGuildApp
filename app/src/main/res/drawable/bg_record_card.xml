@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="400dp"
-    android:height="110dp"
+    android:width="100dp"
+    android:height="30dp"
     android:viewportWidth="400"
-    android:viewportHeight="110">
+    android:viewportHeight="120">
 
+    <path
+        android:strokeColor="@color/record_card_out"
+        android:strokeWidth="5"
+        android:pathData="M 2.5, 2.5 L 2.5, 117.5, L 397.5, 117.5 L 397.5, 2.5 Z" />
 
     <path
         android:fillColor="#5377b0"
-        android:strokeWidth="1.5"
-        android:strokeMiterLimit="10"
-        android:pathData="M 0,110 L 0, 0 L 220,110 M 270,0 L 0,0 L 220,110 Z" />
+        android:pathData="M 5,5 L 5, 115 L 265,115 L 215, 5 Z" />
 
     <path
         android:fillColor="#204073"
-        android:strokeWidth="1.5"
-        android:strokeMiterLimit="10"
-        android:pathData="M 400,110 L 400, 0 L 220,110 M 270,0 L 400,0 L 220,110 Z" />
+        android:pathData="M 395,115 L 395, 5 L 215,5 L 265,115 Z" />
+
+
 </vector>

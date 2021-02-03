@@ -18,5 +18,9 @@
     <color name="bg_text">#2D2F34</color>
     <color name="bar_chart_color">#423118</color>
     <color name="line_chart_color">#D8B38E</color>
+    <color name="background_color">#2A315A</color>
+    <color name="member_card_out">#D8B38E</color>
+    <color name="member_card_in">#2D2F34</color>
+    <color name="transparent">#00FFFFFF</color>
 
 </resources>

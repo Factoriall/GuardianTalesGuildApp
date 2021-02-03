@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -58,7 +59,7 @@ public class StatisticMember3Fragment extends Fragment {
     TextView contribution;
     TextView hitNum;
     TextView average;
-    CardView leaderCard;
+    LinearLayout leaderCard;
     CombinedChartClass dpsChart;
     RecyclerView recyclerView;
     StatisticMemberLeaderAdapter adapter;
@@ -103,16 +104,14 @@ public class StatisticMember3Fragment extends Fragment {
         private CombinedChart chart;
         private int xAxisNum;
         private List<Record> memberRecords;
-        private List<Record> allRecords;
 
         public CombinedChartClass(CombinedChart chart, int xAxisNum) {
             this.chart = chart;
             this.xAxisNum = xAxisNum;
         }
 
-        public void setRecords(List<Record> memberRecords, List<Record> allRecords){
+        public void setRecords(List<Record> memberRecords){
             this.memberRecords = memberRecords;
-            this.allRecords = allRecords;
         }
 
         public void setCombinedChartUi(){ //CombinedChart의 ui 설정
@@ -165,7 +164,7 @@ public class StatisticMember3Fragment extends Fragment {
 
             CombinedData data = new CombinedData();
 
-            data.setData(generateLineData());
+            //data.setData(generateLineData());
             data.setData(generateBarData());
 
             xAxis.setAxisMaximum(data.getXMax() + 0.8f);
@@ -175,9 +174,9 @@ public class StatisticMember3Fragment extends Fragment {
             chart.invalidate();
         }
 
+        /*
         private LineData generateLineData(){ // 기여도 그래프
             LineData d = new LineData();
-            Log.d("xAxisNum", "" + xAxisNum);
 
             ArrayList<Entry> entries = new ArrayList<>();
 
@@ -232,7 +231,7 @@ public class StatisticMember3Fragment extends Fragment {
             d.addDataSet(set);
 
             return d;
-        }
+        }*/
 
         private BarData generateBarData(){ // 최종 딜량 그래프
             ArrayList<BarEntry> entries = new ArrayList<>();
@@ -289,6 +288,7 @@ public class StatisticMember3Fragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_statistic_member_3, container, false);
+
         database = RoomDB.getInstance(getActivity());
         if (getArguments() != null) {
             memberId = getArguments().getInt("memberId");
@@ -298,7 +298,7 @@ public class StatisticMember3Fragment extends Fragment {
         }
 
         damage = view.findViewById(R.id.damage);
-        contribution = view.findViewById(R.id.contribution);
+        //contribution = view.findViewById(R.id.contribution);
         hitNum = view.findViewById(R.id.hitNum);
         average = view.findViewById(R.id.average);
         leaderCard = view.findViewById(R.id.leaderCard);
@@ -338,30 +338,28 @@ public class StatisticMember3Fragment extends Fragment {
         List<Record> memberRecords = database.recordDao().getCertainMemberRecordsWithBossAndLeader(memberId, raidId);
         leaderCard.setVisibility(View.GONE);
 
-        setData(allRecords, memberRecords);
+        setData(memberRecords);
     }
 
     private void setBossData(Boss boss) {
         int bossId = boss.getBossId();
-
-        List<Record> allRecords = database.recordDao().getAllRecordsWithOneBossAndLeader(raidId, bossId);
         List<Record> memberRecords = database.recordDao().getMemberRecordsWithOneBossAndLeader(memberId, raidId, bossId);
 
         setLeaderCard(memberRecords);
-        setData(allRecords, memberRecords);
+        setData(memberRecords);
     }
 
-    private void setData(List<Record> allRecords, List<Record> memberRecords) {
-        long allDamage = getDamageFromList(allRecords, isAdjustMode);
+    private void setData(List<Record> memberRecords) {
+        //long allDamage = getDamageFromList(allRecords, isAdjustMode);
         long memberDamage = getDamageFromList(memberRecords, isAdjustMode);
 
         damage.setText(NumberFormat.getNumberInstance(Locale.US).format(memberDamage));
-        contribution.setText(getPercentage(memberDamage, allDamage));
+        //contribution.setText(getPercentage(memberDamage, allDamage));
         hitNum.setText(Integer.toString(memberRecords.size()));
         average.setText(memberRecords.size() == 0 ? Integer.toString(0) :
                 NumberFormat.getNumberInstance(Locale.US).format(memberDamage / memberRecords.size()));
 
-        dpsChart.setRecords(memberRecords, allRecords);
+        dpsChart.setRecords(memberRecords);
         dpsChart.setCombinedChartUi();
     }
 

@@ -6,67 +6,43 @@
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:id="@+id/memberLayout"
+        android:id="@+id/membersCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/membersCard"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
             android:layout_weight="1"
-            app:cardBackgroundColor="#45403A"
-            app:cardCornerRadius="0dp">
+            android:background="@drawable/bg_info_card"
+            android:orientation="horizontal">
 
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
+            <ImageView
+                android:id="@+id/people_icon"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_margin="5dp">
+                android:layout_weight="1"
+                android:padding="10dp"
+                android:src="@drawable/icon_profile" />
 
+            <org.angmarch.views.NiceSpinner
+                android:id="@+id/nickname"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:orientation="horizontal">
-
-                        <ImageView
-                            android:id="@+id/people_icon"
-                            android:layout_width="100dp"
-                            android:layout_height="match_parent"
-                            android:background="#D8B38E"
-                            android:padding="10dp"
-                            android:src="@drawable/icon_profile" />
-
-                        <org.angmarch.views.NiceSpinner
-                            android:id="@+id/nickname"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-
-                            android:dropDownWidth="300dp"
-                            android:gravity="center"
-                            android:textSize="20sp"
-                            android:textStyle="bold"
-                            app:arrowTint="#FFFFFF"
-                            app:backgroundSelector="@drawable/bg_spinner_nice"
-                            app:popupTextAlignment="start"
-                            app:textTint="#FFFFFF" />
-                    </LinearLayout>
-
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-
-        </androidx.cardview.widget.CardView>
+                android:layout_weight="3"
+                android:gravity="center"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:arrowTint="#FFFFFF"
+                app:backgroundSelector="@drawable/bg_spinner_nice"
+                app:popupTextAlignment="start"
+                app:textTint="#FFFFFF" />
+        </LinearLayout>
 
     </LinearLayout>
 
@@ -74,14 +50,11 @@
         android:id="@+id/TotalDamageCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="5dp"
         android:background="#6A5A46"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/memberLayout">
+        app:layout_constraintTop_toBottomOf="@+id/membersCard">
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
@@ -125,6 +98,7 @@
         android:id="@+id/recordRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:background="@color/background_color"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

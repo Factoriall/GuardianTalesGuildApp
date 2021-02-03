@@ -1,9 +1,12 @@
 package org.techtown.gtguildraid.Adapters;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -49,12 +52,13 @@ public class StatisticMemberLeaderAdapter extends RecyclerView.Adapter<Statistic
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder{
-        private static final int MAX_NUM = 1234567890;
+        private static final long MAX_NUM = Long.MAX_VALUE;
         final String[] elementArray
                 = new String[]{"normal", "fire", "water", "earth", "light", "dark", "basic"};
 
         ImageView leaderImage;
         ImageView leaderElement;
+        ImageView cvHelp;
         TextView leaderName;
         TextView totalDamage;
         TextView hitNum;
@@ -76,12 +80,33 @@ public class StatisticMemberLeaderAdapter extends RecyclerView.Adapter<Statistic
             minDamage = itemView.findViewById(R.id.minDamage);
             maxDamage = itemView.findViewById(R.id.maxDamage);
             CV = itemView.findViewById(R.id.CV);
+            cvHelp = itemView.findViewById(R.id.cvhelp);
             context = itemView.getContext();
         }
 
         public void setItem(LeaderInfo info, boolean isAdjustMode) {
             Hero leader = info.getLeader();
             List<Record> records = info.getRecordList();
+
+            cvHelp.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    final Dialog dialog = new Dialog(context);
+                    dialog.setContentView(R.layout.dialog_cvhelp);
+                    int width = WindowManager.LayoutParams.MATCH_PARENT;
+                    int height = WindowManager.LayoutParams.WRAP_CONTENT;
+                    dialog.getWindow().setLayout(width, height);
+                    dialog.show();
+
+                    Button button = dialog.findViewById(R.id.button);
+                    button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            dialog.dismiss();
+                        }
+                    });
+                }
+            });
 
             leaderName.setText(leader.getKoreanName());
             int leaderElementId = context.getResources().getIdentifier(

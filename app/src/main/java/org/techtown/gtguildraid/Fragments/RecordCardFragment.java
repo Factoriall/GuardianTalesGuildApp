@@ -61,6 +61,7 @@ import java.util.Locale;
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 
 public class RecordCardFragment extends Fragment {
+    private final int FAVORITE_MAX = 7;
     final int DAY_IN_SECONDS = 1000 * 3600 * 24;
     private final int MAX_SIZE = 3;
     final String[] elementKoreanArray = new String[]{"1성", "화", "수", "지", "광", "암", "무"};
@@ -118,7 +119,7 @@ public class RecordCardFragment extends Fragment {
         public int compareTo(MemberForSpinner member) {
             if(todayRemain == 0){
                 if(member.todayRemain == 0)
-                    return 0;
+                    return name.compareTo(member.name);
                 else
                     return 1;
             }
@@ -126,7 +127,7 @@ public class RecordCardFragment extends Fragment {
                 if(member.todayRemain == 0)
                     return -1;
                 else
-                    return 0;
+                    return name.compareTo(member.name);
             }
         }
     }
@@ -198,6 +199,7 @@ public class RecordCardFragment extends Fragment {
         memberSpinner.setOnSpinnerItemSelectedListener(new OnSpinnerItemSelectedListener() {
             @Override
             public void onItemSelected(NiceSpinner parent, View view, int position, long id) {
+                Log.d("newSelected", "position: " + position);
                 sMemberIdx = position;
                 recordList = database.recordDao().getCertainDayRecordsWithBossAndLeader(
                         memberList.get(sMemberIdx).getId(), raidId, day);
@@ -253,23 +255,35 @@ public class RecordCardFragment extends Fragment {
 
     private void refreshSpinnerItem(int rIdx) {
         int prevMemberId = memberList.get(rIdx).getId();
-        memberList.get(rIdx).setTodayRemain(getRemainedRecord(prevMemberId, raidId));
+        int before = memberList.get(rIdx).todayRemain;
+        int after = getRemainedRecord(prevMemberId, raidId);
+        memberList.get(rIdx).setTodayRemain(after);
 
-        Collections.sort(memberList);
+        boolean isOrderChange = before == 0 || after == 0;
+
+        if(isOrderChange)
+            Collections.sort(memberList);
 
         List<String> memberNameList = new ArrayList<>();
+        Log.d("newSelected", "sMemberIdx: " + sMemberIdx);
 
         int newSelectedIdx = 0;
         int idx = 0;
-        for(MemberForSpinner m : memberList){
-            if(m.getId() == prevMemberId)
+        for (MemberForSpinner m : memberList) {
+            if (m.getId() == prevMemberId){
                 newSelectedIdx = idx;
+            }
+
             memberNameList.add(m.getName() + " - " + m.getTodayRemain());
             idx++;
         }
-
         memberSpinner.attachDataSource(memberNameList);
-        memberSpinner.setSelectedIndex(newSelectedIdx);
+
+
+        if(isOrderChange)
+            sMemberIdx = newSelectedIdx;
+
+        memberSpinner.setSelectedIndex(sMemberIdx);
     }
 
     private void setTotalDamage() {
@@ -388,7 +402,6 @@ public class RecordCardFragment extends Fragment {
                         break;
                     }
                 }
-
             }
 
             @Override
@@ -419,6 +432,11 @@ public class RecordCardFragment extends Fragment {
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(database.favoritesDao().getAllFavorites().size() >= FAVORITE_MAX){
+                    showToast("최대 " + FAVORITE_MAX + "개까지 저장이 가능합니다");
+                    return;
+                }
+
                 database.favoritesDao().insert(new Favorites(selectedHeroId));
                 refreshFavorites(elements, favoritesList);
             }

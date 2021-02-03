@@ -1,203 +1,142 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="110dp"
     android:layout_margin="2dp"
-    card_view:cardBackgroundColor="#15233d"
-    card_view:cardCornerRadius="4dp">
+    android:background="@drawable/bg_record_card"
+    android:padding="5dp">
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="5dp">
+    <ImageView
+        android:id="@+id/leaderImage"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_margin="3dp"
+        android:background="@color/info_card_out"
+        android:padding="3dp"
+        card_view:layout_constraintStart_toStartOf="parent"
+        card_view:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@tools:sample/avatars" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/bg_record_card"
-            android:orientation="horizontal">
+    <TextView
+        android:id="@+id/damage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginBottom="5dp"
+        android:gravity="bottom|left"
+        android:inputType="number"
+        android:text="16,000,000"
+        android:textColor="#262649"
+        android:textSize="28sp"
+        card_view:layout_constraintBottom_toBottomOf="parent"
+        card_view:layout_constraintStart_toStartOf="parent" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+    <TextView
+        android:id="@+id/textDamage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|left"
+        android:layout_marginStart="3dp"
+        android:layout_marginBottom="5dp"
+        android:gravity="left"
+        android:text="데미지"
+        android:textColor="#FFFFFF"
+        card_view:layout_constraintBottom_toBottomOf="@+id/damage"
+        card_view:layout_constraintStart_toEndOf="@+id/damage" />
+
+    <TextView
+        android:id="@+id/bossName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="5dp"
+        android:text="광분한 미노타우로스"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        card_view:layout_constraintEnd_toEndOf="parent"
+        card_view:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/bossImage"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="5dp"
+        android:background="#54748E"
+        android:padding="3dp"
+        card_view:layout_constraintBottom_toBottomOf="parent"
+        card_view:layout_constraintEnd_toEndOf="parent"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <ImageView
+        android:id="@+id/lastHit"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:src="@drawable/icon_clear"
+        card_view:layout_constraintBottom_toBottomOf="@+id/bossImage"
+        card_view:layout_constraintEnd_toEndOf="@+id/bossImage"
+        card_view:layout_constraintStart_toStartOf="@+id/bossImage"
+        card_view:layout_constraintTop_toTopOf="@+id/bossImage" />
+
+    <TextView
+        android:id="@+id/level"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="3dp"
+        android:gravity="right"
+        android:text="Lv.60"
+        android:textColor="#FFFFFF"
+        android:textSize="12sp"
+        card_view:layout_constraintBottom_toBottomOf="@+id/bossName"
+        card_view:layout_constraintEnd_toStartOf="@+id/bossName" />
+
+    <!--
+            <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent">
-
-                <LinearLayout
-                    android:id="@+id/linearLayout4"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginTop="5dp"
-                    android:background="@color/info_card_out"
-                    android:orientation="horizontal"
-                    card_view:layout_constraintStart_toStartOf="parent"
-                    card_view:layout_constraintTop_toTopOf="parent">
-
-                    <ImageView
-                        android:id="@+id/leaderImage"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="3dp"
-                        tools:srcCompat="@tools:sample/avatars" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/linearLayout3"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:orientation="horizontal"
-                    card_view:layout_constraintBottom_toBottomOf="parent"
-                    card_view:layout_constraintStart_toStartOf="parent">
-
-                    <TextView
-                        android:id="@+id/damage"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp"
-                        android:gravity="bottom|left"
-                        android:inputType="number"
-                        android:text="16,000,000"
-                        android:textColor="#262649"
-                        android:textSize="28sp" />
-
-                    <TextView
-                        android:id="@+id/textDamage"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="bottom|left"
-                        android:layout_marginLeft="7dp"
-                        android:layout_marginBottom="1dp"
-                        android:gravity="left"
-                        android:text="데미지"
-                        android:textColor="#FFFFFF" />
-                </LinearLayout>
-                <!--
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:id="@+id/hero1"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_margin="7dp"
-                        android:background="#504434"
-                        android:padding="3dp"
-                        tools:srcCompat="@tools:sample/avatars" />
-
-                    <ImageView
-                        android:id="@+id/hero2"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_margin="7dp"
-                        android:background="#504434"
-                        android:padding="3dp"
-                        tools:srcCompat="@tools:sample/avatars" />
-
-                    <ImageView
-                        android:id="@+id/hero3"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_margin="7dp"
-                        android:background="#504434"
-                        android:padding="3dp"
-                        tools:srcCompat="@tools:sample/avatars" />
-
-                    <ImageView
-                        android:id="@+id/hero4"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_margin="7dp"
-                        android:background="#504434"
-                        android:padding="3dp"
-                        tools:srcCompat="@tools:sample/avatars" />
-
-                </LinearLayout>
-                -->
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/bossName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:text="광분한 미노타우로스"
-                    android:textColor="#FFFFFF"
-                    android:textStyle="bold"
-                    card_view:layout_constraintBottom_toBottomOf="parent"
-                    card_view:layout_constraintEnd_toEndOf="parent" />
+                android:gravity="center"
+                android:orientation="horizontal">
 
                 <ImageView
-                    android:id="@+id/bossImage"
-                    android:layout_width="55dp"
-                    android:layout_height="55dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:background="#54748E"
+                    android:id="@+id/hero1"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_margin="7dp"
+                    android:background="#504434"
                     android:padding="3dp"
-                    card_view:layout_constraintEnd_toEndOf="parent"
-                    card_view:layout_constraintTop_toTopOf="parent"
                     tools:srcCompat="@tools:sample/avatars" />
 
                 <ImageView
-                    android:id="@+id/lastHit"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:src="@drawable/icon_clear"
-                    card_view:layout_constraintBottom_toBottomOf="@+id/bossImage"
-                    card_view:layout_constraintEnd_toEndOf="@+id/bossImage"
-                    card_view:layout_constraintStart_toStartOf="@+id/bossImage"
-                    card_view:layout_constraintTop_toTopOf="@+id/bossImage" />
+                    android:id="@+id/hero2"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_margin="7dp"
+                    android:background="#504434"
+                    android:padding="3dp"
+                    tools:srcCompat="@tools:sample/avatars" />
 
-                <LinearLayout
-                    android:id="@+id/linearLayout2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="5dp"
-                    android:orientation="horizontal"
-                    card_view:layout_constraintBottom_toTopOf="@+id/bossName"
-                    card_view:layout_constraintEnd_toEndOf="parent">
+                <ImageView
+                    android:id="@+id/hero3"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_margin="7dp"
+                    android:background="#504434"
+                    android:padding="3dp"
+                    tools:srcCompat="@tools:sample/avatars" />
 
-                    <TextView
-                        android:id="@+id/round"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="20회차"
-                        android:textColor="#FFFFFF"
-                        android:textSize="10sp" />
+                <ImageView
+                    android:id="@+id/hero4"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_margin="7dp"
+                    android:background="#504434"
+                    android:padding="3dp"
+                    tools:srcCompat="@tools:sample/avatars" />
 
-                    <TextView
-                        android:id="@+id/levelText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text=" - Lv."
-                        android:textColor="#FFFFFF"
-                        android:textSize="10sp" />
+            </LinearLayout>
+            -->
+</androidx.constraintlayout.widget.ConstraintLayout>
 
-                    <TextView
-                        android:id="@+id/level"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="100"
-                        android:textColor="#FFFFFF"
-                        android:textSize="10sp" />
-                </LinearLayout>
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
-</androidx.cardview.widget.CardView>

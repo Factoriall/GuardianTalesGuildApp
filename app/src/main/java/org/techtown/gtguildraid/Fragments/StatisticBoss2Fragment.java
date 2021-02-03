@@ -136,10 +136,7 @@ public class StatisticBoss2Fragment extends Fragment {
 
             long[] damageArray = new long[xAxisNum];
             long[] numArray = new long[xAxisNum];
-            Log.d("getround", "xaxisnum:" + xAxisNum);
-            Log.d("getround", "recordNum:" + records.size());
             for(Record r : records) {
-                Log.d("getround", "" + r.getRound());
                 damageArray[r.getRound() - 1] += r.getDamage();
                 numArray[r.getRound() - 1]++;
             }
@@ -217,10 +214,8 @@ public class StatisticBoss2Fragment extends Fragment {
                 });
             }
         });
-
         setView(position);
-        Log.d("bossPosition", "pos: " + position);
-        
+
         return view;
     }
 
@@ -244,7 +239,6 @@ public class StatisticBoss2Fragment extends Fragment {
 
     private void setBossData(Boss boss) {
         int bossId = boss.getBossId();
-        Log.d("bossName", boss.getName());
 
         List<Record> records = database.recordDao().getAllRecordsWith1BossLeaderOrdered(raidId, bossId);
         int xAxisNum;
@@ -256,14 +250,11 @@ public class StatisticBoss2Fragment extends Fragment {
 
         long damage = getDamageFromList(records);
         long average = 0;
-        Log.d("damage", "" + damage);
         if(records.size() != 0)
             average = damage / records.size();
-        Log.d("average", "" + average);
         hitNum.setText(Integer.toString(records.size()));
         averageDamage.setText(NumberFormat.getNumberInstance(Locale.US)
                 .format(average));
-        Log.d("setBoss", "rec num: " + records.size());
         stDev.setText(getCV(average, records));
 
         overallChart.setRecords(records);
