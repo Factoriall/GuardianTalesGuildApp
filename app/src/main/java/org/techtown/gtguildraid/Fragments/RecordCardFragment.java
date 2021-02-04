@@ -15,18 +15,18 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -34,11 +34,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.llollox.androidtoggleswitch.widgets.ToggleSwitch;
+import com.llollox.androidtoggleswitch.widgets.ToggleSwitchButton;
 
 import org.angmarch.views.NiceSpinner;
 import org.angmarch.views.OnSpinnerItemSelectedListener;
+import org.jetbrains.annotations.NotNull;
 import org.techtown.gtguildraid.Adapters.DialogImageSpinnerAdapter;
-import org.techtown.gtguildraid.Adapters.DialogRoundSpinnerAdapter;
 import org.techtown.gtguildraid.Adapters.RecordAdapter;
 import org.techtown.gtguildraid.Etc.MySpinner;
 import org.techtown.gtguildraid.Models.Boss;
@@ -61,7 +63,7 @@ import java.util.Locale;
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 
 public class RecordCardFragment extends Fragment {
-    private final int FAVORITE_MAX = 7;
+    private final int FAVORITE_MAX = 10;
     final int DAY_IN_SECONDS = 1000 * 3600 * 24;
     private final int MAX_SIZE = 3;
     final String[] elementKoreanArray = new String[]{"1성", "화", "수", "지", "광", "암", "무"};
@@ -84,6 +86,7 @@ public class RecordCardFragment extends Fragment {
     List<GuildMember> members;
     int selectedHeroId;
     int selectedHeroElement;
+    private boolean isCreateMode = true;
     private int sMemberIdx = 0;
 
     SharedPreferences pref;
@@ -265,7 +268,6 @@ public class RecordCardFragment extends Fragment {
             Collections.sort(memberList);
 
         List<String> memberNameList = new ArrayList<>();
-        Log.d("newSelected", "sMemberIdx: " + sMemberIdx);
 
         int newSelectedIdx = 0;
         int idx = 0;
@@ -303,60 +305,100 @@ public class RecordCardFragment extends Fragment {
         dialog.show();
 
         TextView dialogInfo = dialog.findViewById(R.id.dialogInfo);
-        Spinner bossSpinner = dialog.findViewById(R.id.bossSpinner);
+        ToggleSwitch bossSwitch = dialog.findViewById(R.id.bossSwitch);
         EditText damage = dialog.findViewById(R.id.damage);
-        Spinner roundSpinner = dialog.findViewById(R.id.roundSpinner);
+        //Spinner roundSpinner = dialog.findViewById(R.id.roundSpinner);
         CheckBox isLastHit = dialog.findViewById(R.id.isLastHit);
         ImageView addButton = dialog.findViewById(R.id.addButton);
+        ImageView deleteButton = dialog.findViewById(R.id.deleteButton);
+        HorizontalScrollView hsv = dialog.findViewById(R.id.favoriteScrollView);
         LinearLayout favoritesList = dialog.findViewById(R.id.favoriteList);
 
         Raid raid = database.raidDao().getCurrentRaid(new Date());
 
         dialogInfo.setText(database.memberDao().getMember(memberList.get(sMemberIdx).getId()).getName() + " / "
-                + day + "일차 / "+ (isEditing ? "수정\n리더: " + record.getLeader().getKoreanName() : "생성"));
+                + day + "일차 / " + (isEditing ? "수정\n리더: " + record.getLeader().getKoreanName() : "생성"));
 
-        //보스 스피너 생성
+        //bossSwitch 생성
         List<Boss> bosses = database.raidDao().getBossesList(raid.getRaidId());
-        List<String> bossNames = new ArrayList<>();
-        List<Integer> bossIds = new ArrayList<>();
-        List<Integer> bossImages = new ArrayList<>();
-        for (Boss boss : bosses) {
-            bossNames.add(boss.getName());
-            bossImages.add(getIdentifierFromResource("boss_" + boss.getImgName(), "drawable"));
-            bossIds.add(boss.getBossId());
-        }
         final int[] selectedBossId = {0};
+        bossSwitch.setView(
+                R.layout.dialog_record_boss_select,
+                bosses.size(),
+                new ToggleSwitchButton.ToggleSwitchButtonDecorator() {
+                    @Override
+                    public void decorate(ToggleSwitchButton toggleSwitchButton, @NotNull View view, int position) {
+                        TextView textView = view.findViewById(R.id.bossName);
+                        String name = bosses.get(position).getName();
+                        if (name.length() > 5)
+                            name = name.substring(0, 5) + "..";
+                        textView.setText(name);
 
-        DialogImageSpinnerAdapter bossSpinnerAdapter = new DialogImageSpinnerAdapter(getContext(), R.layout.spinner_value_layout, bossNames, bossImages);
+                        ImageView imageView = view.findViewById(R.id.bossImage);
+                        imageView.setImageResource(
+                                getIdentifierFromResource("boss_" + bosses.get(position).getImgName(), "drawable"));
+                    }
+                },
+                new ToggleSwitchButton.ViewDecorator() {
+                    @Override
+                    public void decorate(@NotNull View view, int position) {
+                        TextView textView = view.findViewById(R.id.bossName);
+                        textView.setTextColor(ContextCompat.getColor(getActivity(), android.R.color.white));
+                    }
+                },
+                new ToggleSwitchButton.ViewDecorator() {
+                    @Override
+                    public void decorate(@NotNull View view, int position) {
+                        TextView textView = (TextView) view.findViewById(R.id.bossName);
+                        textView.setTextColor(ContextCompat.getColor(getActivity(), R.color.gray));
+                    }
+                });
 
-        bossSpinner.setAdapter(bossSpinnerAdapter);
-        bossSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        bossSwitch.setOnChangeListener(new ToggleSwitch.OnChangeListener() {
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                selectedBossId[0] = bossIds.get(i);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
+            public void onToggleSwitchChanged(int position) {
+                selectedBossId[0] = bosses.get(position).getBossId();
             }
         });
+        bossSwitch.setCheckedPosition(0);
+        selectedBossId[0] = bosses.get(0).getBossId();
 
-        //회차 스피너 생성
+        //회차 넘버피커 생성
         List<String> rounds = new ArrayList<>();
         int[] levelPerRound = {50, 50, 55, 55, 60, 60};
-        for(int i=1; i<=40; i++){
+        for (int i = 1; i <= 40; i++) {
             int round = i;
             final int START_NUM = 65;
             final int START_IDX = 7;
             final int MAX_LEVEL = 80;
             int level = (round <= levelPerRound.length) ? levelPerRound[round - 1] : START_NUM + (round - START_IDX);
-            if(level > MAX_LEVEL) level = MAX_LEVEL;
+            if (level > MAX_LEVEL) level = MAX_LEVEL;
             rounds.add(level + "(" + i + ")");
         }
+        Button decrement = dialog.findViewById(R.id.decrement);
+        Button increment = dialog.findViewById(R.id.increment);
+        TextView display = dialog.findViewById(R.id.display);
 
-        DialogRoundSpinnerAdapter roundSpinnerAdapter = new DialogRoundSpinnerAdapter(getContext(), R.layout.spinner_value_layout2, rounds);
-        roundSpinner.setAdapter(roundSpinnerAdapter);
-        roundSpinner.setSelection(pref.getInt("currentRound" + raidId, 0));
+        final int[] pickerIdx = {pref.getInt("currentRound" + raidId, 0)};
+        display.setText(rounds.get(pickerIdx[0]));
+        increment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (pickerIdx[0] >= rounds.size() - 1)
+                    return;
+                pickerIdx[0]++;
+                display.setText(rounds.get(pickerIdx[0]));
+            }
+        });
+        decrement.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (pickerIdx[0] <= 0)
+                    return;
+                pickerIdx[0]--;
+                display.setText(rounds.get(pickerIdx[0]));
+            }
+        });
 
         //원소 및 영웅 스피너 생성
         MySpinner elements;
@@ -411,8 +453,11 @@ public class RecordCardFragment extends Fragment {
 
         if (isEditing) {
             damage.setText(Long.toString(record.getDamage()));
-            roundSpinner.setSelection(record.getRound() - 1);
-            String bossName = record.getBoss().getName();
+            //roundSpinner.setSelection(record.getRound() - 1);
+            pickerIdx[0] = record.getRound() - 1;
+            display.setText(rounds.get(pickerIdx[0]));
+
+            int bossId = record.getBoss().getBossId();
             isLastHit.setChecked(record.isLastHit());
 
             Hero leader = record.getLeader();
@@ -420,8 +465,8 @@ public class RecordCardFragment extends Fragment {
             elements.setSelection(leader.getElement());
 
             for (int i = 0; i < 4; i++) {
-                if (bossName.equals(bossSpinner.getItemAtPosition(i).toString())) {
-                    bossSpinner.setSelection(i);
+                if (bossId == bosses.get(i).getBossId()) {
+                    bossSwitch.setCheckedPosition(i);
                     break;
                 }
             }
@@ -432,13 +477,36 @@ public class RecordCardFragment extends Fragment {
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(database.favoritesDao().getAllFavorites().size() >= FAVORITE_MAX){
+                List<Favorites> favs = database.favoritesDao().getAllFavorites();
+                if (favs.size() >= FAVORITE_MAX) {
                     showToast("최대 " + FAVORITE_MAX + "개까지 저장이 가능합니다");
                     return;
+                }
+                for (Favorites fav : favs) {
+                    if (fav.getHeroId() == selectedHeroId) {
+                        showToast("이미 즐겨찾기에 추가되어 있습니다");
+                        return;
+                    }
                 }
 
                 database.favoritesDao().insert(new Favorites(selectedHeroId));
                 refreshFavorites(elements, favoritesList);
+            }
+        });
+
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (isCreateMode) {
+                    hsv.setBackgroundResource(R.color.delete_color);
+                    deleteButton.setImageResource(R.drawable.icon_undo);
+                    deleteButton.setBackgroundResource(R.color.bg_icon);
+                } else {
+                    hsv.setBackgroundResource(R.color.bg_icon);
+                    deleteButton.setImageResource(R.drawable.icon_delete);
+                    deleteButton.setBackgroundResource(R.color.delete_color);
+                }
+                isCreateMode = !isCreateMode;
             }
         });
 
@@ -459,24 +527,24 @@ public class RecordCardFragment extends Fragment {
 
                 if (!sDamage.equals("")) {
                     SharedPreferences.Editor editor = pref.edit();
-                    editor.putInt("currentRound" + raidId, roundSpinner.getSelectedItemPosition());
+                    editor.putInt("currentRound" + raidId, pickerIdx[0]);
                     editor.commit();
 
                     dialog.dismiss();
                     if (isEditing) {//수정 중이면 업데이트
                         database.recordDao().updateRecord(record.getRecordId(),
                                 Integer.parseInt(sDamage), selectedBossId[0],
-                                roundSpinner.getSelectedItemPosition() + 1,
+                                pickerIdx[0] + 1,
                                 iHeroId, isLastHit.isChecked());
                     } else {//새로운 데이터 생성
                         Record record = new Record(memberList.get(sMemberIdx).getId(), raidId, day);
                         record.setDamage(Long.parseLong(sDamage));
                         record.setBossId(selectedBossId[0]);
                         record.setLeaderId(iHeroId);
-                        record.setRound(roundSpinner.getSelectedItemPosition() + 1);
+                        record.setRound(pickerIdx[0] + 1);
 
                         Log.d("roundSpinnerPos", Integer.toString(
-                                roundSpinner.getSelectedItemPosition() + 1));
+                                pickerIdx[0] + 1));
                         record.setLastHit(isLastHit.isChecked());
 
                         //recordList 갱신
@@ -511,38 +579,33 @@ public class RecordCardFragment extends Fragment {
         favoritesList.removeAllViews();
         List<Favorites> favs = database.favoritesDao().getAllFavoritesAndHero();
 
-        boolean isFirst = true;
         for(Favorites fav : favs) {
             LayoutInflater vi = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View v = vi.inflate(R.layout.button_favorites, null);
 
-            TextView heroName = v.findViewById(R.id.heroName);
+            ImageView heroImage = v.findViewById(R.id.heroImage);
             Hero hero = fav.getHero();
-            heroName.setText(hero.getKoreanName());
-            heroName.setOnClickListener(new View.OnClickListener() {
+            heroImage.setImageResource(
+                    getIdentifierFromResource("character_" + hero.getEnglishName(), "drawable"));
+            heroImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    selectedHeroId = hero.getHeroId();
-                    elements.setSelection(hero.getElement());
+                    if (isCreateMode) {
+                        selectedHeroId = hero.getHeroId();
+                        elements.setSelection(hero.getElement());
+                    } else {
+                        database.favoritesDao().delete(fav);
+                        ((ViewGroup) v.getParent()).removeView(v);
+                    }
                 }
             });
 
-            ImageView deleteButton = v.findViewById(R.id.deleteButton);
-            deleteButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    database.favoritesDao().delete(fav);
-                    v.setVisibility(View.GONE);
-                }
-            });
-            favoritesList.addView(v);
-            if(!isFirst) {
-                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)v.getLayoutParams();
-                params.setMargins(10, 0, 0, 0);
+            if (isCreateMode) {
+                favoritesList.addView(v);
+                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) v.getLayoutParams();
+                params.setMargins(5, 0, 5, 0);
                 v.setLayoutParams(params);
             }
-            else
-                isFirst = false;
         }
     }
 

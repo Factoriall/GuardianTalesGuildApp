@@ -301,7 +301,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="jar:file:/C:/Program%20Files/Android/Android%20Studio/plugins/android/lib/android.jar!/images/material/icons/materialicons/clear/baseline_clear_24.xml" />
+                                      <entry key="url" value="jar:file:/C:/Program%20Files/Android/Android%20Studio/plugins/android/lib/android.jar!/images/material/icons/materialicons/undo/baseline_undo_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -311,7 +311,7 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="outputName" value="icon_clear_black" />
+                            <entry key="outputName" value="ic_baseline_undo_24" />
                             <entry key="sourceFile" value="C:\Users\skarl\AndroidStudioProjects\MyApp\GTGuildRaid" />
                           </map>
                         </option>

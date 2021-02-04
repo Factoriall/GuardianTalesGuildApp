@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,7 +14,6 @@ import org.techtown.gtguildraid.Models.Record;
 import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.Utils.RoomDB;
 
-import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
@@ -74,32 +72,39 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder
         }
 
         public void setItem(Record record) {
-            level.setText(getLevelFromRound(record.getRound()));
-            String sBossName = record.getBoss().getName();
-            if(sBossName.length() > 7)
-                sBossName = sBossName.substring(0,7) + "..";
-            bossName.setText(sBossName);
-            bossImage.setImageResource(getIdentifierFromResource(
-                    "boss_" + record.getBoss().getImgName(), "drawable"));
+            try {
+                level.setText(getLevelFromRound(record.getRound()));
+                String sBossName = record.getBoss().getName();
+                if (sBossName.length() > 7)
+                    sBossName = sBossName.substring(0, 7) + "..";
+                bossName.setText(sBossName);
+                bossImage.setImageResource(getIdentifierFromResource(
+                        "boss_" + record.getBoss().getImgName(), "drawable"));
 
-            damage.setText(NumberFormat.getNumberInstance(Locale.US).format(record.getDamage()));
+                damage.setText(NumberFormat.getNumberInstance(Locale.US).format(record.getDamage()));
 
-            String leaderName = record.getLeader().getEnglishName();
-            leaderImage.setImageResource(getIdentifierFromResource(
-                    "character_" + leaderName, "drawable"));
+                String leaderName = record.getLeader().getEnglishName();
+                leaderImage.setImageResource(getIdentifierFromResource(
+                        "character_" + leaderName, "drawable"));
 
-            if(record.isLastHit())
-                lastHit.setVisibility(View.VISIBLE);
-            else
-                lastHit.setVisibility(View.GONE);
+                if (record.isLastHit())
+                    lastHit.setVisibility(View.VISIBLE);
+                else
+                    lastHit.setVisibility(View.GONE);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         private String getLevelFromRound(int round) {
             int[] levelPerRound = {50, 50, 55, 55, 60, 60};
             final int START_NUM = 65;
             final int START_IDX = 7;
+            final int MAX_LEVEL = 80;
 
-            return "Lv." + (round <= levelPerRound.length ? levelPerRound[round - 1] : START_NUM + (round - START_IDX));
+            int level = (round <= levelPerRound.length ? levelPerRound[round - 1] : START_NUM + (round - START_IDX));
+            if (level > MAX_LEVEL) level = MAX_LEVEL;
+            return "Lv." + level;
         }
 
         int getIdentifierFromResource(String name, String defType){

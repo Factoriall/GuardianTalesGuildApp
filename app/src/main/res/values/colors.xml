@@ -22,5 +22,7 @@
     <color name="member_card_out">#D8B38E</color>
     <color name="member_card_in">#2D2F34</color>
     <color name="transparent">#00FFFFFF</color>
+    <color name="create_color">#4CAF50</color>
+    <color name="delete_color">#FF4545</color>
 
 </resources>
