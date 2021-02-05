@@ -8,89 +8,68 @@
     <LinearLayout
         android:id="@+id/membersCard"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@drawable/bg_info_card"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
+        <ImageView
+            android:id="@+id/people_icon"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@drawable/bg_info_card"
-            android:orientation="horizontal">
+            android:padding="10dp"
+            android:src="@drawable/icon_profile" />
 
-            <ImageView
-                android:id="@+id/people_icon"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:padding="10dp"
-                android:src="@drawable/icon_profile" />
+        <org.angmarch.views.NiceSpinner
+            android:id="@+id/nickname"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
 
-            <org.angmarch.views.NiceSpinner
-                android:id="@+id/nickname"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-
-                android:layout_weight="3"
-                android:gravity="center"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                app:arrowTint="#FFFFFF"
-                app:backgroundSelector="@drawable/bg_spinner_nice"
-                app:popupTextAlignment="start"
-                app:textTint="#FFFFFF" />
-        </LinearLayout>
-
+            android:layout_weight="3"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:arrowTint="#FFFFFF"
+            app:backgroundSelector="@drawable/bg_spinner_nice"
+            app:popupTextAlignment="start"
+            app:textTint="#FFFFFF" />
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/TotalDamageCard"
+        android:id="@+id/totalDamageCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#6A5A46"
+        android:background="@color/info_card_out"
         android:orientation="vertical"
+        android:padding="3dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/membersCard">
 
-        <androidx.cardview.widget.CardView
+        <TextView
+            android:id="@+id/damageText"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="4dp">
+            android:layout_height="wrap_content"
+            android:background="#D8B38E"
+            android:gravity="center"
+            android:text="금일 총 데미지"
+            android:textColor="#3C3C3C"
+            android:textStyle="bold" />
 
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/damageText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="#D8B38E"
-                    android:gravity="center"
-                    android:text="금일 총 데미지"
-                    android:textColor="#3C3C3C"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/totalDamage"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="#2D2F34"
-                    android:gravity="center"
-                    android:text="480,000"
-                    android:textColor="#FFFFFF"
-                    android:textSize="30sp"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
-
-        </androidx.cardview.widget.CardView>
+        <TextView
+            android:id="@+id/totalDamage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#2D2F34"
+            android:gravity="center"
+            android:text="480,000"
+            android:textColor="#FFFFFF"
+            android:textSize="30sp"
+            android:textStyle="bold" />
 
     </LinearLayout>
 
@@ -104,8 +83,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/TotalDamageCard"
-        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintTop_toBottomOf="@+id/totalDamageCard"
         tools:listitem="@layout/card_record" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

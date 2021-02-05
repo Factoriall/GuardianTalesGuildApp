@@ -1,5 +1,6 @@
 package org.techtown.gtguildraid.Fragments;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -9,9 +10,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -135,7 +138,6 @@ public class RecordCardFragment extends Fragment {
         }
     }
 
-
     List<MemberForSpinner> memberList = new ArrayList<>();
 
     public static RecordCardFragment newInstance(int counter, int raidId) {
@@ -191,8 +193,7 @@ public class RecordCardFragment extends Fragment {
 
         linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView = view.findViewById(R.id.recordRecyclerView);
-        recordList = database.recordDao().getCertainDayRecordsWithBossAndLeader(
-                memberList.get(sMemberIdx).getId(), raidId, day);
+        recordList = getReverseList();
 
         recyclerView.setLayoutManager(linearLayoutManager);
         adapter = new RecordAdapter();
@@ -204,8 +205,7 @@ public class RecordCardFragment extends Fragment {
             public void onItemSelected(NiceSpinner parent, View view, int position, long id) {
                 Log.d("newSelected", "position: " + position);
                 sMemberIdx = position;
-                recordList = database.recordDao().getCertainDayRecordsWithBossAndLeader(
-                        memberList.get(sMemberIdx).getId(), raidId, day);
+                recordList = getReverseList();
                 adapter.setItems(recordList);
                 setTotalDamage();
                 adapter.notifyDataSetChanged();
@@ -234,6 +234,13 @@ public class RecordCardFragment extends Fragment {
         itemTouchHelper.attachToRecyclerView(recyclerView);
 
         return view;
+    }
+
+    private List<Record> getReverseList() {
+        List<Record> list = database.recordDao().getCertainDayRecordsWithBossAndLeader(
+                memberList.get(sMemberIdx).getId(), raidId, day);
+        Collections.reverse(list);//ui에 맞게
+        return list;
     }
 
     private void setMemberSpinner() {
@@ -307,7 +314,6 @@ public class RecordCardFragment extends Fragment {
         TextView dialogInfo = dialog.findViewById(R.id.dialogInfo);
         ToggleSwitch bossSwitch = dialog.findViewById(R.id.bossSwitch);
         EditText damage = dialog.findViewById(R.id.damage);
-        //Spinner roundSpinner = dialog.findViewById(R.id.roundSpinner);
         CheckBox isLastHit = dialog.findViewById(R.id.isLastHit);
         ImageView addButton = dialog.findViewById(R.id.addButton);
         ImageView deleteButton = dialog.findViewById(R.id.deleteButton);
@@ -318,6 +324,7 @@ public class RecordCardFragment extends Fragment {
 
         dialogInfo.setText(database.memberDao().getMember(memberList.get(sMemberIdx).getId()).getName() + " / "
                 + day + "일차 / " + (isEditing ? "수정\n리더: " + record.getLeader().getKoreanName() : "생성"));
+
 
         //bossSwitch 생성
         List<Boss> bosses = database.raidDao().getBossesList(raid.getRaidId());
@@ -551,8 +558,7 @@ public class RecordCardFragment extends Fragment {
                         database.recordDao().insertRecord(record);
                     }
                     recordList.clear();
-                    recordList.addAll(database.recordDao().
-                            getCertainDayRecordsWithBossAndLeader(memberList.get(sMemberIdx).getId(), raidId, day));
+                    recordList.addAll(getReverseList());
 
                     adapter.notifyDataSetChanged();
 
