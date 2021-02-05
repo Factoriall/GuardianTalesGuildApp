@@ -8,7 +8,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import org.techtown.gtguildraid.Fragments.StatisticBoss1Fragment;
 import org.techtown.gtguildraid.Fragments.StatisticMember1Fragment;
-import org.techtown.gtguildraid.Fragments.StatisticRank1Fragment;
+import org.techtown.gtguildraid.Fragments.StatisticRankFragment;
 
 public class StatisticPagerAdapter extends FragmentStateAdapter {
     private static final int ITEM_SIZE = 3;
@@ -32,7 +32,7 @@ public class StatisticPagerAdapter extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         switch(position) {
             case RANK:
-                return StatisticRank1Fragment.newInstance(raidId);
+                return StatisticRankFragment.newInstance(raidId);
             case MEMBER:
                 return StatisticMember1Fragment.newInstance(raidId);
             case BOSS:

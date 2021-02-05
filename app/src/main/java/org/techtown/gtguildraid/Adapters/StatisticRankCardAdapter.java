@@ -1,7 +1,5 @@
 package org.techtown.gtguildraid.Adapters;
 
-import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,11 +8,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.techtown.gtguildraid.Fragments.StatisticRank3Fragment;
 import org.techtown.gtguildraid.Models.RankInfo;
-import org.techtown.gtguildraid.Models.Record;
 import org.techtown.gtguildraid.R;
-import org.techtown.gtguildraid.Utils.RoomDB;
 
 import java.text.NumberFormat;
 import java.util.List;
@@ -63,7 +58,6 @@ public class StatisticRankCardAdapter extends RecyclerView.Adapter<StatisticRank
         }
 
         public void setItem(RankInfo ri, int position) {
-            Log.d("position", "" + position);
             rankNum.setText(Integer.toString(position + 1));
             memberName.setText(ri.getMemberName());
             hitNum.setText(Integer.toString(ri.getHitNum()));
