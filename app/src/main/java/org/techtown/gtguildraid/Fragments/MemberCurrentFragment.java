@@ -18,7 +18,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.techtown.gtguildraid.Adapters.MemberAdapter;
+import org.techtown.gtguildraid.Adapters.MemberCardAdapter;
 import org.techtown.gtguildraid.Interfaces.MyButtonClickListener;
 import org.techtown.gtguildraid.Models.GuildMember;
 import org.techtown.gtguildraid.R;
@@ -33,7 +33,7 @@ public class MemberCurrentFragment extends Fragment {
     List<GuildMember> memberList = new ArrayList<>();
     LinearLayoutManager linearLayoutManager;
     RoomDB database;
-    MemberAdapter adapter;
+    MemberCardAdapter adapter;
     TextView currentCnt;
     MemberFragment parentFragment;
     final int MAX_MEMBER = 29;
@@ -55,7 +55,7 @@ public class MemberCurrentFragment extends Fragment {
         currentCnt.setText((memberList.size() + 1) + "/30");
 
         recyclerView.setLayoutManager(linearLayoutManager);
-        adapter = new MemberAdapter(memberList);
+        adapter = new MemberCardAdapter(memberList);
         recyclerView.setAdapter(adapter);
 
         createButton.setOnClickListener(new View.OnClickListener() {

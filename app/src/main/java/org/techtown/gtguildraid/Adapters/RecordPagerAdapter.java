@@ -8,7 +8,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import org.techtown.gtguildraid.Fragments.RecordCardFragment;
 
-public class ViewPagerAdapter extends FragmentStateAdapter {
+public class RecordPagerAdapter extends FragmentStateAdapter {
     private static final int CARD_ITEM_SIZE = 14;
     private int raidId;
 
@@ -16,7 +16,7 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
         this.raidId = raidId;
     }
 
-    public ViewPagerAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle) {
+    public RecordPagerAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle) {
         super(fragmentManager, lifecycle);
     }
 

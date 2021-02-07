@@ -63,7 +63,6 @@ public class StatisticRankFragment extends Fragment {
 
         database = RoomDB.getInstance(getActivity());
 
-        ToggleSwitch bossSwitch = view.findViewById(R.id.toggleSwitchBoss);
 
         ImageButton arrow = view.findViewById(R.id.arrow);
         ConstraintLayout cl = view.findViewById(R.id.conditionLayout);
@@ -81,7 +80,7 @@ public class StatisticRankFragment extends Fragment {
             }
         });
 
-
+        ToggleSwitch bossSwitch = view.findViewById(R.id.toggleSwitchBoss);
         List<Boss> bossesInRaid = database.raidDao().getBossesList(raidId);
 
         if(bossLabels.isEmpty()) {
@@ -160,19 +159,19 @@ public class StatisticRankFragment extends Fragment {
             @Override
             public void run() {
                 for(GuildMember m : database.memberDao().getAllMembers()) {
-                    if(database.recordDao().getCertainMemberRecords(m.getID(), raidId).size() == 0)
+                    if(database.recordDao().get1MemberRecords(m.getID(), raidId).size() == 0)
                         continue;
 
                     List<Record> recordList;
                     if(bossPosition != 0) {
-                        recordList = database.recordDao().getMemberRoundRecordsWithOneBossAndLeader(
+                        recordList = database.recordDao().get1MemberRoundRecordsWithExtra(
                                 m.getID(),
                                 raidId,
                                 database.raidDao().getBossesList(raidId).get(bossPosition-1).getBossId(),
                                 rounds[levelPosition]);
                     }
                     else{
-                        recordList = database.recordDao().getCertainMemberRoundRecordsWithOneBossAndLeader(
+                        recordList = database.recordDao().get1MemberRoundRecordsWithExtra(
                                 m.getID(),
                                 raidId,
                                 rounds[levelPosition]);

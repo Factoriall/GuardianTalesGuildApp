@@ -24,9 +24,9 @@
 
             <LinearLayout
                 android:id="@+id/imageLayout"
-                android:layout_width="90dp"
-                android:layout_height="90dp"
-                android:layout_marginTop="15dp"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginTop="10dp"
                 android:background="@color/info_card_out"
                 android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -54,7 +54,7 @@
                 android:id="@+id/leaderName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
+                android:layout_marginBottom="10dp"
                 android:text="나나나나나나"
                 android:textColor="@color/bg_icon"
                 android:textSize="16sp"
@@ -202,40 +202,6 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/textView24"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="변동 계수"
-                        android:textColor="#FFFFFF" />
-
-                    <ImageView
-                        android:id="@+id/cvhelp"
-                        android:layout_width="10dp"
-                        android:layout_height="10dp"
-                        android:layout_margin="3dp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:srcCompat="@drawable/help_icon" />
-                </LinearLayout>
-
-                <TextView
-                    android:id="@+id/CV"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="100.35" />
-            </LinearLayout>
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

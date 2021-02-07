@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,7 +17,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
-import org.techtown.gtguildraid.Adapters.ViewPagerAdapter;
+import org.techtown.gtguildraid.Adapters.RecordPagerAdapter;
 import org.techtown.gtguildraid.Models.Raid;
 import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.Utils.RoomDB;
@@ -35,7 +34,7 @@ public class RecordFragment extends Fragment {
     RoomDB database;
     TabLayout tabLayout;
     ViewPager2 viewPager;
-    ViewPagerAdapter vAdapter;
+    RecordPagerAdapter vAdapter;
 
     Raid raid;
 
@@ -61,7 +60,7 @@ public class RecordFragment extends Fragment {
         raidTerm.setText((new SimpleDateFormat(dateFormat).format(raid.getStartDay()) + "~" +
                 new SimpleDateFormat(dateFormat).format(adjustEndTime(raid.getEndDay()))));
 
-        vAdapter = new ViewPagerAdapter(getChildFragmentManager(), getLifecycle());
+        vAdapter = new RecordPagerAdapter(getChildFragmentManager(), getLifecycle());
         setViewPager(getIntegerFromToday());
 
         new TabLayoutMediator(tabLayout, viewPager, true, (tab, position) -> {

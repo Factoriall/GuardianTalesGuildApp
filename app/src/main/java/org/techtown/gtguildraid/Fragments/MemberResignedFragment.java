@@ -18,7 +18,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.techtown.gtguildraid.Adapters.MemberAdapter;
+import org.techtown.gtguildraid.Adapters.MemberCardAdapter;
 import org.techtown.gtguildraid.Interfaces.MyButtonClickListener;
 import org.techtown.gtguildraid.Models.GuildMember;
 import org.techtown.gtguildraid.R;
@@ -34,7 +34,7 @@ public class MemberResignedFragment extends Fragment {
     List<GuildMember> memberList = new ArrayList<>();
     LinearLayoutManager linearLayoutManager;
     RoomDB database;
-    MemberAdapter adapter;
+    MemberCardAdapter adapter;
     final int MAX_MEMBER = 29;
 
     @Nullable
@@ -48,7 +48,7 @@ public class MemberResignedFragment extends Fragment {
         recyclerView = view.findViewById(R.id.resignedRecyclerView);
         memberList = database.memberDao().getResignedMembers();
         recyclerView.setLayoutManager(linearLayoutManager);
-        adapter = new MemberAdapter(memberList);
+        adapter = new MemberCardAdapter(memberList);
         recyclerView.setAdapter(adapter);
 
         resignCnt = view.findViewById(R.id.resignCnt);

@@ -18,20 +18,20 @@ import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
 
-public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder> {
+public class RecordCardAdapter extends RecyclerView.Adapter<RecordCardAdapter.ViewHolder> {
     private List<Record> recordList;
 
     @NonNull
     @Override
-    public RecordAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public RecordCardAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.card_record, parent, false);
 
-        return new RecordAdapter.ViewHolder(itemView);
+        return new RecordCardAdapter.ViewHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecordAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecordCardAdapter.ViewHolder holder, int position) {
         Record record = recordList.get(position);
         holder.setItem(record);
     }

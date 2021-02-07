@@ -26,7 +26,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.techtown.gtguildraid.Adapters.RaidAdapter;
+import org.techtown.gtguildraid.Adapters.RaidCardAdapter;
 import org.techtown.gtguildraid.Etc.BossBottomSheetDialog;
 import org.techtown.gtguildraid.Models.Boss;
 import org.techtown.gtguildraid.Models.Raid;
@@ -53,7 +53,7 @@ public class RaidFragment extends Fragment implements BossBottomSheetDialog.Bott
     LinearLayout raidInfo;
     LinearLayoutManager linearLayoutManager;
     RecyclerView recyclerView;
-    RaidAdapter adapter;
+    RaidCardAdapter adapter;
 
     ImageView[] bossBtnList;
     LinearLayout bossInfo;
@@ -121,7 +121,7 @@ public class RaidFragment extends Fragment implements BossBottomSheetDialog.Bott
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setNestedScrollingEnabled(false);
 
-        adapter = new RaidAdapter(pastRaids);
+        adapter = new RaidCardAdapter(pastRaids);
         recyclerView.setAdapter(adapter);
 
         ConstraintLayout pastTab = view.findViewById(R.id.pastTab);

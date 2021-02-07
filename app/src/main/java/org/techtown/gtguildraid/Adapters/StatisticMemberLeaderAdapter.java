@@ -58,14 +58,12 @@ public class StatisticMemberLeaderAdapter extends RecyclerView.Adapter<Statistic
 
         ImageView leaderImage;
         ImageView leaderElement;
-        ImageView cvHelp;
         TextView leaderName;
         TextView totalDamage;
         TextView hitNum;
         TextView averageDamage;
         TextView minDamage;
         TextView maxDamage;
-        TextView CV;
         Context context;
 
         public ViewHolder(@NonNull View itemView) {
@@ -79,34 +77,12 @@ public class StatisticMemberLeaderAdapter extends RecyclerView.Adapter<Statistic
             averageDamage = itemView.findViewById(R.id.averageDamage);
             minDamage = itemView.findViewById(R.id.minDamage);
             maxDamage = itemView.findViewById(R.id.maxDamage);
-            CV = itemView.findViewById(R.id.CV);
-            cvHelp = itemView.findViewById(R.id.cvhelp);
             context = itemView.getContext();
         }
 
         public void setItem(LeaderInfo info, boolean isAdjustMode) {
             Hero leader = info.getLeader();
             List<Record> records = info.getRecordList();
-
-            cvHelp.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    final Dialog dialog = new Dialog(context);
-                    dialog.setContentView(R.layout.dialog_cvhelp);
-                    int width = WindowManager.LayoutParams.MATCH_PARENT;
-                    int height = WindowManager.LayoutParams.WRAP_CONTENT;
-                    dialog.getWindow().setLayout(width, height);
-                    dialog.show();
-
-                    Button button = dialog.findViewById(R.id.button);
-                    button.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            dialog.dismiss();
-                        }
-                    });
-                }
-            });
 
             leaderName.setText(leader.getKoreanName());
             int leaderElementId = context.getResources().getIdentifier(
@@ -132,17 +108,6 @@ public class StatisticMemberLeaderAdapter extends RecyclerView.Adapter<Statistic
             averageDamage.setText(getStandardNumberFormat(average));
             minDamage.setText(getStandardNumberFormat(min));
             maxDamage.setText(getStandardNumberFormat(max));
-            CV.setText(getCV(average, records, isAdjustMode));
-        }
-
-        private String getCV(long average, List<Record> records, boolean isAdjustMode) {
-            long devSquared = 0;
-            for(Record r : records){
-                devSquared += ((long)(getAdjustDamage(r, isAdjustMode) - average) * (long)((getAdjustDamage(r, isAdjustMode) - average)));
-            }
-            double stDev = Math.sqrt(devSquared / (double) records.size());
-
-            return String.format("%.2f", stDev / average * 100.0f);
         }
 
         private long getAdjustDamage(Record record, boolean isAdjustMode) {

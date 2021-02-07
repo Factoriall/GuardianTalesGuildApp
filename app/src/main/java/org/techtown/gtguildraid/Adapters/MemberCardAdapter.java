@@ -13,10 +13,10 @@ import org.techtown.gtguildraid.R;
 
 import java.util.List;
 
-public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.ViewHolder> {
+public class MemberCardAdapter extends RecyclerView.Adapter<MemberCardAdapter.ViewHolder> {
     private List<GuildMember> memberList;
 
-    public MemberAdapter(List<GuildMember> memberList){
+    public MemberCardAdapter(List<GuildMember> memberList){
         this.memberList = memberList;
         notifyDataSetChanged();
     }

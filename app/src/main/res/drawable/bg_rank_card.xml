@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="100dp"
-    android:height="15dp"
-    android:viewportWidth="400"
-    android:viewportHeight="60">
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <corners
+        android:radius="3dp"/>
 
-    <path
-        android:strokeColor="@color/member_card_in"
-        android:strokeWidth="4"
-        android:pathData="M 2, 2 L 2, 58, L 398, 58 L 398, 2 Z" />
+    <stroke
+        android:color="@color/member_card_in"
+        android:width="2dp"/>
+    <solid
+        android:color="@color/member_card_out"/>
 
-    <path
-        android:fillColor="@color/member_card_out"
-        android:pathData="M 2, 2 L 2, 58, L 398, 58 L 398, 2 Z" />
-</vector>
+</shape>

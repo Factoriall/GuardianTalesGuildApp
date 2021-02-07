@@ -22,10 +22,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class RaidAdapter extends RecyclerView.Adapter<RaidAdapter.ViewHolder> {
+public class RaidCardAdapter extends RecyclerView.Adapter<RaidCardAdapter.ViewHolder> {
     private List<Raid> raidList;
 
-    public RaidAdapter(List<Raid> raidList) {
+    public RaidCardAdapter(List<Raid> raidList) {
         this.raidList = raidList;
         notifyDataSetChanged();
     }
@@ -36,7 +36,7 @@ public class RaidAdapter extends RecyclerView.Adapter<RaidAdapter.ViewHolder> {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.card_raid, parent, false);
 
-        return new RaidAdapter.ViewHolder(view);
+        return new RaidCardAdapter.ViewHolder(view);
     }
 
     @Override

@@ -4,12 +4,10 @@
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#03DAC5</color>
     <color name="black">#000000</color>
-    <color name="tab_background_selected">#2A315A</color>
-    <color name="tab_background_unselected">#687DB3</color>
-    <color name="tab_background_selected2">#3F51B5</color>
-    <color name="tab_background_unselected2">#2A315A</color>
-    <color name="tab_background_selected3">#454545</color>
-    <color name="tab_background_unselected3">#222222</color>
+    <color name="tab_background_selected">#3F51B5</color>
+    <color name="tab_background_unselected">#2A315A</color>
+    <color name="tab_background_selected_record">#2A315A</color>
+    <color name="tab_background_unselected_record">#687DB3</color>
     <color name="spinner_bg">#2D2F34</color>
     <color name="record_card_out">#15233d</color>
     <color name="record_card_in">#687DB3</color>
@@ -24,5 +22,6 @@
     <color name="transparent">#00FFFFFF</color>
     <color name="create_color">#4CAF50</color>
     <color name="delete_color">#FF4545</color>
+    <color name="tab_color">#3F51B5</color>
 
 </resources>

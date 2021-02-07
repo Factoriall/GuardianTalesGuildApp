@@ -1,6 +1,5 @@
 package org.techtown.gtguildraid.Fragments;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -10,11 +9,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -44,7 +41,7 @@ import org.angmarch.views.NiceSpinner;
 import org.angmarch.views.OnSpinnerItemSelectedListener;
 import org.jetbrains.annotations.NotNull;
 import org.techtown.gtguildraid.Adapters.DialogImageSpinnerAdapter;
-import org.techtown.gtguildraid.Adapters.RecordAdapter;
+import org.techtown.gtguildraid.Adapters.RecordCardAdapter;
 import org.techtown.gtguildraid.Etc.MySpinner;
 import org.techtown.gtguildraid.Models.Boss;
 import org.techtown.gtguildraid.Models.Favorites;
@@ -76,7 +73,7 @@ public class RecordCardFragment extends Fragment {
     DialogImageSpinnerAdapter elementAdapter;
     LinearLayoutManager linearLayoutManager;
     RoomDB database;
-    RecordAdapter adapter;
+    RecordCardAdapter adapter;
 
     TextView totalDamage;
     FloatingActionButton fab;
@@ -196,7 +193,7 @@ public class RecordCardFragment extends Fragment {
         recordList = getReverseList();
 
         recyclerView.setLayoutManager(linearLayoutManager);
-        adapter = new RecordAdapter();
+        adapter = new RecordCardAdapter();
         adapter.setItems(recordList);
         recyclerView.setAdapter(adapter);
 
@@ -237,7 +234,7 @@ public class RecordCardFragment extends Fragment {
     }
 
     private List<Record> getReverseList() {
-        List<Record> list = database.recordDao().getCertainDayRecordsWithBossAndLeader(
+        List<Record> list = database.recordDao().get1DayRecordsWithExtra(
                 memberList.get(sMemberIdx).getId(), raidId, day);
         Collections.reverse(list);//ui에 맞게
         return list;
@@ -587,7 +584,7 @@ public class RecordCardFragment extends Fragment {
 
         for(Favorites fav : favs) {
             LayoutInflater vi = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View v = vi.inflate(R.layout.button_favorites, null);
+            View v = vi.inflate(R.layout.card_favorites, null);
 
             ImageView heroImage = v.findViewById(R.id.heroImage);
             Hero hero = fav.getHero();
@@ -676,7 +673,7 @@ public class RecordCardFragment extends Fragment {
 
     private int getRemainedRecord(int id, int raidId) {
         List<Record> recordList = database.recordDao()
-                .getCertainDayRecords(id, raidId, day);
+                .get1DayRecords(id, raidId, day);
 
         return MAX_SIZE - recordList.size();
     }
