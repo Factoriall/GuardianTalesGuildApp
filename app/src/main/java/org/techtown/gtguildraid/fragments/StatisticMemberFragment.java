@@ -1,20 +1,39 @@
 package org.techtown.gtguildraid.fragments;
 
 import android.app.ProgressDialog;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.github.mikephil.charting.charts.CombinedChart;
+import com.github.mikephil.charting.charts.HorizontalBarChart;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.formatter.LargeValueFormatter;
+import com.github.mikephil.charting.formatter.ValueFormatter;
+import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
+import com.github.mikephil.charting.utils.MPPointF;
 import com.llollox.androidtoggleswitch.widgets.ToggleSwitch;
 
 import org.angmarch.views.NiceSpinner;
@@ -29,9 +48,14 @@ import org.techtown.gtguildraid.utils.RoomDB;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+
+import static androidx.core.content.ContextCompat.getColor;
 
 public class StatisticMemberFragment extends Fragment {
     private static final int ALL = 0;
@@ -47,6 +71,7 @@ public class StatisticMemberFragment extends Fragment {
     private static List<GuildMember> membersInRaid = new ArrayList<>();
 
     RoomDB database;
+    View view;
     TextView damage;
     TextView contribution;
     TextView hitNum;
@@ -55,9 +80,154 @@ public class StatisticMemberFragment extends Fragment {
     LinearLayout leaderCard;
     RecyclerView recyclerView;
     StatisticMemberLeaderAdapter adapter;
+    HoriBarChart leaderNumChart;
+    HoriBarChart leaderDamageChart;
 
     private static int sMemberIdx = 0;
 
+    private class HoriBarChart {
+        private HorizontalBarChart chart;
+        private final int MAX_NUM = 5;
+        private List<Record> records;
+
+        public HoriBarChart(HorizontalBarChart chart) {
+            this.chart = chart;
+        }
+
+        public void setRecords(List<Record> records) {
+            this.records = records;
+        }
+
+        class HeroWithValue implements Comparable<HeroWithValue>{
+            String heroName;
+            int element;
+            long value;
+
+            public HeroWithValue(String key, long value) {
+                heroName = key;
+                this.value = value;
+            }
+
+            @Override
+            public int compareTo(HeroWithValue heroWithCount) {
+                if(heroWithCount.value > value)
+                    return 1;
+                else if (heroWithCount.value < value)
+                    return -1;
+                return 0;
+            }
+        }
+
+        public void setChartUi(boolean isDamage) { //CombinedChart의 ui 설정
+            chart.getDescription().setEnabled(false);
+            chart.setDrawGridBackground(false);
+            chart.setDrawBarShadow(false);
+            chart.setHighlightFullBarEnabled(false);
+            chart.setExtraOffsets(0, 0, 0, 10);
+            chart.animateY(2000);
+            chart.setPinchZoom(false);
+            chart.setScaleEnabled(false);
+            chart.setTouchEnabled(false);
+
+            if(isDamage)
+                chart.setExtraRightOffset(80f);
+
+            Legend l = chart.getLegend();
+            l.setEnabled(false);
+
+            YAxis rightAxis = chart.getAxisRight();
+            rightAxis.setEnabled(false);
+
+            YAxis leftAxis = chart.getAxisLeft();
+            leftAxis.setGridColor(getResources().getColor(R.color.bar_chart_color));
+            leftAxis.setTextColor(getResources().getColor(R.color.bar_chart_color));
+            leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
+            leftAxis.setGranularity(1f);
+            leftAxis.setValueFormatter(new LargeValueFormatter());
+
+            XAxis xAxis = chart.getXAxis();
+            xAxis.setEnabled(false);
+
+            setChartData(isDamage);
+        }
+
+        private void setChartData(boolean isDamage) {
+            ArrayList<BarEntry> entries = new ArrayList<>();
+
+            HashMap<String, Integer> count = new HashMap<>();
+            HashMap<String, Long> total = new HashMap<>();
+            for(Record r : records){
+                String name = r.getLeader().getEnglishName();
+                if (!count.containsKey(name))
+                    count.put(name, 1);
+                else
+                    count.put(name, count.get(name) + 1);
+
+                if(isDamage){
+                    long damage = r.getDamage();
+                    if(isAdjustMode)
+                        damage *= r.getBoss().getHardness();
+
+                    if (!total.containsKey(name))
+                        total.put(name, damage);
+                    else
+                        total.put(name, total.get(name) + damage);
+                }
+            }
+
+            List<HeroWithValue> hwc = new ArrayList<>();
+            for ( Map.Entry<String, Integer> entry : count.entrySet()) {
+                String key = entry.getKey();
+                long value = entry.getValue();
+                if(isDamage)
+                    value = value == 0 ? 0 : (total.get(key) / value);
+                hwc.add(new HeroWithValue(key, value));
+            }
+            Collections.sort(hwc);
+
+            int axisNum = Math.min(hwc.size(), MAX_NUM);
+            for(int i=1; i<=axisNum; i++) {
+                HeroWithValue hero = hwc.get(axisNum - i);
+                Drawable dr = getResources().getDrawable(getResources().getIdentifier(
+                        "character_" + hero.heroName,
+                        "drawable",
+                        getActivity().getPackageName()));
+                Bitmap bitmap = ((BitmapDrawable) dr).getBitmap();
+                int adjustSize = Math.min(90, 360 / axisNum);
+                Drawable d = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, adjustSize, adjustSize, true));
+                entries.add(new BarEntry(i, hero.value, d));
+            }
+
+            BarDataSet set1;
+            if (chart.getData() != null &&
+                    chart.getData().getDataSetCount() > 0) {
+                set1 = (BarDataSet) chart.getData().getDataSetByIndex(0);
+                set1.setValues(entries);
+                chart.getData().notifyDataChanged();
+                chart.notifyDataSetChanged();
+            } else {
+                set1 = new BarDataSet(entries, "");
+                set1.setDrawIcons(true);
+                set1.setIconsOffset(new MPPointF(-25, 0));
+
+
+                set1.setColors(getColor(getContext(), android.R.color.holo_orange_dark),
+                        getColor(getContext(), android.R.color.holo_blue_dark),
+                        getColor(getContext(), android.R.color.holo_green_dark),
+                        getColor(getContext(), android.R.color.holo_red_dark),
+                        getColor(getContext(), android.R.color.holo_purple));
+
+                ArrayList<IBarDataSet> dataSets = new ArrayList<>();
+                dataSets.add(set1);
+
+
+                BarData data = new BarData(dataSets);
+                data.setValueTextSize(14f);
+                data.setBarWidth(0.7f);
+                chart.setData(data);
+            }
+        }
+    }
 
     public static StatisticMemberFragment newInstance(int raidId) {
         StatisticMemberFragment fragment = new StatisticMemberFragment();
@@ -71,18 +241,33 @@ public class StatisticMemberFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_statistic_member, container, false);
+        view = inflater.inflate(R.layout.fragment_statistic_member, container, false);
         damage = view.findViewById(R.id.damage);
         contribution = view.findViewById(R.id.contribution);
         hitNum = view.findViewById(R.id.hitNum);
         average = view.findViewById(R.id.average);
         leaderCard = view.findViewById(R.id.leaderCard);
         recyclerView = view.findViewById(R.id.recyclerView);
+        leaderNumChart = new HoriBarChart(view.findViewById(R.id.leaderNumChart));
+        leaderDamageChart = new HoriBarChart(view.findViewById(R.id.leaderDamageChart));
 
         Switch adjustSwitch = view.findViewById(R.id.adjustSwitch);
         isAdjustMode = adjustSwitch.isChecked();
         bossPosition = 0;
         sMemberIdx = 0;
+
+        ImageButton arrow = view.findViewById(R.id.arrow);
+        ConstraintLayout cl = view.findViewById(R.id.conditionLayout);
+        arrow.setOnClickListener(view -> {
+            if(cl.getVisibility() == View.VISIBLE){
+                cl.setVisibility(View.GONE);
+                arrow.setImageResource(R.drawable.icon_arrow_down);
+            }
+            else{
+                cl.setVisibility(View.VISIBLE);
+                arrow.setImageResource(R.drawable.icon_arrow_up);
+            }
+        });
 
         if (getArguments() != null) {
             raidId = getArguments().getInt("raidId");
@@ -148,6 +333,9 @@ public class StatisticMemberFragment extends Fragment {
 
     private void setView() {
         List<Boss> bosses = database.raidDao().getBossesList(raidId);
+        TextView conditionText = view.findViewById(R.id.conditionText);
+        conditionText.setText(membersInRaid.get(sMemberIdx).getName() + " / " + bossLabels.get(bossPosition) +
+                " / 배율 " + (isAdjustMode ? "ON" : "OFF"));
         switch(bossPosition){
             case ALL:
                 setAllData();
@@ -208,6 +396,12 @@ public class StatisticMemberFragment extends Fragment {
         hitNum.setText(Integer.toString(memberRecords.size()));
         average.setText(memberRecords.size() == 0 ? Integer.toString(0) :
                 NumberFormat.getNumberInstance(Locale.US).format(memberDamage / memberRecords.size()));
+
+        leaderNumChart.setRecords(memberRecords);
+        leaderNumChart.setChartUi(false);
+
+        leaderDamageChart.setRecords(memberRecords);
+        leaderDamageChart.setChartUi(true);
     }
 
     private void setLeaderCard(List<Record> records) {

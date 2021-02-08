@@ -1,17 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/conditionAdjustLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/tab_color"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/conditionTabTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            android:text="조건"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/arrow"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginEnd="20dp"
+            android:background="@null"
+            android:src="@drawable/icon_arrow_up"
+            android:tint="#FFFFFF"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/conditionText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="10dp"
+            android:text="///"
+            android:textColor="@color/member_card_out"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/conditionTabTitle" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:background="@color/background_color"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/conditionLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/conditionAdjustLayout"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/conditionLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/tab_color"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:background="@color/tab_color">
 
         <LinearLayout
             android:id="@+id/raidCard"
@@ -74,19 +128,21 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+
     <ScrollView
+
         android:id="@+id/recordScrollView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/background_color"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/conditionLayout">
+        android:background="@color/background_color">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/conditionLayout">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/damageCard"
@@ -99,7 +155,8 @@
                     android:id="@+id/damageLayout"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="5dp"
                     android:layout_weight="2"
                     android:orientation="vertical"
                     app:layout_constraintStart_toStartOf="parent"
@@ -179,7 +236,8 @@
                     android:id="@+id/averageLayout"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_margin="5dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginBottom="5dp"
                     android:orientation="vertical"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent">
@@ -203,6 +261,52 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <LinearLayout
+                android:id="@+id/leaderNumCard"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp"
+                android:background="@drawable/bg_statistic_card"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textView6"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:text="사용한 리더 TOP5"
+                    android:textColor="#FFFFFF" />
+
+                <com.github.mikephil.charting.charts.HorizontalBarChart
+                    android:id="@+id/leaderNumChart"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:layout_margin="5dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/leaderDamageCard"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp"
+                android:background="@drawable/bg_statistic_card"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textView10"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:text="리더 딜량 TOP5"
+                    android:textColor="#FFFFFF" />
+
+                <com.github.mikephil.charting.charts.HorizontalBarChart
+                    android:id="@+id/leaderDamageChart"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:layout_margin="5dp" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/leaderCard"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -223,11 +327,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:fadeScrollbars="false"
-                    android:scrollbarSize="5dp"
+                    android:scrollbarSize="10dp"
                     android:scrollbars="horizontal" />
             </LinearLayout>
 
         </LinearLayout>
     </ScrollView>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
