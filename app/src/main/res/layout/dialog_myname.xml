@@ -23,7 +23,8 @@
         android:inputType="text"
         android:imeOptions="actionDone"
         android:maxLength="10"
-        android:padding="12dp" />
+        android:padding="12dp"
+        android:autofillHints="" />
 
     <Button
         android:id="@+id/updateButton"

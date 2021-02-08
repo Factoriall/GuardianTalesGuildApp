@@ -10,7 +10,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
-        android:fontFamily="@font/maplestory_light"
         android:text="환영합니다!"
         android:textColor="#FFFFFF"
         android:textSize="50sp"
@@ -21,8 +20,8 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         android:layout_marginTop="20dp"
         android:background="@color/bg_icon"
         app:layout_constraintEnd_toEndOf="parent"
@@ -49,10 +48,12 @@
         android:inputType="textPersonName"
         android:maxLength="20"
         android:textColor="#D8B38E"
+        android:hint="최대 20글자"
         app:backgroundTint="#D8B38E"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView4" />
+        app:layout_constraintTop_toBottomOf="@+id/textView4"
+        android:autofillHints="" />
 
     <EditText
         android:id="@+id/myName"
@@ -61,10 +62,12 @@
         android:inputType="textPersonName"
         android:maxLength="10"
         android:textColor="#D8B38E"
+        android:hint="최대 10글자"
         app:backgroundTint="#D8B38E"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+        app:layout_constraintTop_toBottomOf="@+id/textView5"
+        android:autofillHints="" />
 
     <TextView
         android:id="@+id/textView4"

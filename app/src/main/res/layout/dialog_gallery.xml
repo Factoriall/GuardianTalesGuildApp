@@ -15,24 +15,18 @@
         android:textColor="#D8B38E"
         android:textSize="20sp" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
+    <HorizontalScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="120dp"
+        android:layout_gravity="center_vertical"
+        android:scrollbars="none">
 
-        <HorizontalScrollView
+        <LinearLayout
+            android:id="@+id/id_gallery"
             android:layout_width="wrap_content"
-            android:layout_height="120dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:scrollbars="none">
-
-            <LinearLayout
-                android:id="@+id/id_gallery"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:orientation="horizontal"></LinearLayout>
-        </HorizontalScrollView>
-    </LinearLayout>
+            android:orientation="horizontal" />
+    </HorizontalScrollView>
 
 </LinearLayout>

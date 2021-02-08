@@ -28,7 +28,7 @@
         android:layout_margin="3dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="10dp"
-        android:gravity="right"
+        android:gravity="end"
         android:text="TextView"
         android:textColor="#D8B38E"
         card_view:layout_constraintBottom_toBottomOf="parent"

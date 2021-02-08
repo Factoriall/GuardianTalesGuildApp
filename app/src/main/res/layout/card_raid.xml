@@ -6,81 +6,80 @@
     android:orientation="vertical"
     android:visibility="visible">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/briefInfo"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content">
 
         <LinearLayout
+            android:id="@+id/raidNameLayout"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="6"
+            android:layout_height="wrap_content"
             android:background="@drawable/bg_info_card"
-            android:orientation="vertical"
-            android:padding="2dp">
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toStartOf="@+id/currentArrow"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+            <ImageView
+                android:id="@+id/imageView5"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
                 android:layout_weight="1"
-                android:orientation="horizontal">
+                android:src="@drawable/icon_raid" />
 
-                <ImageView
-                    android:id="@+id/imageView5"
-                    android:layout_width="0dp"
-                    android:layout_height="30dp"
-                    android:layout_weight="1"
-                    android:src="@drawable/icon_raid" />
-
-                <TextView
-                    android:id="@+id/raidName"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="3"
-                    android:paddingLeft="20dp"
-                    android:text="길드레이드 이름"
-                    android:textColor="#FFFFFF"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/raidName"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_weight="3"
+                android:paddingStart="20dp"
+                android:text="길드레이드 이름"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/raidTermLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_info_card"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toStartOf="@+id/currentArrow"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/raidNameLayout">
+
+            <ImageView
+                android:id="@+id/imageView3"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
                 android:layout_weight="1"
-                android:orientation="horizontal">
+                android:src="@drawable/icon_time" />
 
-                <ImageView
-                    android:id="@+id/imageView3"
-                    android:layout_width="0dp"
-                    android:layout_height="30dp"
-                    android:layout_weight="1"
-                    android:src="@drawable/icon_time" />
-
-                <TextView
-                    android:id="@+id/raidTerm"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="3"
-                    android:gravity="center_vertical"
-                    android:paddingLeft="20sp"
-                    android:text="기간"
-                    android:textColor="#FFFFFF"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
+            <TextView
+                android:id="@+id/raidTerm"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="3"
+                android:gravity="center_vertical"
+                android:paddingStart="20sp"
+                android:text="기간"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold" />
         </LinearLayout>
 
         <ImageView
             android:id="@+id/currentArrow"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_width="60dp"
+            android:layout_height="0dp"
             android:background="#555555"
-            android:src="@drawable/icon_arrow_down" />
+            android:src="@drawable/icon_arrow_down"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
         android:id="@+id/bossInfo"
@@ -115,7 +114,6 @@
                 android:layout_width="120dp"
                 android:layout_height="16dp"
                 android:layout_marginEnd="80dp"
-                android:layout_marginRight="80dp"
                 android:max="20"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -135,7 +133,6 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp"
                 android:src="@drawable/boss_1"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -171,7 +168,6 @@
                 android:layout_width="120dp"
                 android:layout_height="16dp"
                 android:layout_marginEnd="80dp"
-                android:layout_marginRight="80dp"
                 android:max="20"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -192,7 +188,6 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp"
                 android:src="@drawable/boss_2"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -228,7 +223,6 @@
                 android:layout_width="120dp"
                 android:layout_height="16dp"
                 android:layout_marginEnd="80dp"
-                android:layout_marginRight="80dp"
                 android:max="20"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -248,7 +242,6 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp"
                 android:src="@drawable/boss_3"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -284,7 +277,6 @@
                 android:layout_width="120dp"
                 android:layout_height="16dp"
                 android:layout_marginEnd="80dp"
-                android:layout_marginRight="80dp"
                 android:max="20"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -305,7 +297,6 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp"
                 android:src="@drawable/boss_4"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

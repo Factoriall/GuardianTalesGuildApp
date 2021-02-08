@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">가테 길레 딜시트</string>
-    <string name="submit">submit</string>
+    <string name="member_numbers_current">%1d/30</string>
+    <string name="member_numbers_resign">%1d명</string>
+    <string name="raid_term">%1s~%2s</string>
+    <string name="boss_hardness">배율: %1.1f</string>
 </resources>
