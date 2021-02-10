@@ -1,5 +1,7 @@
 package org.techtown.gtguildraid.adapters;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -30,6 +32,7 @@ public class StatisticPagerAdapter extends FragmentStateAdapter {
     @NonNull
     @Override
     public Fragment createFragment(int position) {
+        Log.d("statisticFragment", "" + position);
         switch(position) {
             case RANK:
                 return StatisticRankFragment.newInstance(raidId);

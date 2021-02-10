@@ -16,9 +16,9 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
+import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.adapters.RecordPagerAdapter;
 import org.techtown.gtguildraid.models.Raid;
-import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.utils.RoomDB;
 
 import java.text.SimpleDateFormat;

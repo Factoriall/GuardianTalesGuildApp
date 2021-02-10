@@ -18,9 +18,9 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.adapters.MemberCardAdapter;
 import org.techtown.gtguildraid.models.GuildMember;
-import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.utils.MySwipeHelper;
 import org.techtown.gtguildraid.utils.RoomDB;
 

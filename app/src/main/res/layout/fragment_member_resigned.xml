@@ -8,7 +8,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:background="#454545"
+        android:background="@color/tab_color"
         android:orientation="horizontal">
 
         <ImageView
@@ -35,5 +35,6 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:background="@color/background_color"
         tools:listitem="@layout/card_member" />
 </LinearLayout>

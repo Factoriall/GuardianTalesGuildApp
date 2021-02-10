@@ -2,7 +2,6 @@ package org.techtown.gtguildraid.fragments;
 
 import android.app.ProgressDialog;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -21,7 +20,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.github.mikephil.charting.charts.CombinedChart;
 import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
@@ -29,26 +27,23 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.formatter.LargeValueFormatter;
-import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.utils.MPPointF;
 import com.llollox.androidtoggleswitch.widgets.ToggleSwitch;
 
 import org.angmarch.views.NiceSpinner;
+import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.adapters.StatisticMemberLeaderAdapter;
 import org.techtown.gtguildraid.models.Boss;
 import org.techtown.gtguildraid.models.GuildMember;
 import org.techtown.gtguildraid.models.LeaderInfo;
 import org.techtown.gtguildraid.models.Record;
-import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.utils.AppExecutor;
 import org.techtown.gtguildraid.utils.RoomDB;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -100,7 +95,6 @@ public class StatisticMemberFragment extends Fragment {
 
         class HeroWithValue implements Comparable<HeroWithValue>{
             String heroName;
-            int element;
             long value;
 
             public HeroWithValue(String key, long value) {
@@ -128,9 +122,12 @@ public class StatisticMemberFragment extends Fragment {
             chart.setPinchZoom(false);
             chart.setScaleEnabled(false);
             chart.setTouchEnabled(false);
+            chart.setExtraLeftOffset(20f);
 
             if(isDamage)
                 chart.setExtraRightOffset(80f);
+            else
+                chart.setExtraRightOffset(30f);
 
             Legend l = chart.getLegend();
             l.setEnabled(false);
@@ -210,7 +207,6 @@ public class StatisticMemberFragment extends Fragment {
                 set1.setDrawIcons(true);
                 set1.setIconsOffset(new MPPointF(-25, 0));
 
-
                 set1.setColors(getColor(getContext(), android.R.color.holo_orange_dark),
                         getColor(getContext(), android.R.color.holo_blue_dark),
                         getColor(getContext(), android.R.color.holo_green_dark),
@@ -220,10 +216,11 @@ public class StatisticMemberFragment extends Fragment {
                 ArrayList<IBarDataSet> dataSets = new ArrayList<>();
                 dataSets.add(set1);
 
-
                 BarData data = new BarData(dataSets);
                 data.setValueTextSize(14f);
                 data.setBarWidth(0.7f);
+                if(!isDamage)
+                    data.setValueFormatter(new LargeValueFormatter());
                 chart.setData(data);
             }
         }
@@ -285,6 +282,14 @@ public class StatisticMemberFragment extends Fragment {
         for (GuildMember m : allMembers) {
             if (database.recordDao().get1MemberRecords(m.getID(), raidId).size() != 0)
                 membersInRaid.add(m);
+        }
+
+        if(membersInRaid.isEmpty()) {
+            damage.setText("No data");
+            contribution.setText("No data");
+            hitNum.setText("No data");
+            average.setText("No data");
+            return view;
         }
 
         Collections.sort(membersInRaid, (guildMember, t1) -> guildMember.getName().compareTo(t1.getName()));
@@ -374,7 +379,7 @@ public class StatisticMemberFragment extends Fragment {
         int bossId = boss.getBossId();
         ProgressDialog mProgressDialog = ProgressDialog.show(getContext(), "잠시 대기","데이터베이스 접속 중", true);
         AppExecutor.getInstance().diskIO().execute(() -> {
-            List<Record> allRecords = database.recordDao().getAllRecordsWithExtra(raidId, bossId);
+            List<Record> allRecords = database.recordDao().get1BossRecordsWithExtra(raidId, bossId);
             List<Record> memberRecords = database.recordDao()
                     .get1MemberRecordsWithExtra(membersInRaid.get(sMemberIdx).getID(), raidId, bossId);
 

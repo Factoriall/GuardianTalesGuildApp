@@ -10,8 +10,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.techtown.gtguildraid.models.Record;
 import org.techtown.gtguildraid.R;
+import org.techtown.gtguildraid.models.Record;
 
 import java.text.NumberFormat;
 import java.util.List;

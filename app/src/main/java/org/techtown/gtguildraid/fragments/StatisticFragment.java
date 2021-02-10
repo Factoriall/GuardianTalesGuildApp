@@ -15,9 +15,9 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 import org.angmarch.views.NiceSpinner;
+import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.adapters.StatisticPagerAdapter;
 import org.techtown.gtguildraid.models.Raid;
-import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.utils.RoomDB;
 
 import java.text.SimpleDateFormat;
@@ -86,15 +86,15 @@ public class StatisticFragment extends Fragment {
                 new SimpleDateFormat(dateFormat).format(getEndTime(raid.getStartDay()))));
 
         sAdapter = new StatisticPagerAdapter(getChildFragmentManager(), getLifecycle());
-
-        setViewPager(raid);
+        sAdapter.setData(raid.getRaidId());
+        viewPager.setAdapter(sAdapter);
 
         new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
             if(position == 0)
                 tab.setText("순위표");
             else if(position == 1)
                 tab.setText("개인별 기록");
-            else
+            else if(position == 2)
                 tab.setText("보스별 기록");
         }).attach();
         viewPager.setUserInputEnabled(false);
@@ -106,10 +106,5 @@ public class StatisticFragment extends Fragment {
         end.add(Calendar.DATE, 13);
 
         return end.getTime();
-    }
-
-    private void setViewPager(Raid raid) {
-        sAdapter.setData(raid.getRaidId());
-        viewPager.setAdapter(sAdapter);
     }
 }

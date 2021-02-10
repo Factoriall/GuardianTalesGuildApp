@@ -22,8 +22,8 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.tabs.TabLayout;
 
-import org.techtown.gtguildraid.models.GuildMember;
 import org.techtown.gtguildraid.R;
+import org.techtown.gtguildraid.models.GuildMember;
 import org.techtown.gtguildraid.utils.RoomDB;
 
 public class MemberFragment extends Fragment {

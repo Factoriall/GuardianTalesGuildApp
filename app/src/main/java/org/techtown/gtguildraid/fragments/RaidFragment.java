@@ -24,11 +24,11 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.adapters.RaidCardAdapter;
 import org.techtown.gtguildraid.etc.BossBottomSheetDialog;
 import org.techtown.gtguildraid.models.Boss;
 import org.techtown.gtguildraid.models.Raid;
-import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.utils.RoomDB;
 
 import java.text.ParseException;

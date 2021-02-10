@@ -11,8 +11,8 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import org.techtown.gtguildraid.models.GuildMember;
 import org.techtown.gtguildraid.R;
+import org.techtown.gtguildraid.models.GuildMember;
 import org.techtown.gtguildraid.utils.RoomDB;
 
 public class RegisterActivity extends AppCompatActivity {

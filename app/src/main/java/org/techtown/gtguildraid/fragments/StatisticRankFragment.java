@@ -18,12 +18,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.llollox.androidtoggleswitch.widgets.ToggleSwitch;
 
+import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.adapters.StatisticRankCardAdapter;
 import org.techtown.gtguildraid.models.Boss;
 import org.techtown.gtguildraid.models.GuildMember;
 import org.techtown.gtguildraid.models.RankInfo;
 import org.techtown.gtguildraid.models.Record;
-import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.utils.AppExecutor;
 import org.techtown.gtguildraid.utils.RoomDB;
 

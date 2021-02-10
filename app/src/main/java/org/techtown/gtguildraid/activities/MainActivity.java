@@ -13,11 +13,11 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.fragments.MemberFragment;
 import org.techtown.gtguildraid.fragments.RaidFragment;
 import org.techtown.gtguildraid.fragments.RecordFragment;
 import org.techtown.gtguildraid.fragments.StatisticFragment;
-import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.utils.RoomDB;
 
 import java.util.Date;
