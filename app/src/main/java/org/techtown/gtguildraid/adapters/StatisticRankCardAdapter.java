@@ -1,5 +1,6 @@
 package org.techtown.gtguildraid.adapters;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,19 +13,20 @@ import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.models.RankInfo;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 public class StatisticRankCardAdapter extends RecyclerView.Adapter<StatisticRankCardAdapter.ViewHolder> {
-    private List<RankInfo> rankList;
+    private List<RankInfo> rankList = new ArrayList<>();
 
     @NonNull
     @Override
-    public StatisticRankCardAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.card_rank, parent, false);
 
-        return new StatisticRankCardAdapter.ViewHolder(itemView);
+        return new ViewHolder(itemView);
     }
 
     @Override

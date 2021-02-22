@@ -1,6 +1,7 @@
 package org.techtown.gtguildraid.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,17 +17,13 @@ import org.techtown.gtguildraid.models.LeaderInfo;
 import org.techtown.gtguildraid.models.Record;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 public class StatisticMemberLeaderAdapter extends RecyclerView.Adapter<StatisticMemberLeaderAdapter.ViewHolder>{
-    private List<LeaderInfo> leaderList;
-    private boolean isAdjustMode;
-
-    public StatisticMemberLeaderAdapter(List<LeaderInfo> records, boolean isAdjustMode) {
-        this.leaderList = records;
-        this.isAdjustMode = isAdjustMode;
-    }
+    private List<LeaderInfo> leaderList = new ArrayList<>();
+    private boolean isAdjustMode = false;
 
     @NonNull
     @Override
@@ -45,7 +42,13 @@ public class StatisticMemberLeaderAdapter extends RecyclerView.Adapter<Statistic
 
     @Override
     public int getItemCount() {
+        Log.d("noAdapter", "leaderlist size: " +  leaderList.size());
         return leaderList.size();
+    }
+
+    public void setItems(List<LeaderInfo> records, boolean isAdjustMode){
+        this.leaderList = records;
+        this.isAdjustMode = isAdjustMode;
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder{

@@ -41,6 +41,8 @@ public class StatisticRankFragment extends Fragment {
     static ArrayList<String> bossLabels = new ArrayList<>();
     static ArrayList<String> levelLabels = new ArrayList<>();
     RoomDB database;
+    StatisticRankCardAdapter adapter;
+    RecyclerView recyclerView;
 
     public static Fragment newInstance(int raidId) {
         StatisticRankFragment fragment = new StatisticRankFragment();
@@ -55,13 +57,16 @@ public class StatisticRankFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_statistic_rank, container, false);
+        recyclerView = view.findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        adapter = new StatisticRankCardAdapter();
+        recyclerView.setAdapter(adapter);
 
         if (getArguments() != null) {
             raidId = getArguments().getInt("raidId");
         }
 
         database = RoomDB.getInstance(getActivity());
-
 
         ImageButton arrow = view.findViewById(R.id.arrow);
         ConstraintLayout cl = view.findViewById(R.id.conditionLayout);
@@ -140,7 +145,8 @@ public class StatisticRankFragment extends Fragment {
         List<RankInfo> rankInfos = new ArrayList<>();
         ProgressDialog mProgressDialog = ProgressDialog.show(getContext(), "잠시 대기","데이터베이스 접속 중", true);
         AppExecutor.getInstance().diskIO().execute(() -> {
-            for(GuildMember m : database.memberDao().getAllMembers()) {
+            List<GuildMember> members = database.memberDao().getAllMembers();
+            for(GuildMember m : members) {
                 if(database.recordDao().get1MemberRecords(m.getID(), raidId).size() == 0)
                     continue;
 
@@ -173,18 +179,15 @@ public class StatisticRankFragment extends Fragment {
                 rankInfos.add(ri);
             }
             Collections.sort(rankInfos);
+            adapter.setItems(rankInfos);
 
             getActivity().runOnUiThread(() -> {
                 mProgressDialog.dismiss();
                 TextView conditionText = view.findViewById(R.id.conditionText);
                 conditionText.setText(bossLabels.get(bossPosition) + " / " + levelLabels.get(levelPosition) +
                         " / " + (isAverageMode ? "평균" : "총합") + " / 배율 " + (isAdjustMode ? "ON" : "OFF"));
-                RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
-                recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
-                StatisticRankCardAdapter adapter = new StatisticRankCardAdapter();
                 adapter.setItems(rankInfos);
-                recyclerView.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
             });
         });
     }

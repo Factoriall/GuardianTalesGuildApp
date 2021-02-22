@@ -313,7 +313,6 @@ public class RecordMemberFragment extends Fragment {
         dialogInfo.setText(memberList.get(sMemberIdx).getName() + " / "
                 + day + "일차 / " + (isEditing ? "수정\n리더: " + record.getLeader().getKoreanName() : "생성"));
 
-
         //bossSwitch 생성
         List<Boss> bosses = database.raidDao().getBossesList(raid.getRaidId());
         selectedBossId = 0;

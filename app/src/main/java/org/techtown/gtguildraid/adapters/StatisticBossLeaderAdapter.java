@@ -16,17 +16,13 @@ import org.techtown.gtguildraid.models.LeaderInfo;
 import org.techtown.gtguildraid.models.Record;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 public class StatisticBossLeaderAdapter extends RecyclerView.Adapter<StatisticBossLeaderAdapter.ViewHolder> {
-    private List<LeaderInfo> leaderList;
-    private int xNum;
-
-    public StatisticBossLeaderAdapter(List<LeaderInfo> records, int xAxisNum) {
-        this.leaderList = records;
-        this.xNum = xAxisNum;
-    }
+    private List<LeaderInfo> leaderList = new ArrayList<>();
+    private int xNum = 0;
 
     @NonNull
     @Override
@@ -41,6 +37,11 @@ public class StatisticBossLeaderAdapter extends RecyclerView.Adapter<StatisticBo
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         LeaderInfo leader = leaderList.get(position);
         holder.setItem(leader, xNum);
+    }
+
+    public void setItems(List<LeaderInfo> records, int xAxisNum) {
+        this.leaderList = records;
+        this.xNum = xAxisNum;
     }
 
     @Override

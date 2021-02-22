@@ -253,6 +253,11 @@ public class StatisticMemberFragment extends Fragment {
         bossPosition = 0;
         sMemberIdx = 0;
 
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+        recyclerView.setNestedScrollingEnabled(false);
+        adapter = new StatisticMemberLeaderAdapter();
+        recyclerView.setAdapter(adapter);
+
         ImageButton arrow = view.findViewById(R.id.arrow);
         ConstraintLayout cl = view.findViewById(R.id.conditionLayout);
         arrow.setOnClickListener(view -> {
@@ -425,11 +430,8 @@ public class StatisticMemberFragment extends Fragment {
         }
         Collections.sort(memberLeaderList);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
-        recyclerView.setNestedScrollingEnabled(false);
-        adapter = new StatisticMemberLeaderAdapter(memberLeaderList, isAdjustMode);
-
-        recyclerView.setAdapter(adapter);
+        adapter.setItems(memberLeaderList, isAdjustMode);
+        adapter.notifyDataSetChanged();
     }
 
     private String getPercentage(long memberDamage, long allDamage) {

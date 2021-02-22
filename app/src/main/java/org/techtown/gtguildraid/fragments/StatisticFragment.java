@@ -63,13 +63,17 @@ public class StatisticFragment extends Fragment {
                 setView(raids.get(position - 1));
         });
 
-        if(database.raidDao().isStartedRaidExist(new Date())) {
-            spinner.setSelectedIndex(raidNameList.size() - 1);
-            setView(raids.get(raids.size() - 1));
-        }
-        else if(raids.size() >= 2){
-            spinner.setSelectedIndex(raidNameList.size() - 2);
-            setView(raids.get(raids.size() - 2));
+        if(raids.size() != 0) {
+            if (!database.raidDao().isStartedRaidExist(new Date())
+                    && database.raidDao().isCurrentRaidExist(new Date())
+                    && raids.size() >= 2) {//미리 만들었는데 실제 시작은 안했고 size가 2 이상이면
+                spinner.setSelectedIndex(raidNameList.size() - 2);
+                setView(raids.get(raids.size() - 2));
+            }
+            else {
+                spinner.setSelectedIndex(raidNameList.size() - 1);
+                setView(raids.get(raids.size() - 1));
+            }
         }
 
         return view;

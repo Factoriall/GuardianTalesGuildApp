@@ -230,6 +230,12 @@ public class StatisticBossFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_statistic_boss, container, false);
+        recyclerView = view.findViewById(R.id.recyclerView);
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+        recyclerView.setNestedScrollingEnabled(false);
+        adapter = new StatisticBossLeaderAdapter();
+        recyclerView.setAdapter(adapter);
 
         database = RoomDB.getInstance(getActivity());
         if (getArguments() != null) {
@@ -265,7 +271,6 @@ public class StatisticBossFragment extends Fragment {
         averageDamage = view.findViewById(R.id.averageDamage);
         stDev = view.findViewById(R.id.CV);
         hitNum = view.findViewById(R.id.hitNum);
-        recyclerView = view.findViewById(R.id.recyclerView);
         leaderNumChart = new HoriBarChart(view.findViewById(R.id.leaderNumChart));
         leaderDamageChart = new HoriBarChart(view.findViewById(R.id.leaderDamageChart));
         ImageView help = view.findViewById(R.id.help);
@@ -280,7 +285,7 @@ public class StatisticBossFragment extends Fragment {
             Button button = dialog.findViewById(R.id.button);
             button.setOnClickListener(view1 -> dialog.dismiss());
         });
-
+        
         List<Boss> bosses = database.raidDao().getBossesList(raidId);
         switch(bossPosition){
             case ALL:
@@ -349,8 +354,6 @@ public class StatisticBossFragment extends Fragment {
         setLeaderCard(records, xAxisNum);
     }
 
-
-
     private void setLeaderCard(List<Record> records, int xAxisNum) {
         List<LeaderInfo> memberLeaderList = new ArrayList<>();
         for(Record r : records){
@@ -367,11 +370,8 @@ public class StatisticBossFragment extends Fragment {
         }
         Collections.sort(memberLeaderList);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
-        recyclerView.setNestedScrollingEnabled(false);
-        adapter = new StatisticBossLeaderAdapter(memberLeaderList, xAxisNum);
-
-        recyclerView.setAdapter(adapter);
+        adapter.setItems(memberLeaderList, xAxisNum);
+        adapter.notifyDataSetChanged();
     }
 
     private String getCV(long average, List<Record> records) {
