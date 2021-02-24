@@ -23,7 +23,6 @@ import java.util.Locale;
 
 public class StatisticMemberLeaderAdapter extends RecyclerView.Adapter<StatisticMemberLeaderAdapter.ViewHolder>{
     private List<LeaderInfo> leaderList = new ArrayList<>();
-    private boolean isAdjustMode = false;
 
     @NonNull
     @Override
@@ -37,7 +36,7 @@ public class StatisticMemberLeaderAdapter extends RecyclerView.Adapter<Statistic
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         LeaderInfo leader = leaderList.get(position);
-        holder.setItem(leader, isAdjustMode);
+        holder.setItem(leader);
     }
 
     @Override
@@ -46,9 +45,8 @@ public class StatisticMemberLeaderAdapter extends RecyclerView.Adapter<Statistic
         return leaderList.size();
     }
 
-    public void setItems(List<LeaderInfo> records, boolean isAdjustMode){
+    public void setItems(List<LeaderInfo> records){
         this.leaderList = records;
-        this.isAdjustMode = isAdjustMode;
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder{
@@ -80,7 +78,7 @@ public class StatisticMemberLeaderAdapter extends RecyclerView.Adapter<Statistic
             context = itemView.getContext();
         }
 
-        public void setItem(LeaderInfo info, boolean isAdjustMode) {
+        public void setItem(LeaderInfo info) {
             Hero leader = info.getLeader();
             List<Record> records = info.getRecordList();
 
@@ -97,10 +95,10 @@ public class StatisticMemberLeaderAdapter extends RecyclerView.Adapter<Statistic
             long min = MAX_NUM;
             long max = 0;
             for(Record r : records){
-                long adjustDamage = getAdjustDamage(r, isAdjustMode);
-                total += adjustDamage;
-                min = Math.min(min, adjustDamage);
-                max = Math.max(max, adjustDamage);
+                long d = r.getDamage();
+                total += d;
+                min = Math.min(min, d);
+                max = Math.max(max, d);
             }
             long average = total / records.size();
 
@@ -108,13 +106,6 @@ public class StatisticMemberLeaderAdapter extends RecyclerView.Adapter<Statistic
             averageDamage.setText(getStandardNumberFormat(average));
             minDamage.setText(getStandardNumberFormat(min));
             maxDamage.setText(getStandardNumberFormat(max));
-        }
-
-        private long getAdjustDamage(Record record, boolean isAdjustMode) {
-            if(isAdjustMode)
-                return (long) (record.getDamage() * record.getBoss().getHardness());
-
-            return record.getDamage();
         }
 
         private String getStandardNumberFormat(long num){

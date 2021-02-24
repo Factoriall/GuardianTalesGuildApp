@@ -8,14 +8,11 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -32,11 +29,9 @@ import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.utils.MPPointF;
 import com.llollox.androidtoggleswitch.widgets.ToggleSwitch;
 
-import org.angmarch.views.NiceSpinner;
 import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.adapters.StatisticMemberLeaderAdapter;
 import org.techtown.gtguildraid.models.Boss;
-import org.techtown.gtguildraid.models.GuildMember;
 import org.techtown.gtguildraid.models.LeaderInfo;
 import org.techtown.gtguildraid.models.Record;
 import org.techtown.gtguildraid.utils.AppExecutor;
@@ -56,16 +51,13 @@ public class StatisticMemberDetailFragment extends Fragment {
     static int raidId;
     static int memberId;
 
-    private static final int ALL = 0;
-    private static final int BOSS_1 = 1;
-    private static final int BOSS_2 = 2;
-    private static final int BOSS_3 = 3;
-    private static final int BOSS_4 = 4;
+    private static final int BOSS_1 = 0;
+    private static final int BOSS_2 = 1;
+    private static final int BOSS_3 = 2;
+    private static final int BOSS_4 = 3;
 
     private static int bossPosition;
-    private static boolean isAdjustMode;
     private static ArrayList<String> bossLabels = new ArrayList<>();
-    GuildMember member;
 
     RoomDB database;
     View view;
@@ -161,8 +153,6 @@ public class StatisticMemberDetailFragment extends Fragment {
 
                 if(isDamage){
                     long damage = r.getDamage();
-                    if(isAdjustMode)
-                        damage *= r.getBoss().getHardness();
 
                     if (!total.containsKey(name))
                         total.put(name, damage);
@@ -224,6 +214,7 @@ public class StatisticMemberDetailFragment extends Fragment {
             }
         }
     }
+
     StatisticMemberDetailFragment(int raidId, int memberId){
         this.raidId = raidId;
         this.memberId = memberId;
@@ -242,9 +233,6 @@ public class StatisticMemberDetailFragment extends Fragment {
         leaderNumChart = new HoriBarChart(view.findViewById(R.id.leaderNumChart));
         leaderDamageChart = new HoriBarChart(view.findViewById(R.id.leaderDamageChart));
 
-
-        Switch adjustSwitch = view.findViewById(R.id.adjustSwitch);
-        isAdjustMode = adjustSwitch.isChecked();
         bossPosition = 0;
         database = RoomDB.getInstance(getActivity());
 
@@ -253,20 +241,15 @@ public class StatisticMemberDetailFragment extends Fragment {
         adapter = new StatisticMemberLeaderAdapter();
         recyclerView.setAdapter(adapter);
 
-        member = database.memberDao().getMember(memberId);
-
         if (getArguments() != null) {
             raidId = getArguments().getInt("raidId");
         }
-
-
 
         //보스 토글 스위치
         ToggleSwitch bossSwitch = view.findViewById(R.id.toggleSwitchBoss);
 
         List<Boss> bossesInRaid = database.raidDao().getBossesList(raidId);
         bossLabels.clear();
-        bossLabels.add("보스 전체");
         for (Boss b : bossesInRaid) {
             String bossName = b.getName();
             if (bossName.length() > 5)
@@ -282,10 +265,6 @@ public class StatisticMemberDetailFragment extends Fragment {
             setView();
         });
 
-        adjustSwitch.setOnCheckedChangeListener((compoundButton, b) -> {
-            isAdjustMode = b;
-            setView();
-        });
         setView();
 
         return view;
@@ -295,9 +274,6 @@ public class StatisticMemberDetailFragment extends Fragment {
         List<Boss> bosses = database.raidDao().getBossesList(raidId);
 
         switch(bossPosition){
-            case ALL:
-                setAllData();
-                break;
             case BOSS_1:
                 setBossData(bosses.get(0));
                 break;
@@ -311,21 +287,6 @@ public class StatisticMemberDetailFragment extends Fragment {
                 setBossData(bosses.get(3));
                 break;
         }
-    }
-
-    private void setAllData() {
-        ProgressDialog mProgressDialog = ProgressDialog.show(getContext(), "잠시 대기","데이터베이스 접속 중", true);
-
-        AppExecutor.getInstance().diskIO().execute(() -> {
-            List<Record> allRecords = database.recordDao().getAllRecordsWithExtra(raidId);
-            List<Record> memberRecords = database.recordDao()
-                    .get1MemberRecordsWithExtra(memberId, raidId);
-            getActivity().runOnUiThread(() -> {
-                mProgressDialog.dismiss();
-                leaderCard.setVisibility(View.GONE);
-                setData(allRecords, memberRecords);
-            });
-        });
     }
 
     private void setBossData(Boss boss) {
@@ -346,8 +307,8 @@ public class StatisticMemberDetailFragment extends Fragment {
     }
 
     private void setData(List<Record> allRecords, List<Record> memberRecords) {
-        long allDamage = getDamageFromList(allRecords, isAdjustMode);
-        long memberDamage = getDamageFromList(memberRecords, isAdjustMode);
+        long allDamage = getDamageFromList(allRecords);
+        long memberDamage = getDamageFromList(memberRecords);
 
         damage.setText(NumberFormat.getNumberInstance(Locale.US).format(memberDamage));
         contribution.setText(getPercentage(memberDamage, allDamage));
@@ -378,7 +339,7 @@ public class StatisticMemberDetailFragment extends Fragment {
         }
         Collections.sort(memberLeaderList);
 
-        adapter.setItems(memberLeaderList, isAdjustMode);
+        adapter.setItems(memberLeaderList);
         adapter.notifyDataSetChanged();
     }
 
@@ -388,15 +349,10 @@ public class StatisticMemberDetailFragment extends Fragment {
         return String.format("%.2f", memberDamage/(double)allDamage * 100);
     }
 
-    private long getDamageFromList(List<Record> records, boolean isAdjustMode) {
+    private long getDamageFromList(List<Record> records) {
         long damage = 0;
         for(Record r: records){
-            if(isAdjustMode) {
-                Boss b = r.getBoss();
-                damage += (long) (r.getDamage() * b.getHardness());
-            }
-            else
-                damage += r.getDamage();
+            damage += r.getDamage();
         }
         return damage;
     }

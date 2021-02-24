@@ -2,29 +2,20 @@ package org.techtown.gtguildraid.fragments;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridView;
-import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import org.angmarch.views.NiceSpinner;
 import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.adapters.BossHitCardAdapter;
-import org.techtown.gtguildraid.adapters.DialogImageSpinnerAdapter;
 import org.techtown.gtguildraid.adapters.RecordCardAdapter;
 import org.techtown.gtguildraid.models.Boss;
-import org.techtown.gtguildraid.models.GuildMember;
 import org.techtown.gtguildraid.models.Record;
 import org.techtown.gtguildraid.utils.AppExecutor;
 import org.techtown.gtguildraid.utils.RoomDB;
@@ -69,11 +60,12 @@ public class StatisticMemberBasic2Fragment extends Fragment {
 
         if(day != 0) {
             view = inflater.inflate(R.layout.fragment_statistic_member_basic_recycler, container, false);
-            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+
             RecyclerView recyclerView = view.findViewById(R.id.recordRecyclerView);
-            recyclerView.setLayoutManager(linearLayoutManager);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
             RecordCardAdapter adapter = new RecordCardAdapter();
             recyclerView.setAdapter(adapter);
+
             recordList = getReverseList();
 
             adapter.setItems(recordList);
@@ -87,10 +79,12 @@ public class StatisticMemberBasic2Fragment extends Fragment {
         }
         else{
             view = inflater.inflate(R.layout.fragment_statistic_member_basic_all, container, false);
+
             TextView damage = view.findViewById(R.id.damage);
             TextView contribution = view.findViewById(R.id.contribution);
             TextView average = view.findViewById(R.id.average);
             TextView hitNum = view.findViewById(R.id.hitNum);
+
             RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
             recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
             BossHitCardAdapter adapter = new BossHitCardAdapter();
