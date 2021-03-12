@@ -299,7 +299,6 @@ public class StatisticMemberDetailFragment extends Fragment {
 
             getActivity().runOnUiThread(() -> {
                 mProgressDialog.dismiss();
-                leaderCard.setVisibility(View.VISIBLE);
                 setLeaderCard(memberRecords);
                 setData(allRecords, memberRecords);
             });
@@ -309,12 +308,13 @@ public class StatisticMemberDetailFragment extends Fragment {
     private void setData(List<Record> allRecords, List<Record> memberRecords) {
         long allDamage = getDamageFromList(allRecords);
         long memberDamage = getDamageFromList(memberRecords);
+        long countWithoutLast = getCountFromList(memberRecords);
 
         damage.setText(NumberFormat.getNumberInstance(Locale.US).format(memberDamage));
         contribution.setText(getPercentage(memberDamage, allDamage));
         hitNum.setText(Integer.toString(memberRecords.size()));
         average.setText(memberRecords.size() == 0 ? Integer.toString(0) :
-                NumberFormat.getNumberInstance(Locale.US).format(memberDamage / memberRecords.size()));
+                NumberFormat.getNumberInstance(Locale.US).format(memberDamage / countWithoutLast));
 
         leaderNumChart.setRecords(memberRecords);
         leaderNumChart.setChartUi(false);
@@ -351,9 +351,23 @@ public class StatisticMemberDetailFragment extends Fragment {
 
     private long getDamageFromList(List<Record> records) {
         long damage = 0;
+        int cnt = 0;
         for(Record r: records){
+            if(r.isLastHit())
+                continue;
             damage += r.getDamage();
+            cnt++;
         }
         return damage;
+    }
+
+    private long getCountFromList(List<Record> records) {
+        int cnt = 0;
+        for(Record r: records){
+            if(r.isLastHit())
+                continue;
+            cnt++;
+        }
+        return cnt;
     }
 }

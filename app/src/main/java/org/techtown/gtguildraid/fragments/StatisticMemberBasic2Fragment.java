@@ -101,21 +101,28 @@ public class StatisticMemberBasic2Fragment extends Fragment {
                 for(Boss boss : bosses)
                     bossCount.put(boss.getBossId(), 0);
 
+                int lastHitCount = 0;
                 for(Record r : memberRecords){
                     int bossId = r.getBoss().getBossId();
                     bossCount.put(bossId, bossCount.get(bossId) + 1);
-                }
-                long allDamage = getDamageFromList(allRecords);
-                long memberDamage = getDamageFromList(memberRecords);
 
+                    if(r.isLastHit())
+                        lastHitCount++;
+                }
+                long allDamage = getDamageFromList(allRecords, false);
+                long memberDamage = getDamageFromList(memberRecords, true);
+
+                int finalLastHitCount = lastHitCount;
                 getActivity().runOnUiThread(() -> {
                     mProgressDialog.dismiss();
 
+
                     damage.setText(NumberFormat.getNumberInstance(Locale.US).format(memberDamage));
                     contribution.setText(getPercentage(memberDamage, allDamage));
-                    hitNum.setText(Integer.toString(memberRecords.size()));
-                    average.setText(memberRecords.size() == 0 ? Integer.toString(0) :
-                            NumberFormat.getNumberInstance(Locale.US).format(memberDamage / memberRecords.size()));
+                    int hitNumWithoutLast = memberRecords.size() - finalLastHitCount;
+                    hitNum.setText(memberRecords.size() + " / " + finalLastHitCount);
+                    average.setText(hitNumWithoutLast == 0 ? Integer.toString(0) :
+                            NumberFormat.getNumberInstance(Locale.US).format(memberDamage / hitNumWithoutLast));
 
                     adapter.setItems(bossCount);
                     adapter.notifyDataSetChanged();
@@ -132,10 +139,13 @@ public class StatisticMemberBasic2Fragment extends Fragment {
     }
 
 
-    private long getDamageFromList(List<Record> records) {
+    private long getDamageFromList(List<Record> records, boolean excludeLastHit) {
         long damage = 0;
-        for(Record r: records)
+        for(Record r: records) {
+            if(excludeLastHit && r.isLastHit())
+                continue;
             damage += r.getDamage();
+        }
 
         return damage;
     }

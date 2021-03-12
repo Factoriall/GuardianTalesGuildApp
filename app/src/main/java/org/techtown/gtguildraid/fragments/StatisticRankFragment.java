@@ -168,6 +168,10 @@ public class StatisticRankFragment extends Fragment {
                 RankInfo ri = new RankInfo(m.getName(), recordList.size());
 
                 for(Record r : recordList) {
+                    if(isAverageMode && r.isLastHit()) {
+                        ri.setHitNum(ri.getHitNum() - 1);
+                        continue;
+                    }
                     if(isAdjustMode) {
                         ri.addDamage((long) (r.getDamage() * r.getBoss().getHardness()));
                     }

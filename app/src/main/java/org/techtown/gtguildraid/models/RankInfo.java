@@ -11,6 +11,10 @@ public class RankInfo implements Comparable<RankInfo>{
         this.hitNum = hitNum;
     }
 
+    public void setHitNum(int num){
+        hitNum = num;
+    }
+
     public void addDamage(long d){
         damage += d;
     }
