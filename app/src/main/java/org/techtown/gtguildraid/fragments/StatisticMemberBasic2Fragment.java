@@ -110,19 +110,17 @@ public class StatisticMemberBasic2Fragment extends Fragment {
                         lastHitCount++;
                 }
                 long allDamage = getDamageFromList(allRecords, false);
-                long memberDamage = getDamageFromList(memberRecords, true);
+                long memberDamage = getDamageFromList(memberRecords, false);
+                long averageDamage = getAverageFromList(memberRecords);
 
                 int finalLastHitCount = lastHitCount;
                 getActivity().runOnUiThread(() -> {
                     mProgressDialog.dismiss();
 
-
-                    damage.setText(NumberFormat.getNumberInstance(Locale.US).format(memberDamage));
+                    damage.setText(getNumberFormat(memberDamage));
                     contribution.setText(getPercentage(memberDamage, allDamage));
-                    int hitNumWithoutLast = memberRecords.size() - finalLastHitCount;
                     hitNum.setText(memberRecords.size() + " / " + finalLastHitCount);
-                    average.setText(hitNumWithoutLast == 0 ? Integer.toString(0) :
-                            NumberFormat.getNumberInstance(Locale.US).format(memberDamage / hitNumWithoutLast));
+                    average.setText(getNumberFormat(averageDamage));
 
                     adapter.setItems(bossCount);
                     adapter.notifyDataSetChanged();
@@ -138,6 +136,9 @@ public class StatisticMemberBasic2Fragment extends Fragment {
         return String.format("%.2f", memberDamage/(double)allDamage * 100);
     }
 
+    private String getNumberFormat(long num) {
+        return NumberFormat.getNumberInstance(Locale.US).format(num);
+    }
 
     private long getDamageFromList(List<Record> records, boolean excludeLastHit) {
         long damage = 0;
@@ -148,6 +149,19 @@ public class StatisticMemberBasic2Fragment extends Fragment {
         }
 
         return damage;
+    }
+
+    private long getAverageFromList(List<Record> records) {
+        long damage = 0;
+        int cnt = 0;
+        for(Record r: records) {
+            if(r.isLastHit())
+                continue;
+            damage += r.getDamage();
+            cnt++;
+        }
+
+        return cnt == 0 ? 0 : damage / cnt;
     }
 
     private List<Record> getReverseList() {

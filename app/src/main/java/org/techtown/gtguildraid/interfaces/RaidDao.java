@@ -53,6 +53,13 @@ public abstract class RaidDao {
         insertBossList(bosses);
     }
 
+    public Raid getRaidWithBosses(int raidId){
+        Raid raid = getRaid(raidId);
+        List<Boss> bosses = getBossesList(raidId);
+        raid.setBossList(bosses);
+        return raid;
+    }
+
     public Raid getCurrentRaidWithBosses(Date date) {
         Raid raid = getCurrentRaid(date);
         List<Boss> bosses = getBossesList(raid.getRaidId());

@@ -307,20 +307,32 @@ public class StatisticMemberDetailFragment extends Fragment {
 
     private void setData(List<Record> allRecords, List<Record> memberRecords) {
         long allDamage = getDamageFromList(allRecords);
-        long memberDamage = getDamageFromList(memberRecords);
-        long countWithoutLast = getCountFromList(memberRecords);
+        long memberAllDamage = getDamageFromList(memberRecords);
+        long averageDamage = getAverageFromList(memberRecords);
 
-        damage.setText(NumberFormat.getNumberInstance(Locale.US).format(memberDamage));
-        contribution.setText(getPercentage(memberDamage, allDamage));
+        damage.setText(NumberFormat.getNumberInstance(Locale.US).format(memberAllDamage));
+        contribution.setText(getPercentage(memberAllDamage, allDamage));
         hitNum.setText(Integer.toString(memberRecords.size()));
-        average.setText(memberRecords.size() == 0 ? Integer.toString(0) :
-                NumberFormat.getNumberInstance(Locale.US).format(memberDamage / countWithoutLast));
+        average.setText(NumberFormat.getNumberInstance(Locale.US).format(averageDamage));
 
         leaderNumChart.setRecords(memberRecords);
         leaderNumChart.setChartUi(false);
 
         leaderDamageChart.setRecords(memberRecords);
         leaderDamageChart.setChartUi(true);
+    }
+
+    private long getAverageFromList(List<Record> records) {
+        long damage = 0;
+        int cnt = 0;
+        for(Record r: records) {
+            if(r.isLastHit())
+                continue;
+            damage += r.getDamage();
+            cnt++;
+        }
+
+        return cnt == 0 ? 0 : damage / cnt;
     }
 
     private void setLeaderCard(List<Record> records) {
@@ -351,23 +363,9 @@ public class StatisticMemberDetailFragment extends Fragment {
 
     private long getDamageFromList(List<Record> records) {
         long damage = 0;
-        int cnt = 0;
-        for(Record r: records){
-            if(r.isLastHit())
-                continue;
+        for(Record r: records)
             damage += r.getDamage();
-            cnt++;
-        }
-        return damage;
-    }
 
-    private long getCountFromList(List<Record> records) {
-        int cnt = 0;
-        for(Record r: records){
-            if(r.isLastHit())
-                continue;
-            cnt++;
-        }
-        return cnt;
+        return damage;
     }
 }

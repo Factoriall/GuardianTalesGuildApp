@@ -61,6 +61,16 @@
             app:layout_constraintStart_toEndOf="@+id/raidCard"
             app:layout_constraintTop_toTopOf="@+id/raidCard" />
 
+        <Button
+            android:id="@+id/csvButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:text=".csv 저장"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <FrameLayout

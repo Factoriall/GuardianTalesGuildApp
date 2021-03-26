@@ -47,6 +47,13 @@ public abstract class RecordDao {
     @Query("SELECT * FROM Hero WHERE heroId = :heroId")
     public abstract Hero getHero(int heroId);
 
+    @Query("SELECT (SELECT count(*) FROM " +
+            "(SELECT memberId, SUM(damage) as total from Record WHERE raidId = :raidId GROUP BY memberId) t2 " +
+            "WHERE t2.total >= t1.total)" +
+            " FROM (SELECT memberId, SUM(damage) as total from Record WHERE raidId = :raidId GROUP BY memberId) t1 " +
+            " WHERE memberId = :memberId")
+    public abstract int getRankFromAllRecords(int memberId, int raidId);
+
     @Query("UPDATE Record SET damage = :damage, bossId = :bossId, round = :round, leaderId = :leaderId, isLastHit = :isLastHit" +
             " WHERE recordID = :rId")
     public abstract void updateRecord(int rId, int damage, int bossId, int round, int leaderId, boolean isLastHit);
@@ -143,4 +150,6 @@ public abstract class RecordDao {
 
         return records;
     }
+
+
 }
