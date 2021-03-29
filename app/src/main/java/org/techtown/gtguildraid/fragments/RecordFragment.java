@@ -1,5 +1,7 @@
 package org.techtown.gtguildraid.fragments;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -7,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -53,6 +56,9 @@ public class RecordFragment extends Fragment {
 
         database = RoomDB.getInstance(getActivity());
         raid = database.raidDao().getCurrentRaid(new Date());
+
+        SharedPreferences pref = this.getActivity().getSharedPreferences("pref", Context.MODE_PRIVATE);
+        showToast("최근 기록: " + pref.getString("recentWrite" + raid.getRaidId(), "없음"));
 
         raidName.setText(raid.getName());
         String dateFormat = "yy/MM/dd";
@@ -105,5 +111,9 @@ public class RecordFragment extends Fragment {
         cal.add(Calendar.DATE, position);
 
         return new SimpleDateFormat("MM/dd").format(cal.getTime());
+    }
+
+    private void showToast(String msg) {
+        Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG).show();
     }
 }

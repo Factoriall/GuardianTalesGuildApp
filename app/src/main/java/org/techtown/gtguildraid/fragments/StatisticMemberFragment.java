@@ -17,6 +17,13 @@ import com.kyleduo.switchbutton.SwitchButton;
 import com.opencsv.CSVWriter;
 
 import org.angmarch.views.NiceSpinner;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.models.Boss;
 import org.techtown.gtguildraid.models.GuildMember;
@@ -27,6 +34,7 @@ import org.techtown.gtguildraid.utils.AppExecutor;
 import org.techtown.gtguildraid.utils.RoomDB;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.NumberFormat;
@@ -58,6 +66,9 @@ public class StatisticMemberFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_statistic_member, container, false);
+        System.setProperty("org.apache.poi.javax.xml.stream.XMLInputFactory", "com.fasterxml.aalto.stax.InputFactoryImpl");
+        System.setProperty("org.apache.poi.javax.xml.stream.XMLOutputFactory", "com.fasterxml.aalto.stax.OutputFactoryImpl");
+        System.setProperty("org.apache.poi.javax.xml.stream.XMLEventFactory", "com.fasterxml.aalto.stax.EventFactoryImpl");
 
         SwitchButton viewSwitch = view.findViewById(R.id.viewSwitch);
         Button csvButton = view.findViewById(R.id.csvButton);
@@ -107,6 +118,7 @@ public class StatisticMemberFragment extends Fragment {
 
                 AppExecutor.getInstance().diskIO().execute(() -> {
                     exportDataToCSV();
+                    //exportDataToExcel();
                     getActivity().runOnUiThread(() -> {
                         mProgressDialog.dismiss();
                         Toast.makeText(getContext(), "생성 완료", Toast.LENGTH_LONG).show();
@@ -130,6 +142,36 @@ public class StatisticMemberFragment extends Fragment {
             getChildFragmentManager().beginTransaction()
                     .replace(R.id.container, basicFragment).commit();
         }
+    }
+
+    private void exportDataToExcel() {
+        Raid raid = database.raidDao().getRaidWithBosses(raidId);
+        List<Boss> bosses = raid.getBossList();
+        GuildMember member = membersInRaid.get(sMemberIdx);
+        String name = member.getName();
+        File directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
+        final File file =  new File(directory,raid.getName() + "_" + name +  ".xls");
+
+        Workbook wb = new HSSFWorkbook(); //or new XSSFWorkbook();
+        Sheet sheet = wb.createSheet("new sheet");
+        CellStyle title = wb.createCellStyle();
+        Font font = wb.createFont();
+        font.setFontHeightInPoints((short) 14);
+        title.setFont(font);
+
+        int rowNum = 0;
+        Row row = sheet.createRow(rowNum);
+        Cell cell = row.createCell(0);
+        cell.setCellValue(raid.getName() + " - " + name);
+        cell.setCellStyle(title);
+
+        rowNum++;
+
+        try {
+            FileOutputStream os = new FileOutputStream(file);
+            wb.write(os);
+        } catch (IOException e) { e.printStackTrace(); }
+
     }
 
     private void exportDataToCSV() {

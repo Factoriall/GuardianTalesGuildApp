@@ -179,7 +179,6 @@ public class RecordMemberFragment extends Fragment {
             raidId = getArguments().getInt("raidId");
             day = getArguments().getInt("day");
         }
-        showToast("최근 기록: " + pref.getString("recentWrite" + raidId, "없음"));
 
         View view = inflater.inflate(R.layout.fragment_record_recycler, container, false);
         memberSpinner = view.findViewById(R.id.nickname);
@@ -492,13 +491,6 @@ public class RecordMemberFragment extends Fragment {
                     .get(heroNames.getSelectedItemPosition());
 
             if (!sDamage.equals("")) {
-                SharedPreferences.Editor editor = pref.edit();
-                editor.putInt("currentRound" + raidId, pickerIdx[0]);
-                editor.putString("recentWrite" + raidId,
-                        "닉네임-" + memberList.get(sMemberIdx).getName() +
-                                "/리더-"+ database.heroDao().getHero(iHeroId).getKoreanName());
-                editor.apply();
-
                 dialog.dismiss();
                 if (isEditing) {//수정 중이면 업데이트
                     database.recordDao().updateRecord(record.getRecordId(),
@@ -506,6 +498,15 @@ public class RecordMemberFragment extends Fragment {
                             pickerIdx[0] + 1,
                             iHeroId, isLastHit.isChecked());
                 } else {//새로운 데이터 생성
+                    //새로 생성할 때에만 preference에 저장
+                    SharedPreferences.Editor editor = pref.edit();
+                    editor.putInt("currentRound" + raidId, pickerIdx[0]);
+                    editor.putString("recentWrite" + raidId,
+                            "닉네임-" + memberList.get(sMemberIdx).getName() +
+                                    "/리더-"+ database.heroDao().getHero(iHeroId).getKoreanName());
+                    editor.apply();
+
+                    //새로운 데이터 저장
                     Record record1 = new Record(memberList.get(sMemberIdx).getId(), raidId, day);
                     record1.setDamage(Long.parseLong(sDamage));
                     record1.setBossId(selectedBossId);
