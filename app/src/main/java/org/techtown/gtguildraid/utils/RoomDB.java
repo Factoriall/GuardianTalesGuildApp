@@ -137,6 +137,15 @@ public abstract class RoomDB extends RoomDatabase {
                     + "VALUES ('미래 기사', 'futureknight', 6, 3, 1)");
         }
     };
+    /*
+    //녹시아 데이터 업데이트 및 Record에 CASCADE 추가
+    static final Migration MIGRATION_15_16 = new Migration(15, 16) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            database.execSQL("INSERT INTO hero (koreanName, englishName, element, star, role) "
+                    + "VALUES ('녹시아', 'noxia', 5, 3, 4)");
+        }
+    };*/
 
     public synchronized static RoomDB getInstance(Context context){
         if(database == null){//initialize

@@ -18,6 +18,7 @@ import com.opencsv.CSVWriter;
 
 import org.angmarch.views.NiceSpinner;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
@@ -106,22 +107,32 @@ public class StatisticMemberFragment extends Fragment {
         });
 
         viewSwitch.setOnCheckedChangeListener((compoundButton, b) -> {
+            if(sMemberIdx == 0) {
+                Toast.makeText(getContext(), "데이터 없음", Toast.LENGTH_SHORT).show();
+                return;
+            }
             isDetailMode = b;
             setView();
         });
-        setView();
+
+        if(sMemberIdx != 0)
+            setView();
 
         csvButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(sMemberIdx == 0) {
+                    Toast.makeText(getContext(), "데이터 없음", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 ProgressDialog mProgressDialog = ProgressDialog.show(getContext(), "잠시 대기","CSV 파일 생성 중...", true);
 
                 AppExecutor.getInstance().diskIO().execute(() -> {
-                    exportDataToCSV();
-                    //exportDataToExcel();
+                    //exportDataToCSV();
+                    exportDataToExcel();
                     getActivity().runOnUiThread(() -> {
                         mProgressDialog.dismiss();
-                        Toast.makeText(getContext(), "생성 완료", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(), "생성 완료", Toast.LENGTH_SHORT).show();
                     });
                 });
             }
@@ -158,6 +169,9 @@ public class StatisticMemberFragment extends Fragment {
         Font font = wb.createFont();
         font.setFontHeightInPoints((short) 14);
         title.setFont(font);
+        CellStyle subtitle = wb.createCellStyle();
+        font.setFontHeightInPoints((short) 12);
+        subtitle.setFont(font);
 
         int rowNum = 0;
         Row row = sheet.createRow(rowNum);
@@ -165,13 +179,68 @@ public class StatisticMemberFragment extends Fragment {
         cell.setCellValue(raid.getName() + " - " + name);
         cell.setCellStyle(title);
 
-        rowNum++;
+        rowNum = setSubtitle(sheet, rowNum, "요약", subtitle);
+        rowNum = addSummaryToExcel(wb, sheet, rowNum + 1, member.getID());
 
         try {
             FileOutputStream os = new FileOutputStream(file);
             wb.write(os);
         } catch (IOException e) { e.printStackTrace(); }
 
+    }
+
+    private int setSubtitle(Sheet sheet, int rowNum, String s, CellStyle subtitle) {
+        rowNum += 2;
+        Row row = sheet.createRow(rowNum);
+        setCellValueAndStyle(row, 0, s, subtitle);
+        return rowNum;
+    }
+
+    private int addSummaryToExcel(Workbook wb, Sheet sheet, int rowNum, int memberId) {
+        CellStyle borderStyle = wb.createCellStyle();
+        borderStyle.setBorderTop(BorderStyle.MEDIUM);
+        borderStyle.setBorderBottom(BorderStyle.MEDIUM);
+        borderStyle.setBorderLeft(BorderStyle.MEDIUM);
+        borderStyle.setBorderRight(BorderStyle.MEDIUM);
+
+        Row row = sheet.createRow(rowNum);
+        setCellValueAndStyle(row, 0, "순위", borderStyle);
+        setCellValueAndStyle(row, 1, "전체 딜량", borderStyle);
+        setCellValueAndStyle(row, 2, "딜량 점유율(%)", borderStyle);
+        setCellValueAndStyle(row, 3, "평균(막타 X)", borderStyle);
+        setCellValueAndStyle(row, 4, "친 횟수", borderStyle);
+        setCellValueAndStyle(row, 5, "막타 횟수", borderStyle);
+
+        rowNum += 1;
+        row = sheet.createRow(rowNum);
+        int rank = database.recordDao().getRankFromAllRecords(memberId, raidId);
+        List<Record> allRecords = database.recordDao().getAllRecordsWithExtra(raidId);
+        List<Record> memberRecords = database.recordDao().get1MemberRecordsWithExtra(memberId, raidId);
+
+        int lastHitCount = 0;
+        for(Record r : memberRecords){
+            if(r.isLastHit())
+                lastHitCount++;
+        }
+        int hitCount = memberRecords.size();
+        long allDamage = getDamageFromList(allRecords, false);
+        long memberDamage = getDamageFromList(memberRecords, false);
+        long averageDamage = getAverageFromList(memberRecords);
+
+        setCellValueAndStyle(row, 0, String.valueOf(rank), borderStyle);
+        setCellValueAndStyle(row, 1, getNumberFormat(memberDamage), borderStyle);
+        setCellValueAndStyle(row, 2, getPercentage(memberDamage, allDamage), borderStyle);
+        setCellValueAndStyle(row, 3, getNumberFormat(averageDamage), borderStyle);
+        setCellValueAndStyle(row, 4, String.valueOf(hitCount), borderStyle);
+        setCellValueAndStyle(row, 5, String.valueOf(lastHitCount), borderStyle);
+
+        return rowNum + 1;
+    }
+
+    private void setCellValueAndStyle(Row row, int i, String str, CellStyle style) {
+        Cell cell = row.createCell(i);
+        cell.setCellValue(str);
+        cell.setCellStyle(style);
     }
 
     private void exportDataToCSV() {
