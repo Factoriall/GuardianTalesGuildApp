@@ -10,7 +10,11 @@
                 <solid android:color="#FFFFFF"/>
             </shape>
         </item>
-        <item>
+        <item
+            android:top="15dp"
+            android:bottom="15dp"
+            android:left="15dp"
+            android:right="15dp">
             <bitmap
                 android:gravity="center_vertical|right"
                 android:src="@drawable/arrow_down" />

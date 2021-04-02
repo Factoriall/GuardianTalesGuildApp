@@ -44,7 +44,9 @@ public class DialogImageSpinnerAdapter extends ArrayAdapter<String> {
         textView.setText(contentArray.get(position));
 
         ImageView imageView = row.findViewById(R.id.spinnerImages);
-        imageView.setImageResource(imageArray.get(position));
+        int imageId = imageArray.get(position);
+        if(imageId != 0)
+            imageView.setImageResource(imageId);
 
         return row;
     }

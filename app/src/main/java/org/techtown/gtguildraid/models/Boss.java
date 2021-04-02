@@ -14,16 +14,17 @@ public class Boss implements Serializable {
     @ColumnInfo(name = "raidId")
     private int raidId;
 
-    //Create name column
     @ColumnInfo(name = "name")
     private String name;
 
-    //Create remark column
     @ColumnInfo(name = "hardness")
     private double hardness;
 
     @ColumnInfo(name = "imgName")
     private String imgName;
+
+    @ColumnInfo(name = "elementId")
+    private int elementId;
 
     public int getBossId() {
         return bossId;
@@ -63,5 +64,13 @@ public class Boss implements Serializable {
 
     public void setImgName(String imgName) {
         this.imgName = imgName;
+    }
+
+    public int getElementId() {
+        return elementId;
+    }
+
+    public void setElementId(int elementId) {
+        this.elementId = elementId;
     }
 }

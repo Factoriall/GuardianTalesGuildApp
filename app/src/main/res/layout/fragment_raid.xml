@@ -183,7 +183,7 @@
                             android:textStyle="bold"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toStartOf="@+id/progressBar1"
-                            app:layout_constraintStart_toEndOf="@+id/boss1Image"
+                            app:layout_constraintStart_toEndOf="@+id/element1"
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <ProgressBar
@@ -227,6 +227,15 @@
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
+                        <ImageView
+                            android:id="@+id/element1"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toEndOf="@+id/boss1Image"
+                            app:layout_constraintTop_toTopOf="parent"
+                            android:src="@drawable/element_fire" />
+
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <androidx.constraintlayout.widget.ConstraintLayout
@@ -247,7 +256,7 @@
                             android:textStyle="bold"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toStartOf="@+id/progressBar2"
-                            app:layout_constraintStart_toEndOf="@+id/boss2Image"
+                            app:layout_constraintStart_toEndOf="@+id/element2"
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <ProgressBar
@@ -292,6 +301,15 @@
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
+                        <ImageView
+                            android:id="@+id/element2"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toEndOf="@+id/boss2Image"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:srcCompat="@drawable/element_earth" />
+
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <androidx.constraintlayout.widget.ConstraintLayout
@@ -312,7 +330,7 @@
                             android:textStyle="bold"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toStartOf="@+id/progressBar3"
-                            app:layout_constraintStart_toEndOf="@+id/boss3Image"
+                            app:layout_constraintStart_toEndOf="@+id/element3"
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <ProgressBar
@@ -356,6 +374,15 @@
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
+                        <ImageView
+                            android:id="@+id/element3"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toEndOf="@+id/boss3Image"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:srcCompat="@drawable/element_light" />
+
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <androidx.constraintlayout.widget.ConstraintLayout
@@ -376,7 +403,7 @@
                             android:textStyle="bold"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toStartOf="@+id/progressBar4"
-                            app:layout_constraintStart_toEndOf="@+id/boss4Image"
+                            app:layout_constraintStart_toEndOf="@+id/element4"
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <ProgressBar
@@ -420,6 +447,15 @@
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
+
+                        <ImageView
+                            android:id="@+id/element4"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toEndOf="@+id/boss4Image"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:srcCompat="@drawable/element_water" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </LinearLayout>

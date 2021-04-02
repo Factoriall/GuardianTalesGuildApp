@@ -15,7 +15,7 @@ public class MySpinner extends androidx.appcompat.widget.AppCompatSpinner {
         boolean sameSelected = position == getSelectedItemPosition();
         super.setSelection(position);
         if (sameSelected) {
-            Log.d("setSelection", "sameSelected");
+            Log.d("setSelection", String.valueOf(getOnItemSelectedListener()));
             getOnItemSelectedListener().onItemSelected(this, getSelectedView(), position, getSelectedItemId());
         }
     }

@@ -1,6 +1,7 @@
 package org.techtown.gtguildraid.models;
 
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
@@ -9,7 +10,13 @@ import org.techtown.gtguildraid.utils.DateConverter;
 
 import java.io.Serializable;
 
-@Entity(tableName = "record")
+import static androidx.room.ForeignKey.CASCADE;
+
+@Entity(tableName = "record", foreignKeys={
+        @ForeignKey(onDelete = CASCADE, entity = GuildMember.class,
+                parentColumns = "ID",childColumns = "memberId"),
+        @ForeignKey(onDelete = CASCADE, entity = Raid.class,
+                parentColumns = "raidId",childColumns = "raidId")})
 @TypeConverters(DateConverter.class)
 public class Record implements Serializable {
     @PrimaryKey(autoGenerate = true)

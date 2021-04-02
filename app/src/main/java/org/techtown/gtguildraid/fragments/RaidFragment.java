@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -25,8 +26,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.techtown.gtguildraid.R;
+import org.techtown.gtguildraid.adapters.DialogImageSpinnerAdapter;
 import org.techtown.gtguildraid.adapters.RaidCardAdapter;
 import org.techtown.gtguildraid.etc.BossBottomSheetDialog;
+import org.techtown.gtguildraid.etc.MySpinner;
 import org.techtown.gtguildraid.models.Boss;
 import org.techtown.gtguildraid.models.Raid;
 import org.techtown.gtguildraid.utils.RoomDB;
@@ -34,12 +37,14 @@ import org.techtown.gtguildraid.utils.RoomDB;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 public class RaidFragment extends Fragment implements BossBottomSheetDialog.BottomSheetListener {
     final String dateFormat = "yy/MM/dd";
+    final String[] elementsEnglish = new String[]{"fire", "water", "earth", "light", "dark", "basic"};
 
     ViewGroup view;
     RoomDB database;
@@ -150,14 +155,46 @@ public class RaidFragment extends Fragment implements BossBottomSheetDialog.Bott
         final EditText name = dialog.findViewById(R.id.bossName);
         final SeekBar bar = dialog.findViewById(R.id.seekBar);
         final TextView hardness = dialog.findViewById(R.id.hardness);
+
+        MySpinner elements = dialog.findViewById(R.id.elementSpinner);
         bossImageInDialog = dialog.findViewById(R.id.bossImage);
 
+        List<String> elementEnglishList = Arrays.asList(elementsEnglish);
+        List<Integer> elementImageList = new ArrayList<>();
+        elementImageList.add(0);
+        for (String elementName : elementEnglishList) {
+            int imageId = getIdentifierFromResource("element_" + elementName, "drawable");
+            elementImageList.add(imageId);
+        }
+
+        List<String> elementList = Arrays.asList(new String[]{"선택", "화", "수", "지", "광", "암", "무"});
+        DialogImageSpinnerAdapter elementAdapter
+                = new DialogImageSpinnerAdapter(getContext(), R.layout.spinner_value_layout, elementList, elementImageList);
+
+        elements.setAdapter(elementAdapter);
+
         final Boss boss = database.raidDao().getBossesList(currentRaid.getRaidId()).get(idx);
+        final int[] selectedElement = {boss.getElementId()};
+
         name.setText(boss.getName());
         hardness.setText(Double.toString(boss.getHardness()));
         bar.setProgress((int)(boss.getHardness() * 10));
+
         bossImageInDialog.setImageResource(getIdentifierFromResource("boss_" + boss.getImgName(),"drawable"));
         bossImageInDialog.setTag(boss.getImgName());
+
+        elements.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                selectedElement[0] = i;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+        elements.setSelection(selectedElement[0]);
 
         bar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -189,7 +226,7 @@ public class RaidFragment extends Fragment implements BossBottomSheetDialog.Bott
             double dHardness = bar.getProgress() / 10.0;
             String imgName = (String) bossImageInDialog.getTag();
             if(!sName.equals("")) {
-                database.raidDao().updateBoss(boss.getBossId(), sName, imgName, dHardness);
+                database.raidDao().updateBoss(boss.getBossId(), sName, imgName, dHardness, selectedElement[0]);
                 refreshView();
                 dialog.dismiss();
             }
@@ -318,16 +355,25 @@ public class RaidFragment extends Fragment implements BossBottomSheetDialog.Bott
             int barId = getIdentifierFromResource("progressBar" + i, "id");
             int hardnessId = getIdentifierFromResource("hardness" + i, "id");
             int bossImageId = getIdentifierFromResource("boss" + i + "Image", "id");
+            int elementId = getIdentifierFromResource("element" + i, "id");
 
             TextView bossName = view.findViewById(nameId);
             TextView hardness = view.findViewById(hardnessId);
             ProgressBar progressBar = view.findViewById(barId);
             ImageView bossImage = view.findViewById(bossImageId);
+            ImageView elementImage = view.findViewById(elementId);
 
             bossName.setText(bosses.get(i-1).getName());
             hardness.setText(getString(R.string.boss_hardness, bosses.get(i-1).getHardness()));
             progressBar.setProgress((int)(bosses.get(i-1).getHardness() * 10));
             bossImage.setImageResource(getIdentifierFromResource("boss_" + bosses.get(i-1).getImgName(), "drawable"));
+            int eId = bosses.get(i-1).getElementId();
+            if(eId != 0) {
+                elementImage.setVisibility(View.VISIBLE);
+                elementImage.setImageResource(getIdentifierFromResource("element_" + elementsEnglish[eId - 1], "drawable"));
+            }
+            else
+                elementImage.setVisibility(View.INVISIBLE);
         }
 
         raidTerm.setText(getString(R.string.raid_term,

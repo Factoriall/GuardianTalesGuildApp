@@ -26,7 +26,7 @@ import org.techtown.gtguildraid.models.Record;
 
 
 //Add database entities
-@Database(entities = {GuildMember.class, Boss.class, Raid.class, Hero.class, Record.class, Favorites.class}, version = 15, exportSchema = false)
+@Database(entities = {GuildMember.class, Boss.class, Raid.class, Hero.class, Record.class, Favorites.class}, version = 17, exportSchema = false)
 @TypeConverters(DateConverter.class)
 public abstract class RoomDB extends RoomDatabase {
     private static RoomDB database;
@@ -137,15 +137,41 @@ public abstract class RoomDB extends RoomDatabase {
                     + "VALUES ('미래 기사', 'futureknight', 6, 3, 1)");
         }
     };
-    /*
-    //녹시아 데이터 업데이트 및 Record에 CASCADE 추가
+
+    //녹시아 데이터 업데이트 및 GuildMember에 CASCADE 추가 - 2021.04.02
     static final Migration MIGRATION_15_16 = new Migration(15, 16) {
         @Override
         public void migrate(SupportSQLiteDatabase database) {
             database.execSQL("INSERT INTO hero (koreanName, englishName, element, star, role) "
                     + "VALUES ('녹시아', 'noxia', 5, 3, 4)");
+
+            database.execSQL("CREATE TABLE Record_backup "
+                    + "(recordId INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
+                    "memberId INTEGER NOT NULL, " +
+                    "raidId INTEGER NOT NULL, " +
+                    "day INTEGER NOT NULL, " +
+                    "bossId INTEGER NOT NULL, " +
+                    "leaderId INTEGER NOT NULL, " +
+                    "damage INTEGER NOT NULL, " +
+                    "round INTEGER NOT NULL, " +
+                    "isLastHit INTEGER NOT NULL, " +
+                    "FOREIGN KEY(memberId) REFERENCES member(ID) ON UPDATE NO ACTION ON DELETE CASCADE," +
+                    "FOREIGN KEY(raidId) REFERENCES raid(raidId) ON UPDATE NO ACTION ON DELETE CASCADE) ");
+            database.execSQL("INSERT INTO Record_backup "
+                    + "SELECT recordId, memberId, raidId, day, bossId, leaderId, damage, round, isLastHit FROM Record");
+            database.execSQL("DROP TABLE Record");
+            database.execSQL("ALTER TABLE Record_backup RENAME TO Record");
         }
-    };*/
+    };
+
+    //보스 정보에 element 정보 추가 - 2021.04.02
+    static final Migration MIGRATION_16_17 = new Migration(16, 17) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            database.execSQL("ALTER TABLE Boss " +
+                    "ADD COLUMN elementId INTEGER NOT NULL DEFAULT 0");
+        }
+    };
 
     public synchronized static RoomDB getInstance(Context context){
         if(database == null){//initialize
@@ -164,6 +190,8 @@ public abstract class RoomDB extends RoomDatabase {
                     .addMigrations(MIGRATION_12_13)
                     .addMigrations(MIGRATION_13_14)
                     .addMigrations(MIGRATION_14_15)
+                    .addMigrations(MIGRATION_15_16)
+                    .addMigrations(MIGRATION_16_17)
                     .build();
         }
         else{
