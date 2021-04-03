@@ -304,6 +304,7 @@ public class RecordMemberFragment extends Fragment {
         CheckBox isLastHit = dialog.findViewById(R.id.isLastHit);
         ImageView addButton = dialog.findViewById(R.id.addButton);
         ImageView deleteButton = dialog.findViewById(R.id.deleteButton);
+        Button oneCutButton = dialog.findViewById(R.id.oneCutButton);
         HorizontalScrollView hsv = dialog.findViewById(R.id.favoriteScrollView);
         LinearLayout favoritesList = dialog.findViewById(R.id.favoriteList);
 
@@ -421,6 +422,27 @@ public class RecordMemberFragment extends Fragment {
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
+            }
+        });
+        if(day == 1)
+            oneCutButton.setVisibility(View.VISIBLE);
+        else
+            oneCutButton.setVisibility(View.GONE);
+
+        oneCutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                isLastHit.setChecked(true);
+                final int[] hpPerRound = {1080000, 1080000,
+                        1237500, 1237500,
+                        1500000, 1500000,
+                        2025000, 2640000, 3440000, 4500000, 5765625,
+                        7500000, 9750000, 12000000, 16650000, 24000000,
+                        35000000, 50000000, 72000000,
+                        100000000, 140000000, 200000000};
+
+                int idx = pickerIdx[0] < hpPerRound.length ? pickerIdx[0] : hpPerRound.length - 1;
+                damage.setText(Integer.toString(hpPerRound[idx]));
             }
         });
 
