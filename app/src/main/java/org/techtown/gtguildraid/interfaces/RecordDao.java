@@ -54,6 +54,14 @@ public abstract class RecordDao {
             " WHERE memberId = :memberId")
     public abstract int getRankFromAllRecords(int memberId, int raidId);
 
+
+    @Query("SELECT (SELECT count(*) FROM " +
+            "(SELECT memberId, SUM(damage * hardness) as total from Record INNER JOIN Boss on Record.bossId = Boss.bossId WHERE Record.raidId = :raidId GROUP BY memberId) t2 " +
+            "WHERE t2.total >= t1.total)" +
+            " FROM (SELECT memberId, SUM(damage * hardness) as total from Record INNER JOIN Boss on Record.bossId = Boss.bossId WHERE Record.raidId = :raidId GROUP BY memberId) t1 " +
+            " WHERE memberId = :memberId")
+    public abstract int getRankFromAllAdjustRecords(int memberId, int raidId);
+
     @Query("UPDATE Record SET damage = :damage, bossId = :bossId, round = :round, leaderId = :leaderId, isLastHit = :isLastHit" +
             " WHERE recordID = :rId")
     public abstract void updateRecord(int rId, int damage, int bossId, int round, int leaderId, boolean isLastHit);

@@ -25,6 +25,7 @@ import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.models.Boss;
 import org.techtown.gtguildraid.models.GuildMember;
@@ -107,7 +108,7 @@ public class StatisticMemberFragment extends Fragment {
         });
 
         viewSwitch.setOnCheckedChangeListener((compoundButton, b) -> {
-            if(sMemberIdx == 0) {
+            if(memberNameList.size() == 0) {
                 Toast.makeText(getContext(), "데이터 없음", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -115,13 +116,13 @@ public class StatisticMemberFragment extends Fragment {
             setView();
         });
 
-        if(sMemberIdx != 0)
+        if(memberNameList.size() != 0)
             setView();
 
         csvButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(sMemberIdx == 0) {
+                if(memberNameList.size() == 0) {
                     Toast.makeText(getContext(), "데이터 없음", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -182,6 +183,10 @@ public class StatisticMemberFragment extends Fragment {
         rowNum = setSubtitle(sheet, rowNum, "요약", subtitle);
         rowNum = addSummaryToExcel(wb, sheet, rowNum + 1, member.getID());
 
+        /*
+        for(int i=0; i<10; i++)
+            sheet.setColumnWidth(i, 3000);*/
+
         try {
             FileOutputStream os = new FileOutputStream(file);
             wb.write(os);
@@ -204,15 +209,13 @@ public class StatisticMemberFragment extends Fragment {
         borderStyle.setBorderRight(BorderStyle.MEDIUM);
 
         Row row = sheet.createRow(rowNum);
-        setCellValueAndStyle(row, 0, "순위", borderStyle);
-        setCellValueAndStyle(row, 1, "전체 딜량", borderStyle);
-        setCellValueAndStyle(row, 2, "딜량 점유율(%)", borderStyle);
-        setCellValueAndStyle(row, 3, "평균(막타 X)", borderStyle);
-        setCellValueAndStyle(row, 4, "친 횟수", borderStyle);
-        setCellValueAndStyle(row, 5, "막타 횟수", borderStyle);
+        setCellValueAndStyle(row, 1, "순위", borderStyle);
+        setCellValueAndStyle(row, 2, "전체 딜량", borderStyle);
+        setCellValueAndStyle(row, 3, "딜량 점유율(%)", borderStyle);
+        setCellValueAndStyle(row, 4, "평균(막타 X)", borderStyle);
+        setCellValueAndStyle(row, 5, "친 횟수", borderStyle);
+        setCellValueAndStyle(row, 6, "막타 횟수", borderStyle);
 
-        rowNum += 1;
-        row = sheet.createRow(rowNum);
         int rank = database.recordDao().getRankFromAllRecords(memberId, raidId);
         List<Record> allRecords = database.recordDao().getAllRecordsWithExtra(raidId);
         List<Record> memberRecords = database.recordDao().get1MemberRecordsWithExtra(memberId, raidId);
@@ -225,14 +228,37 @@ public class StatisticMemberFragment extends Fragment {
         int hitCount = memberRecords.size();
         long allDamage = getDamageFromList(allRecords, false);
         long memberDamage = getDamageFromList(memberRecords, false);
-        long averageDamage = getAverageFromList(memberRecords);
+        long averageDamage = getAverageFromList(memberRecords, false);
 
-        setCellValueAndStyle(row, 0, String.valueOf(rank), borderStyle);
-        setCellValueAndStyle(row, 1, getNumberFormat(memberDamage), borderStyle);
-        setCellValueAndStyle(row, 2, getPercentage(memberDamage, allDamage), borderStyle);
-        setCellValueAndStyle(row, 3, getNumberFormat(averageDamage), borderStyle);
-        setCellValueAndStyle(row, 4, String.valueOf(hitCount), borderStyle);
-        setCellValueAndStyle(row, 5, String.valueOf(lastHitCount), borderStyle);
+        rowNum++;
+
+        row = sheet.createRow(rowNum);
+        setCellValueAndStyle(row, 0, "배율OFF", borderStyle);
+        setCellValueAndStyle(row, 1, String.valueOf(rank), borderStyle);
+        setCellValueAndStyle(row, 2, getNumberFormat(memberDamage), borderStyle);
+        setCellValueAndStyle(row, 3, getPercentage(memberDamage, allDamage), borderStyle);
+        setCellValueAndStyle(row, 4, getNumberFormat(averageDamage), borderStyle);
+        setCellValueAndStyle(row, 5, String.valueOf(hitCount), borderStyle);
+        setCellValueAndStyle(row, 6, String.valueOf(lastHitCount), borderStyle);
+        sheet.addMergedRegion(new CellRangeAddress(rowNum,rowNum+1, 5,5));
+        sheet.addMergedRegion(new CellRangeAddress(rowNum,rowNum+1, 6,6));
+
+
+
+        rowNum++;
+        row = sheet.createRow(rowNum);
+        int rankAdjust = database.recordDao().getRankFromAllAdjustRecords(memberId, raidId);
+        long allDamageAdjust = getDamageFromList(allRecords, true);
+        long memberDamageAdjust = getDamageFromList(memberRecords, true);
+        long averageDamageAdjust = getAverageFromList(memberRecords, true);
+
+        setCellValueAndStyle(row, 0, "배율ON", borderStyle);
+        setCellValueAndStyle(row, 1, String.valueOf(rankAdjust), borderStyle);
+        setCellValueAndStyle(row, 2, getNumberFormat(memberDamageAdjust), borderStyle);
+        setCellValueAndStyle(row, 3, getPercentage(memberDamageAdjust, allDamageAdjust), borderStyle);
+        setCellValueAndStyle(row, 4, getNumberFormat(averageDamageAdjust), borderStyle);
+        setCellValueAndStyle(row, 5, "", borderStyle);
+        setCellValueAndStyle(row, 6, "", borderStyle);
 
         return rowNum + 1;
     }
@@ -450,12 +476,15 @@ public class StatisticMemberFragment extends Fragment {
         return ret;
     }
 
-    private long getDamageFromList(List<Record> records, boolean excludeLastHit) {
+    private long getDamageFromList(List<Record> records, boolean isAdjusted) {
         long damage = 0;
         for(Record r: records) {
-            if(excludeLastHit && r.isLastHit())
-                continue;
-            damage += r.getDamage();
+            if(isAdjusted) {
+                double hardness = r.getBoss().getHardness();
+                damage += (r.getDamage()) * hardness;
+            }
+            else
+                damage += r.getDamage();
         }
 
         return damage;
@@ -468,6 +497,22 @@ public class StatisticMemberFragment extends Fragment {
             if(r.isLastHit())
                 continue;
             damage += r.getDamage();
+            cnt++;
+        }
+
+        return cnt == 0 ? 0 : damage / cnt;
+    }
+
+    private long getAverageFromList(List<Record> records, boolean isAdjust) {
+        long damage = 0;
+        int cnt = 0;
+        for(Record r: records) {
+            if(r.isLastHit())
+                continue;
+            if(isAdjust)
+                damage += (r.getDamage() * r.getBoss().getHardness());
+            else
+                damage += r.getDamage();
             cnt++;
         }
 
