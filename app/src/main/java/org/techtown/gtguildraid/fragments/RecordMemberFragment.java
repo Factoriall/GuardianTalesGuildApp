@@ -5,6 +5,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -15,6 +18,7 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
@@ -34,6 +38,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.kyleduo.switchbutton.SwitchButton;
 import com.llollox.androidtoggleswitch.widgets.ToggleSwitch;
 import com.llollox.androidtoggleswitch.widgets.ToggleSwitchButton;
 
@@ -75,6 +80,8 @@ public class RecordMemberFragment extends Fragment {
     private TextView totalDamage;
     private FloatingActionButton fab;
     private NiceSpinner memberSpinner;
+    ImageView addButton;
+    ImageView deleteButton;
 
     private List<Record> recordList = new ArrayList<>();
     private int raidId;
@@ -302,20 +309,29 @@ public class RecordMemberFragment extends Fragment {
         ToggleSwitch bossSwitch = dialog.findViewById(R.id.bossSwitch);
         EditText damage = dialog.findViewById(R.id.damage);
         CheckBox isLastHit = dialog.findViewById(R.id.isLastHit);
-        ImageView addButton = dialog.findViewById(R.id.addButton);
-        ImageView deleteButton = dialog.findViewById(R.id.deleteButton);
+        addButton = dialog.findViewById(R.id.addButton);
+        deleteButton = dialog.findViewById(R.id.deleteButton);
         Button oneCutButton = dialog.findViewById(R.id.oneCutButton);
         HorizontalScrollView hsv = dialog.findViewById(R.id.favoriteScrollView);
         LinearLayout favoritesList = dialog.findViewById(R.id.favoriteList);
+        SwitchButton switchButton = dialog.findViewById(R.id.viewSwitch);
+        MySpinner elements;
+        Spinner heroNames;
 
         Raid raid = database.raidDao().getCurrentRaid(new Date());
 
         dialogInfo.setText(memberList.get(sMemberIdx).getName() + " / "
                 + day + "일차 / " + (isEditing ? "수정\n리더: " + record.getLeader().getKoreanName() : "생성"));
 
+        if(day <= 3)
+            switchButton.setChecked(false);
+        else
+            switchButton.setChecked(true);
+
+        boolean isSetByRecord = switchButton.isChecked();
+
         //bossSwitch 생성
         List<Boss> bosses = database.raidDao().getBossesList(raid.getRaidId());
-        selectedBossId = 0;
         bossSwitch.setView(
                 R.layout.dialog_record_boss_select,
                 bosses.size(),
@@ -339,10 +355,8 @@ public class RecordMemberFragment extends Fragment {
                     textView.setTextColor(ContextCompat.getColor(getActivity(), R.color.gray));
                 });
 
-        bossSwitch.setOnChangeListener(position ->
-                selectedBossId = bosses.get(position).getBossId());
-        bossSwitch.setCheckedPosition(0);
-        selectedBossId = bosses.get(0).getBossId();
+        selectedBossId = -1;
+        selectedHeroId = -1;
 
         //회차 넘버피커 생성
         List<String> rounds = new ArrayList<>();
@@ -375,9 +389,6 @@ public class RecordMemberFragment extends Fragment {
         });
 
         //원소 및 영웅 스피너 생성
-        MySpinner elements;
-        Spinner heroNames;
-
         int elementId = getIdentifierFromResource("elementSpinner", "id");
         int heroNameId = getIdentifierFromResource("heroNameSpinner", "id");
 
@@ -446,6 +457,15 @@ public class RecordMemberFragment extends Fragment {
             }
         });
 
+        bossSwitch.setOnChangeListener(new ToggleSwitch.OnChangeListener() {
+            @Override
+            public void onToggleSwitchChanged(int position) {
+                selectedBossId = bosses.get(position).getBossId();
+                if(isSetByRecord)
+                    refreshLeaderListFromRecords(elements, favoritesList, selectedHeroId);
+            }
+        });
+
         if (isEditing) {
             damage.setText(Long.toString(record.getDamage()));
             pickerIdx[0] = record.getRound() - 1;
@@ -465,9 +485,17 @@ public class RecordMemberFragment extends Fragment {
                     break;
                 }
             }
+            refreshLeaderListFromRecords(elements, favoritesList, selectedHeroId);
         }
 
-        refreshFavorites(elements, favoritesList);
+        switchButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                setFavoriteView(isChecked, elements, favoritesList, selectedHeroId);
+            }
+        });
+
+        setFavoriteView(isSetByRecord, elements, favoritesList, selectedHeroId);
 
         addButton.setOnClickListener(view -> {
             List<Favorites> favs = database.favoritesDao().getAllFavorites();
@@ -483,7 +511,7 @@ public class RecordMemberFragment extends Fragment {
             }
 
             database.favoritesDao().insert(new Favorites(selectedHeroId));
-            refreshFavorites(elements, favoritesList);
+            refreshFavorites(elements, favoritesList, selectedHeroId);
         });
 
         deleteButton.setOnClickListener(view -> {
@@ -512,7 +540,7 @@ public class RecordMemberFragment extends Fragment {
             iHeroId = heroIds.get(elements.getSelectedItemPosition())
                     .get(heroNames.getSelectedItemPosition());
 
-            if (!sDamage.equals("")) {
+            if (!sDamage.equals("") && selectedBossId != -1) {
                 dialog.dismiss();
                 if (isEditing) {//수정 중이면 업데이트
                     database.recordDao().updateRecord(record.getRecordId(),
@@ -551,7 +579,7 @@ public class RecordMemberFragment extends Fragment {
                 setTotalDamage();
                 refreshSpinnerItem(sMemberIdx);
             } else {
-                showToast("데미지 및 보스 레벨을 입력하세요!");
+                showToast("상대 보스 및 데미지를 입력하세요!");
             }
         });
 
@@ -562,7 +590,61 @@ public class RecordMemberFragment extends Fragment {
         });
     }
 
-    private void refreshFavorites(Spinner elements, LinearLayout favoritesList) {
+    private void setFavoriteView(boolean isChecked, MySpinner elements, LinearLayout favoritesList, int id) {
+        if(!isChecked){
+            addButton.setVisibility(View.VISIBLE);
+            deleteButton.setVisibility(View.VISIBLE);
+            refreshFavorites(elements, favoritesList, id);
+        }
+        else{
+            addButton.setVisibility(View.INVISIBLE);
+            deleteButton.setVisibility(View.INVISIBLE);
+            refreshLeaderListFromRecords(elements, favoritesList, id);
+        }
+    }
+
+    private void refreshLeaderListFromRecords(Spinner elements, LinearLayout favoritesList, int heroId){
+        favoritesList.removeAllViews();
+        List<Integer> leaderids = database.recordDao()
+                .getLeaderIdsDesc(memberList.get(sMemberIdx).getId(), raidId, selectedBossId);
+        for(int id: leaderids){
+            LayoutInflater vi = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View v = vi.inflate(R.layout.card_favorites, null);
+
+            ImageView heroImage = v.findViewById(R.id.heroImage);
+            Hero hero = database.heroDao().getHero(id);
+            heroImage.setImageResource(
+                    getIdentifierFromResource("character_" + hero.getEnglishName(), "drawable"));
+            boolean isAlreadyUsed = false;
+            for(Record r : recordList){
+                if(r.getLeaderId() == id && r.getLeaderId() != heroId) {
+                    isAlreadyUsed = true;
+                    break;
+                }
+            }
+
+
+            if(!isAlreadyUsed) {
+                heroImage.setOnClickListener(view -> {
+                    selectedHeroId = hero.getHeroId();
+                    elements.setSelection(hero.getElement());
+                });
+            }
+            else{
+                setGrayFilterOnImage(heroImage);
+                heroImage.setOnClickListener(view -> {
+                    showToast("이미 사용된 리더입니다!");
+                });
+            }
+
+            favoritesList.addView(v);
+            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) v.getLayoutParams();
+            params.setMargins(5, 0, 5, 0);
+            v.setLayoutParams(params);
+        }
+    }
+
+    private void refreshFavorites(Spinner elements, LinearLayout favoritesList, int heroId) {
         favoritesList.removeAllViews();
         List<Favorites> favs = database.favoritesDao().getAllFavoritesAndHero();
 
@@ -574,15 +656,39 @@ public class RecordMemberFragment extends Fragment {
             Hero hero = fav.getHero();
             heroImage.setImageResource(
                     getIdentifierFromResource("character_" + hero.getEnglishName(), "drawable"));
-            heroImage.setOnClickListener(view -> {
-                if (isCreateMode) {
-                    selectedHeroId = hero.getHeroId();
-                    elements.setSelection(hero.getElement());
-                } else {
-                    database.favoritesDao().delete(fav);
-                    ((ViewGroup) v.getParent()).removeView(v);
+
+            boolean isAlreadyUsed = false;
+            for(Record r : recordList){
+                if(r.getLeaderId() == hero.getHeroId() && r.getLeaderId() != heroId) {
+                    isAlreadyUsed = true;
+                    break;
                 }
-            });
+            }
+            if(!isAlreadyUsed) {
+                deleteFilterOnImage(heroImage);
+                heroImage.setOnClickListener(view -> {
+                    if (isCreateMode) {
+                        selectedHeroId = hero.getHeroId();
+                        elements.setSelection(hero.getElement());
+                    } else {
+                        database.favoritesDao().delete(fav);
+                        ((ViewGroup) v.getParent()).removeView(v);
+                    }
+                });
+            }
+            else{
+                heroImage.setOnClickListener(view -> {
+                    if (isCreateMode) {
+                        setGrayFilterOnImage(heroImage);
+                        showToast("이미 사용된 리더입니다!");
+                    } else {
+                        deleteFilterOnImage(heroImage);
+                        database.favoritesDao().delete(fav);
+                        ((ViewGroup) v.getParent()).removeView(v);
+                    }
+                });
+
+            }
 
             if (isCreateMode) {
                 favoritesList.addView(v);
@@ -591,6 +697,21 @@ public class RecordMemberFragment extends Fragment {
                 v.setLayoutParams(params);
             }
         }
+    }
+
+    private void setGrayFilterOnImage(ImageView image) {
+        ColorMatrix matrix = new ColorMatrix();
+        matrix.setSaturation(0);
+        // make color filter
+        ColorFilter colorFilter = new ColorMatrixColorFilter(matrix);
+        // set filter to ImageView
+        image.setColorFilter(colorFilter);
+        image.setImageAlpha(128);
+    }
+
+    private void deleteFilterOnImage(ImageView image) {
+        image.setColorFilter(null);
+        image.setImageAlpha(255);
     }
 
     ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT |

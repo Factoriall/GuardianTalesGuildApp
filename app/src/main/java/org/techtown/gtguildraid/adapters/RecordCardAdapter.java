@@ -1,6 +1,9 @@
 package org.techtown.gtguildraid.adapters;
 
 import android.content.Context;
+import android.graphics.ColorFilter;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,10 +84,21 @@ public class RecordCardAdapter extends RecyclerView.Adapter<RecordCardAdapter.Vi
                 leaderImage.setImageResource(getIdentifierFromResource(
                         "character_" + leaderName));
 
-                if (record.isLastHit())
+                if (record.isLastHit()) {
+                    ColorMatrix matrix = new ColorMatrix();
+                    matrix.setSaturation(0);
+                    // make color filter
+                    ColorFilter colorFilter = new ColorMatrixColorFilter(matrix);
+                    // set filter to ImageView
+                    bossImage.setColorFilter(colorFilter);
+                    bossImage.setImageAlpha(128);
                     lastHit.setVisibility(View.VISIBLE);
-                else
+                }
+                else {
+                    bossImage.setColorFilter(null);
+                    bossImage.setImageAlpha(255);
                     lastHit.setVisibility(View.GONE);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }

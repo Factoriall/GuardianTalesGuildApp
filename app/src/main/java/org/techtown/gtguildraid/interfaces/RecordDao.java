@@ -25,6 +25,10 @@ public abstract class RecordDao {
     @Query("SELECT * FROM Record WHERE memberId = :memberId AND raidId = :raidId")
     public abstract List<Record> get1MemberRecords(int memberId, int raidId);
 
+    @Query("SELECT leaderId FROM Record WHERE memberId = :memberId AND raidId = :raidId AND bossId = :bossId " +
+            "GROUP BY leaderId ORDER BY COUNT(*) DESC")
+    public abstract List<Integer> getLeaderIdsDesc(int memberId, int raidId, int bossId);
+
     @Query("SELECT * FROM Record WHERE memberId = :memberId AND raidId = :raidId AND round >= :round")
     public abstract List<Record> get1MemberRoundRecords(int memberId, int raidId, int round);
 
