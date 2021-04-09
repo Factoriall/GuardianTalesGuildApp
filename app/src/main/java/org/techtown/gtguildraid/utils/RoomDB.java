@@ -26,7 +26,7 @@ import org.techtown.gtguildraid.models.Record;
 
 
 //Add database entities
-@Database(entities = {GuildMember.class, Boss.class, Raid.class, Hero.class, Record.class, Favorites.class}, version = 18, exportSchema = false)
+@Database(entities = {GuildMember.class, Boss.class, Raid.class, Hero.class, Record.class, Favorites.class}, version = 20, exportSchema = false)
 @TypeConverters(DateConverter.class)
 public abstract class RoomDB extends RoomDatabase {
     private static RoomDB database;
@@ -183,6 +183,24 @@ public abstract class RoomDB extends RoomDatabase {
         }
     };
 
+    //메이릴 데이터 업데이트  - 2021.04.09
+    static final Migration MIGRATION_18_19 = new Migration(18, 19) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            database.execSQL("INSERT INTO hero (koreanName, englishName, element, star, role) "
+                    + "VALUES ('메이릴', 'meiril', 4, 3, 4)");
+        }
+    };
+
+    //메이릴 데이터 고치기 - 2021.04.09
+    static final Migration MIGRATION_19_20 = new Migration(19, 20) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            database.execSQL("UPDATE hero SET element = 3 WHERE englishName = 'meiril'");
+        }
+    };
+
+
     public synchronized static RoomDB getInstance(Context context){
         if(database == null){//initialize
             String DATABASE_NAME = "database";
@@ -203,6 +221,8 @@ public abstract class RoomDB extends RoomDatabase {
                     .addMigrations(MIGRATION_15_16)
                     .addMigrations(MIGRATION_16_17)
                     .addMigrations(MIGRATION_17_18)
+                    .addMigrations(MIGRATION_18_19)
+                    .addMigrations(MIGRATION_19_20)
                     .build();
         }
         else{

@@ -93,6 +93,7 @@ public class RecordMemberFragment extends Fragment {
     private int selectedHeroElement;
     private boolean isCreateMode = true;
     private int sMemberIdx = 0;
+    boolean isSetByRecord;
 
     private SharedPreferences pref;
 
@@ -328,7 +329,7 @@ public class RecordMemberFragment extends Fragment {
         else
             switchButton.setChecked(true);
 
-        boolean isSetByRecord = switchButton.isChecked();
+        isSetByRecord = switchButton.isChecked();
 
         //bossSwitch 생성
         List<Boss> bosses = database.raidDao().getBossesList(raid.getRaidId());
@@ -457,12 +458,12 @@ public class RecordMemberFragment extends Fragment {
             }
         });
 
+        //스위치 누를 때 listener 생성
         bossSwitch.setOnChangeListener(new ToggleSwitch.OnChangeListener() {
             @Override
             public void onToggleSwitchChanged(int position) {
                 selectedBossId = bosses.get(position).getBossId();
-                if(isSetByRecord)
-                    refreshLeaderListFromRecords(elements, favoritesList, selectedHeroId);
+                setFavoriteView(elements, favoritesList);
             }
         });
 
@@ -485,17 +486,17 @@ public class RecordMemberFragment extends Fragment {
                     break;
                 }
             }
-            refreshLeaderListFromRecords(elements, favoritesList, selectedHeroId);
         }
 
         switchButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                setFavoriteView(isChecked, elements, favoritesList, selectedHeroId);
+                isSetByRecord = isChecked;
+                setFavoriteView(elements, favoritesList);
             }
         });
 
-        setFavoriteView(isSetByRecord, elements, favoritesList, selectedHeroId);
+        setFavoriteView(elements, favoritesList);
 
         addButton.setOnClickListener(view -> {
             List<Favorites> favs = database.favoritesDao().getAllFavorites();
@@ -511,7 +512,7 @@ public class RecordMemberFragment extends Fragment {
             }
 
             database.favoritesDao().insert(new Favorites(selectedHeroId));
-            refreshFavorites(elements, favoritesList, selectedHeroId);
+            refreshManualFavorites(elements, favoritesList);
         });
 
         deleteButton.setOnClickListener(view -> {
@@ -590,23 +591,24 @@ public class RecordMemberFragment extends Fragment {
         });
     }
 
-    private void setFavoriteView(boolean isChecked, MySpinner elements, LinearLayout favoritesList, int id) {
-        if(!isChecked){
+    private void setFavoriteView(MySpinner elements, LinearLayout favoritesList) {
+        if(!isSetByRecord){
             addButton.setVisibility(View.VISIBLE);
             deleteButton.setVisibility(View.VISIBLE);
-            refreshFavorites(elements, favoritesList, id);
+            refreshManualFavorites(elements, favoritesList);
         }
         else{
             addButton.setVisibility(View.INVISIBLE);
             deleteButton.setVisibility(View.INVISIBLE);
-            refreshLeaderListFromRecords(elements, favoritesList, id);
+            refreshRecordFavorites(elements, favoritesList);
         }
     }
 
-    private void refreshLeaderListFromRecords(Spinner elements, LinearLayout favoritesList, int heroId){
+    private void refreshRecordFavorites(Spinner elements, LinearLayout favoritesList){
         favoritesList.removeAllViews();
         List<Integer> leaderids = database.recordDao()
                 .getLeaderIdsDesc(memberList.get(sMemberIdx).getId(), raidId, selectedBossId);
+        boolean isFirst = true;
         for(int id: leaderids){
             LayoutInflater vi = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View v = vi.inflate(R.layout.card_favorites, null);
@@ -617,14 +619,18 @@ public class RecordMemberFragment extends Fragment {
                     getIdentifierFromResource("character_" + hero.getEnglishName(), "drawable"));
             boolean isAlreadyUsed = false;
             for(Record r : recordList){
-                if(r.getLeaderId() == id && r.getLeaderId() != heroId) {
+                if(r.getLeaderId() == id && r.getLeaderId() != selectedHeroId) {
                     isAlreadyUsed = true;
                     break;
                 }
             }
 
-
             if(!isAlreadyUsed) {
+                if(isFirst){
+                    isFirst = false;
+                    selectedHeroId = hero.getHeroId();
+                    elements.setSelection(hero.getElement());
+                }
                 heroImage.setOnClickListener(view -> {
                     selectedHeroId = hero.getHeroId();
                     elements.setSelection(hero.getElement());
@@ -644,7 +650,7 @@ public class RecordMemberFragment extends Fragment {
         }
     }
 
-    private void refreshFavorites(Spinner elements, LinearLayout favoritesList, int heroId) {
+    private void refreshManualFavorites(Spinner elements, LinearLayout favoritesList) {
         favoritesList.removeAllViews();
         List<Favorites> favs = database.favoritesDao().getAllFavoritesAndHero();
 
@@ -659,7 +665,7 @@ public class RecordMemberFragment extends Fragment {
 
             boolean isAlreadyUsed = false;
             for(Record r : recordList){
-                if(r.getLeaderId() == hero.getHeroId() && r.getLeaderId() != heroId) {
+                if(r.getLeaderId() == hero.getHeroId() && r.getLeaderId() != selectedHeroId) {
                     isAlreadyUsed = true;
                     break;
                 }
