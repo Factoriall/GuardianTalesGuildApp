@@ -22,6 +22,9 @@ public abstract class RecordDao {
     @Query("SELECT * FROM Record WHERE raidId = :raidId ORDER BY memberId")
     public abstract List<Record> getAllRecords(int raidId);
 
+    @Query("SELECT SUM(damage) FROM Record WHERE raidId = :raidId")
+    public abstract long getTotalDamageInRaid(int raidId);
+
     @Query("SELECT * FROM Record WHERE memberId = :memberId AND raidId = :raidId")
     public abstract List<Record> get1MemberRecords(int memberId, int raidId);
 
