@@ -3,6 +3,7 @@ package org.techtown.gtguildraid.fragments;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.util.CellUtil;
 import org.apache.poi.ss.util.RegionUtil;
 import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.models.Boss;
@@ -61,6 +63,8 @@ public class StatisticMemberFragment extends Fragment {
     RoomDB database;
     View view;
     NiceSpinner memberSpinner;
+    HSSFWorkbook wb;
+    Sheet sheet;
 
     HSSFColor titleColor;
     HSSFColor sub2Color;
@@ -180,14 +184,15 @@ public class StatisticMemberFragment extends Fragment {
         File directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
         final File file =  new File(directory,raid.getName() + "_" + name +  ".xls");
 
-        HSSFWorkbook wb = new HSSFWorkbook();
-        Sheet sheet = wb.createSheet("new sheet");
+        wb = new HSSFWorkbook();
+        sheet = wb.createSheet("new sheet");
         //색깔 만들어주기
         titleColor = wb.getCustomPalette().findSimilarColor(220, 220, 220);
         sub2Color = wb.getCustomPalette().findSimilarColor(255, 255, 204);
         sub3Color = wb.getCustomPalette().findSimilarColor(204, 255, 204);
         sheet.setColumnWidth(0, 60 * 256 / 9);
 
+        //제목 스타일 만들기
         CellStyle title = wb.createCellStyle();
         Font font = wb.createFont();
         font.setFontHeightInPoints((short) 16);
@@ -204,7 +209,7 @@ public class StatisticMemberFragment extends Fragment {
         subtitle3Style = wb.createCellStyle();
         dataCellStyle = wb.createCellStyle();
 
-        setSubtitleStyle(subtitleStyle, wb);
+        setSubtitleStyle(subtitleStyle);
         setVertTitleStyle(subtitle2Style, sub2Color.getIndex());
         setHorzTitleStyle(subtitle3Style, sub3Color.getIndex());
         setDataCellStyle(dataCellStyle);
@@ -218,11 +223,32 @@ public class StatisticMemberFragment extends Fragment {
 
         int rowNum = 0;
         String titleName = name + " // " + raid.getName() + " 개인 딜 부검표";
-        mergeCellWithBorder(0, 0, 0, 21, sheet, title, titleName);
-        Row row = getOrCreateRow(sheet, rowNum);
+        mergeCellWithBorder(0, 0, 0, 21, title, titleName);
+        Row row = getOrCreateRow(rowNum);
         row.setHeightInPoints((short) 36);
-        rowNum = addSummaryToExcel(wb, sheet, rowNum + 1, member.getID());
-        rowNum = addHistoryToExcel(wb, sheet, rowNum, member.getID());
+        rowNum = addSummaryToExcel(rowNum + 1, member.getID());
+        rowNum = addHistoryToExcel(rowNum, member.getID());
+        rowNum = addBossInfoToExcel(rowNum, member.getID(), bosses);
+
+        //설명 추가
+        sheet.createRow(rowNum);
+        sheet.createRow(rowNum + 1);
+        sheet.createRow(rowNum + 2);
+        String explanation1 = "* 모든 평균의 경우 막타를 제외하고 계산합니다. * 막타의 경우 히스토리에서 점수 옆에 * 표시가 있습니다.";
+        mergeCell(rowNum, rowNum, 0, 21, explanation1);
+        CellUtil.setAlignment(sheet.getRow(rowNum).getCell(0), HorizontalAlignment.CENTER);
+        String explanation2 = "* '인분' 항목은 76렙 이후의 보스 및 공격 리더를 기준으로 길드원 평균 데미지에 비해 얼만큼 데미지를 가했는지 판정하며 3번 이상 막타를 제외하고 쳐야 통계에 계산됩나다.";
+        mergeCell(rowNum + 1, rowNum + 1, 0, 21, explanation2);
+        CellUtil.setAlignment(sheet.getRow(rowNum + 1).getCell(0), HorizontalAlignment.CENTER);
+        String explanation3 = "\n 예를 들어 76렙 이후 에리나에 가람 리더로 평균 300만 데미지를 가하고 전체가 76렙 이상 에리나에 가람 리더로 평균 200만을 쳤다면 1.5인분으로 표시됩니다.";
+        mergeCell(rowNum + 2, rowNum + 2, 0, 21, explanation3);
+        CellUtil.setAlignment(sheet.getRow(rowNum + 2).getCell(0), HorizontalAlignment.CENTER);
+
+        CellRangeAddress region = new CellRangeAddress(rowNum + 0, rowNum + 2, 0, 21);
+        RegionUtil.setBorderBottom(BorderStyle.THIN, region, sheet);
+        RegionUtil.setBorderTop(BorderStyle.THIN, region, sheet);
+        RegionUtil.setBorderLeft(BorderStyle.THIN, region, sheet);
+        RegionUtil.setBorderRight(BorderStyle.THIN, region, sheet);
 
         try {
             FileOutputStream os = new FileOutputStream(file);
@@ -231,38 +257,44 @@ public class StatisticMemberFragment extends Fragment {
 
     }
 
-    private int addSummaryToExcel(HSSFWorkbook wb, Sheet sheet, int rowNum, int memberId) {
-        Row row;
+    private int addSummaryToExcel(int rowNum, int memberId) {
         //row 크기 조정
-        for(int i=0; i<5; i++){
-            row = sheet.createRow(rowNum + i);
-            row.setHeightInPoints(17.4f);
-        }
-        //제목 설정
-        int colNum = 0;
-        mergeCellWithBorder(rowNum, rowNum + 4, colNum,colNum, sheet, subtitleStyle, "요약");
+        setWidthAndSideTitle(rowNum, 5, "요약");
 
         //길드 요약
-        colNum += 1;
-        mergeCellWithBorder(rowNum, rowNum + 4, colNum,colNum, sheet, subtitle2Style, "길드");
+        int colNum = 1;
+        mergeCellWithBorder(rowNum, rowNum + 4, colNum,colNum, subtitle2Style, "길드");
 
         colNum += 1;
-        mergeCellWithBorder(rowNum, rowNum, colNum, colNum + 1, sheet, subtitle3Style, "총 딜량");
+        mergeCellWithBorder(rowNum, rowNum, colNum, colNum + 1, subtitle3Style, "총 딜량&달성률");
         long totalDamageInGuild = database.recordDao().getTotalDamageInRaid(raidId);
-        mergeCellWithBorder(rowNum+1, rowNum+2, colNum, colNum + 1,
-                sheet, dataCellStyle, getNumberFormat(totalDamageInGuild));
-        mergeCellWithBorder(rowNum + 3, rowNum + 3, colNum, colNum + 1, sheet, subtitle3Style, "길드 순위");
-        mergeCellWithBorder(rowNum + 4, rowNum + 4, colNum, colNum + 1, sheet, dataCellStyle, "100");
+        mergeCellWithBorder(rowNum+1, rowNum+1, colNum, colNum + 1,
+                dataCellStyle, getNumberFormat(totalDamageInGuild));
+        int maxRound = database.recordDao().getMaxRound(raidId);
+        long maxRoundSum = database.recordDao().getMaxRoundRecordSum(raidId, maxRound);
+        final int[] hpPerRound = {1080000, 1080000,
+                1237500, 1237500,
+                1500000, 1500000,
+                2025000, 2640000, 3440000, 4500000, 5765625,
+                7500000, 9750000, 12000000, 16650000, 24000000,
+                35000000, 50000000, 72000000,
+                100000000, 140000000, 200000000};
+        long allBossHp = (maxRound >= hpPerRound.length) ? hpPerRound[21] * 4 : hpPerRound[maxRound-1] * 4;
+
+        mergeCellWithBorder(rowNum+2, rowNum+2, colNum, colNum + 1,
+                dataCellStyle, maxRound + "회차/" + getPercentage(maxRoundSum, allBossHp));
+        mergeCellWithBorder(rowNum + 3, rowNum + 3, colNum, colNum + 1, subtitle3Style, "길드 순위");
+        mergeCellWithBorder(rowNum + 4, rowNum + 4, colNum, colNum + 1, dataCellStyle, "100");
 
         //보스 요약
         colNum += 2;
-        mergeCellWithBorder(rowNum, rowNum + 4, colNum, colNum, sheet, subtitle2Style, "보스 구성");
+        mergeCellWithBorder(rowNum, rowNum + 4, colNum, colNum, subtitle2Style, "보스 구성");
 
         colNum += 1;
-        row = getOrCreateRow(sheet, rowNum);
+        Row row = getOrCreateRow(rowNum);
         setSingleCellValueAndStyle(row.createCell(colNum), subtitle3Style, "속성");
-        mergeCellWithBorder(rowNum, rowNum, colNum+1, colNum+2, sheet, subtitle3Style, "이름");
-        mergeCellWithBorder(rowNum, rowNum, colNum+3, colNum+4, sheet, subtitle3Style, "배율");
+        mergeCellWithBorder(rowNum, rowNum, colNum+1, colNum+2, subtitle3Style, "이름");
+        mergeCellWithBorder(rowNum, rowNum, colNum+3, colNum+4, subtitle3Style, "배율");
 
         List<Boss> bosses = database.raidDao().getBossesList(raidId);
         for(int b = 1; b <= bosses.size(); b++){
@@ -274,47 +306,42 @@ public class StatisticMemberFragment extends Fragment {
             HSSFColor elementColor = getColorFromElement(elementId, (HSSFWorkbook) wb);
             setElementCellStyle(elementStyle, elementColor);
             setSingleCellValueAndStyle(row.createCell(colNum), elementStyle, getElementFromId(elementId));
-            mergeCellWithBorder(nRow, nRow, colNum+1, colNum+2, sheet, dataCellStyle, boss.getName());
-            mergeCellWithBorder(nRow, nRow, colNum+3, colNum+4, sheet, dataCellStyle, Double.toString(boss.getHardness()));
+            mergeCellWithBorder(nRow, nRow, colNum+1, colNum+2, dataCellStyle, boss.getName());
+            mergeCellWithBorder(nRow, nRow, colNum+3, colNum+4, dataCellStyle, Double.toString(boss.getHardness()));
         }
 
         //개인 요약
         colNum += 5;
-        mergeCellWithBorder(rowNum, rowNum + 4, colNum, colNum, sheet, subtitle2Style, "개인");
+        mergeCellWithBorder(rowNum, rowNum + 4, colNum, colNum, subtitle2Style, "개인");
 
         colNum += 1;
-        row = getOrCreateRow(sheet, rowNum);
+        row = getOrCreateRow(rowNum);
         setSingleCellValueAndStyle(row.createCell(colNum), subtitle3Style, "배율");
         setSingleCellValueAndStyle(row.createCell(colNum + 1), subtitle3Style, "순위");
-        mergeCellWithBorder(rowNum, rowNum, colNum+2, colNum+4, sheet, subtitle3Style, "총 딜량");
-        mergeCellWithBorder(rowNum, rowNum, colNum+5, colNum+7, sheet, subtitle3Style, "평균 딜량");
-        mergeCellWithBorder(rowNum, rowNum, colNum+8, colNum+9, sheet, subtitle3Style, "점유율");
+        mergeCellWithBorder(rowNum, rowNum, colNum+2, colNum+4, subtitle3Style, "총 딜량");
+        mergeCellWithBorder(rowNum, rowNum, colNum+5, colNum+6, subtitle3Style, "평균 딜량");
+        setSingleCellValueAndStyle(row.createCell(colNum + 7), subtitle3Style, "점유율");
+        mergeCellWithBorder(rowNum, rowNum, colNum+8, colNum+9, subtitle3Style, "배율 상승률");
         setSingleCellValueAndStyle(row.createCell(colNum + 10), subtitle3Style, "막타 횟수");
 
         rowNum += 1;
-        mergeCellWithBorder(rowNum, rowNum+1, colNum, colNum, sheet, subtitle3Style, "OFF");
-        mergeCellWithBorder(rowNum+2, rowNum+3, colNum, colNum, sheet, subtitle3Style, "ON");
-
+        mergeCellWithBorder(rowNum, rowNum+1, colNum, colNum, subtitle3Style, "OFF");
+        mergeCellWithBorder(rowNum+2, rowNum+3, colNum, colNum, subtitle3Style, "ON");
 
         colNum += 1;
         //배율 OFF 데이터 넣기
         int rank = database.recordDao().getRankFromAllRecords(memberId, raidId);
         List<Record> allRecords = database.recordDao().getAllRecordsWithExtra(raidId);
         List<Record> memberRecords = database.recordDao().get1MemberRecordsWithExtra(memberId, raidId);
-        int lastHitCount = 0;
-        for(Record r : memberRecords){
-            if(r.isLastHit())
-                lastHitCount++;
-        }
+
         long allDamage = getDamageFromList(allRecords, false);
         long memberDamage = getDamageFromList(memberRecords, false);
         long averageDamage = getAverageFromList(memberRecords, false);
 
-        mergeCellWithBorder(rowNum, rowNum+1, colNum, colNum, sheet, dataCellStyle, Integer.toString(rank));
-        mergeCellWithBorder(rowNum, rowNum+1, colNum+1, colNum+3, sheet, dataCellStyle, getNumberFormat(memberDamage));
-        mergeCellWithBorder(rowNum, rowNum+1, colNum+4, colNum+6, sheet, dataCellStyle, getNumberFormat(averageDamage));
-        mergeCellWithBorder(rowNum, rowNum+1, colNum+7, colNum+8, sheet, dataCellStyle, getPercentage(memberDamage, allDamage));
-        mergeCellWithBorder(rowNum, rowNum+3, colNum+9, colNum+9, sheet, dataCellStyle, Integer.toString(lastHitCount));
+        mergeCellWithBorder(rowNum, rowNum+1, colNum, colNum, dataCellStyle, Integer.toString(rank));
+        mergeCellWithBorder(rowNum, rowNum+1, colNum+1, colNum+3, dataCellStyle, getNumberFormat(memberDamage));
+        mergeCellWithBorder(rowNum, rowNum+1, colNum+4, colNum+5, dataCellStyle, getNumberFormat(averageDamage));
+        mergeCellWithBorder(rowNum, rowNum+1, colNum+6, colNum+6, dataCellStyle, getPercentage(memberDamage, allDamage));
 
         //배율 ON 데이터 넣기
         rowNum += 2;
@@ -323,43 +350,40 @@ public class StatisticMemberFragment extends Fragment {
         long memberDamageAdjust = getDamageFromList(memberRecords, true);
         long averageDamageAdjust = getAverageFromList(memberRecords, true);
 
-        mergeCellWithBorder(rowNum, rowNum+1, colNum, colNum, sheet, dataCellStyle, Integer.toString(rankAdjust));
-        mergeCellWithBorder(rowNum, rowNum+1, colNum+1, colNum+3, sheet, dataCellStyle, getNumberFormat(memberDamageAdjust));
-        mergeCellWithBorder(rowNum, rowNum+1, colNum+4, colNum+6, sheet, dataCellStyle, getNumberFormat(averageDamageAdjust));
-        mergeCellWithBorder(rowNum, rowNum+1, colNum+7, colNum+8, sheet, dataCellStyle, getPercentage(memberDamageAdjust, allDamageAdjust));
+        mergeCellWithBorder(rowNum, rowNum+1, colNum, colNum, dataCellStyle, Integer.toString(rankAdjust));
+        mergeCellWithBorder(rowNum, rowNum+1, colNum+1, colNum+3, dataCellStyle, getNumberFormat(memberDamageAdjust));
+        mergeCellWithBorder(rowNum, rowNum+1, colNum+4, colNum+5, dataCellStyle, getNumberFormat(averageDamageAdjust));
+        mergeCellWithBorder(rowNum, rowNum+1, colNum+6, colNum+6, dataCellStyle, getPercentage(memberDamageAdjust, allDamageAdjust));
 
+        int lastHitCount = 0;
+        for(Record r : memberRecords){
+            if(r.isLastHit())
+                lastHitCount++;
+        }
+        mergeCellWithBorder(rowNum-2, rowNum+1, colNum+7, colNum+8, dataCellStyle, getPercentage(memberDamageAdjust - memberDamage, memberDamage));
+        mergeCellWithBorder(rowNum-2, rowNum+1, colNum+9, colNum+9, dataCellStyle, Integer.toString(lastHitCount));
         return rowNum + 2;
     }
 
-    private int addHistoryToExcel(HSSFWorkbook wb, Sheet sheet, int rowNum, int memberId) {
-        Row row;
-        final int MAX_HEIGHT = 10;
-
-        //너비 설정
-        for(int i=0; i<MAX_HEIGHT; i++){
-            row = sheet.createRow(rowNum + i);
-            row.setHeightInPoints(17.4f);
-        }
-        //제목 설정
-        int colNum = 0;
-        mergeCellWithBorder(rowNum, rowNum + MAX_HEIGHT - 1, colNum,colNum, sheet, subtitleStyle, "히스토리");
+    private int addHistoryToExcel(int rowNum, int memberId) {
+        setWidthAndSideTitle(rowNum, 10, "히스토리");
 
         //히스토리 설정
         CellStyle dayStyle = wb.createCellStyle();
         CellStyle totalStyle = wb.createCellStyle();
         setHorzTitleStyle(dayStyle, sub2Color.getIndex());
         setHorzTitleStyle(totalStyle, wb.getCustomPalette().findSimilarColor(255, 217, 102).getIndex());
-        colNum = 1;
+        int colNum = 1;
         List<List<Record>> dayRecords = getAllRecordsByDays(memberId);
-        for(int r=0; r<=1; r++) {
-            for (int d = 0; d < 7; d++) {
+        for(int r=0; r<=1; r++) {//2개 행으로 생성
+            for (int d = 0; d < 7; d++) {//7개의 열로 생성
                 int day = d + r * 7;
                 int startCol = colNum + d * 3;
-                mergeCellWithBorder(rowNum, rowNum, startCol, startCol + 2, sheet, dayStyle, "Day " + (day + 1));
+                mergeCellWithBorder(rowNum, rowNum, startCol, startCol + 2, dayStyle, "Day " + (day + 1));
 
                 long sum = 0;
                 //Day 1 - 7 데이터 삽입
-                for (int t = 1; t <= 3; t++) {
+                for (int t = 1; t <= 3; t++) {//데이터 수만큼 돌리기
                     if (dayRecords.get(day).size() < t) {//데이터 없으면 border만 추가
                         CellRangeAddress region = new CellRangeAddress(rowNum + t, rowNum + t, startCol, startCol + 2);
                         RegionUtil.setBorderBottom(BorderStyle.THIN, region, sheet);
@@ -368,7 +392,8 @@ public class StatisticMemberFragment extends Fragment {
                         RegionUtil.setBorderRight(BorderStyle.THIN, region, sheet);
                         continue;
                     }
-                    
+
+                    //데이터 추가 작업
                     Record record = dayRecords.get(day).get(t - 1);
                     Boss boss = record.getBoss();
                     Hero leader = record.getLeader();
@@ -388,17 +413,202 @@ public class StatisticMemberFragment extends Fragment {
                     elementStyle = wb.createCellStyle();
                     setElementCellStyle(elementStyle, leaderElementColor);
                     setSingleCellValueAndStyle(sheet.getRow(rowNum + t).createCell(startCol + 1), elementStyle, getShortWord(leader.getKoreanName()));
-                    setSingleCellValueAndStyle(sheet.getRow(rowNum + t).createCell(startCol + 2), dataCellStyle, getNumberFormat(damage));
-
+                    setSingleCellValueAndStyle(sheet.getRow(rowNum + t).createCell(startCol + 2), dataCellStyle, getNumberFormat(damage)
+                            + (record.isLastHit() ? "*" : "" ));
                 }
-                mergeCellWithBorder(rowNum + 4, rowNum + 4, startCol, startCol + 2, sheet, totalStyle, getNumberFormat(sum));
-                HSSFOptimiser.optimiseCellStyles(wb);
+                mergeCellWithBorder(rowNum + 4, rowNum + 4, startCol, startCol + 2, totalStyle, getNumberFormat(sum));
+                HSSFOptimiser.optimiseCellStyles(wb);//optimize 통해 계속 cellStyle 쓸 수 있게 처리리
             }
             rowNum += 5;
         }
 
+        //setThickBorder(rowNum - 10, rowNum - 1, 0, 21);
 
         return rowNum;
+    }
+
+    private int addBossInfoToExcel(int rowNum, int memberId, List<Boss> bosses) {
+        setWidthAndSideTitle(rowNum, 14, "보스별 상세 정보");
+
+        int bossIdx = 0;
+        for(int r = 0; r < 2; r++){
+            setBossInfo(rowNum, memberId, bosses.get(bossIdx++), true);
+            setBossInfo(rowNum, memberId, bosses.get(bossIdx++), false);
+
+            rowNum += 7;
+        }
+
+        return rowNum;
+    }
+
+    private void setBossInfo(int rowNum, int memberId, Boss boss, boolean isLeft ) {
+        int bossId = boss.getBossId();
+        List<Record> allRecords = database.recordDao().get1BossRecordsWithExtra(raidId, bossId);
+        List<Record> memberRecords = database.recordDao()
+                .get1MemberRecordsWithExtra(memberId, raidId, bossId);
+
+        long guildAverage = getAverageFromList(allRecords, false);
+        long memberDamage = getDamageFromList(memberRecords, false);
+        long allDamage = getDamageFromList(allRecords, false);
+        long memberAverage = getAverageFromList(memberRecords, false);
+        int rankTotal = database.recordDao().getTotalRankFromBossRecords(memberId, raidId, bossId);
+        int rankAvg = memberAverage == 0 ? 0 : database.recordDao().getAvgRankFromBossRecords(memberId, raidId, bossId);
+        String avg = memberAverage == 0 ? "-" : getNumberFormat(memberAverage);
+        String rTotal = (rankTotal == 0) ? "-" : Integer.toString(rankTotal);
+        String rAvg = (rankAvg == 0) ? "-" : Integer.toString(rankAvg);
+
+        final int MIN_COUNT = 3;
+        final int[] leftCols = {2, 1, 3, 2, 1, 2};
+        final int leftWidth = 10;
+        final int[] rightCols = {1, 2, 3, 1, 2, 1};
+        final int rightWidth = 9;
+        final String[] subtitles = {"길드 평균", "친 횟수", "총 딜량 / 점유율", "평균", "점유율 순위", "평균 순위"};
+        final String[] leaderSub = {"리더", "총 딜량", "횟수(막타)", "평균 딜량", "인분"};
+        final String[] values = {getNumberFormat(guildAverage),
+                Integer.toString(memberRecords.size()),
+                getNumberFormat(memberDamage) + " / " + getPercentage(memberDamage, allDamage),
+                avg,
+                rTotal, rAvg};
+
+        int[] usingCols;
+        int width;
+        int startCol;
+        int colNum;
+
+        if (isLeft) {
+            usingCols = leftCols;
+            width = leftWidth;
+            startCol = 1;
+        } else {
+            usingCols = rightCols;
+            width = rightWidth;
+            startCol = 12;
+        }
+
+        CellStyle dayStyle = wb.createCellStyle();
+        CellStyle totalStyle = wb.createCellStyle();
+        setHorzTitleStyle(dayStyle, sub2Color.getIndex());
+        setHorzTitleStyle(totalStyle, wb.getCustomPalette().findSimilarColor(255, 217, 102).getIndex());
+
+        colNum = startCol;
+        if(usingCols[0] == 1){
+            setSingleCellValueAndStyle(getOrCreateRow(rowNum).createCell(colNum), dayStyle, subtitles[0]);
+            setSingleCellValueAndStyle(getOrCreateRow(rowNum + 1).createCell(colNum), totalStyle, values[0]);
+        }
+        else{
+            mergeCellWithBorder(rowNum, rowNum, colNum, colNum + usingCols[0] - 1, dayStyle, subtitles[0]);
+            mergeCellWithBorder(rowNum + 1, rowNum + 1, colNum, colNum + usingCols[0] - 1, totalStyle, values[0]);
+        }
+
+        colNum += usingCols[0];
+        for (int i = 1; i < 6; i++) {
+            if (usingCols[i] == 1) {
+                setSingleCellValueAndStyle(getOrCreateRow(rowNum).createCell(colNum), subtitle3Style, subtitles[i]);
+                setSingleCellValueAndStyle(getOrCreateRow(rowNum + 1).createCell(colNum), dataCellStyle, values[i]);
+            } else {
+                mergeCellWithBorder(rowNum, rowNum, colNum, colNum + usingCols[i] - 1, subtitle3Style, subtitles[i]);
+                mergeCellWithBorder(rowNum + 1, rowNum + 1, colNum, colNum + usingCols[i] - 1, dataCellStyle, values[i]);
+            }
+            colNum += usingCols[i];
+        }
+
+        colNum = startCol;
+        rowNum += 2;
+
+        mergeCellWithBorder(rowNum, rowNum + 4, colNum, colNum + usingCols[0] - 1, subtitle2Style, boss.getName());
+        mergeCellWithBorder(rowNum, rowNum, colNum + usingCols[0], colNum + width, subtitle3Style, "리더별 보스 상대 TOP3");
+        colNum += usingCols[0];
+        rowNum += 1;
+        for(int i=1; i < 6; i++){
+            if (usingCols[i] == 1)
+                setSingleCellValueAndStyle(getOrCreateRow(rowNum).createCell(colNum), subtitle3Style, leaderSub[i - 1]);
+             else
+                mergeCellWithBorder(rowNum, rowNum, colNum, colNum + usingCols[i] - 1, subtitle3Style, leaderSub[i - 1]);
+
+            colNum += usingCols[i];
+        }
+
+        rowNum += 1;
+        List<LeaderInfo> leaderList = getListOfLeaders(memberRecords);
+        for(int l=0; l<3; l++){
+            colNum = startCol + usingCols[0];
+            if(leaderList.size() <= l) {
+                CellRangeAddress region = new CellRangeAddress(rowNum, rowNum, colNum, colNum + width - usingCols[0]);
+                RegionUtil.setBorderBottom(BorderStyle.THIN, region, sheet);
+                RegionUtil.setBorderTop(BorderStyle.THIN, region, sheet);
+                RegionUtil.setBorderLeft(BorderStyle.THIN, region, sheet);
+                RegionUtil.setBorderRight(BorderStyle.THIN, region, sheet);
+                rowNum += 1;
+                continue;
+            }
+            LeaderInfo leaderInfo = leaderList.get(l);
+            Hero leader = leaderInfo.getLeader();
+            List<Record> records = leaderInfo.getRecordList();
+            long averageAbove76 = 0;
+            if(records.size() >= MIN_COUNT) averageAbove76 = getAverageFromList(records, 18);
+            long guildAvg76 = database.recordDao().getAverageOfLeaderFromRecords(raidId, bossId, leader.getHeroId(), 18);
+
+            String ACPL;
+            if(averageAbove76 == 0)
+                ACPL =  "-";
+            else
+                ACPL = String.format("%.3f", (float) averageAbove76/guildAvg76);
+
+            final String[] leaderValues = {leader.getKoreanName(),
+                    getNumberFormat(getDamageFromList(records, false)),
+                    records.size() + "(" + getLastHitNum(records) + ")",
+                    getNumberFormat(getAverageFromList(records)),
+                    ACPL};
+
+            for(int i=1; i < 6; i++){
+                if (usingCols[i] == 1)
+                    setSingleCellValueAndStyle(getOrCreateRow(rowNum).createCell(colNum), dataCellStyle, leaderValues[i - 1]);
+                else
+                    mergeCellWithBorder(rowNum, rowNum, colNum, colNum + usingCols[i] - 1, dataCellStyle, leaderValues[i - 1]);
+
+                colNum += usingCols[i];
+            }
+            rowNum += 1;
+        }
+    }
+
+    private int getLastHitNum(List<Record> records) {
+        int count = 0;
+        for(Record r : records){
+            if(r.isLastHit())
+                count++;
+        }
+        return count;
+    }
+
+    private List<LeaderInfo> getListOfLeaders(List<Record> records) {
+        List<LeaderInfo> memberLeaderList = new ArrayList<>();
+        for(Record r : records){
+            boolean isMatched = false;
+            for(LeaderInfo info : memberLeaderList){
+                if(info.isMatched(r.getLeader())) {
+                    info.addList(r);
+                    isMatched = true;
+                    break;
+                }
+            }
+            if(!isMatched)
+                memberLeaderList.add(new LeaderInfo(r.getLeader(), r));
+        }
+        Collections.sort(memberLeaderList);
+        return memberLeaderList;
+    }
+
+    private void setWidthAndSideTitle(int sRow, int height, String title) {
+        //너비 설정
+        Row row;
+        for(int i=0; i<height; i++){
+            row = sheet.createRow(sRow + i);
+            row.setHeightInPoints(17.4f);
+        }
+        //제목 설정
+        int colNum = 0;
+        mergeCellWithBorder(sRow, sRow + height - 1, colNum, colNum, subtitleStyle, title);
     }
 
     private void exportDataToCSV() {
@@ -651,6 +861,20 @@ public class StatisticMemberFragment extends Fragment {
         return cnt == 0 ? 0 : damage / cnt;
     }
 
+    private long getAverageFromList(List<Record> records, int round) {
+        long damage = 0;
+        int cnt = 0;
+        for(Record r: records) {
+            if(r.isLastHit()) continue;
+            if(r.getRound() < round) continue;
+
+            damage += r.getDamage();
+            cnt++;
+        }
+
+        return cnt == 0 ? 0 : damage / cnt;
+    }
+
     private String getNumberFormat(long num) {
         return NumberFormat.getNumberInstance(Locale.US).format(num);
     }
@@ -721,7 +945,7 @@ public class StatisticMemberFragment extends Fragment {
         style.setRotation((short) 0xff);
     }
 
-    private void setSubtitleStyle(CellStyle style, Workbook wb) {
+    private void setSubtitleStyle(CellStyle style) {
         Font font = wb.createFont();
         font.setFontHeightInPoints((short) 12);
         style.setFont(font);
@@ -741,20 +965,28 @@ public class StatisticMemberFragment extends Fragment {
         style.setAlignment(HorizontalAlignment.CENTER);
     }
 
-    private void mergeCellWithBorder(int sr, int er, int sc, int ec, Sheet sheet, CellStyle style, String str) {
+
+    private void mergeCell(int sr, int er, int sc, int ec, String str) {
+        Row row = getOrCreateRow(sr);
+        Cell cell = row.getCell(sc) != null ? row.getCell(sc) : row.createCell(sc);
+        cell.setCellValue(str);
+        sheet.addMergedRegion(new CellRangeAddress(sr, er, sc, ec));
+    }
+
+
+    private void mergeCellWithBorder(int sr, int er, int sc, int ec, CellStyle style, String str) {
         setStyleWithBorder(style);
         for(int i = sr; i <= er; i++){
-            Row row = getOrCreateRow(sheet, i);
+            Row row = getOrCreateRow(i);
             for(int j = sc; j <= ec; j++){
                 Cell cell = row.createCell(j);
                 cell.setCellStyle(style);
             }
         }
-        sheet.getRow(sr).getCell(sc).setCellValue(str);
-        sheet.addMergedRegion(new CellRangeAddress(sr, er, sc, ec));
+        mergeCell(sr, er, sc, ec, str);
     }
 
-    private Row getOrCreateRow(Sheet sheet, int rowNum) {
+    private Row getOrCreateRow(int rowNum) {
         return sheet.getRow(rowNum) == null ? sheet.createRow(rowNum) : sheet.getRow(rowNum);
     }
 

@@ -61,13 +61,51 @@ public abstract class RecordDao {
             " WHERE memberId = :memberId")
     public abstract int getRankFromAllRecords(int memberId, int raidId);
 
-
     @Query("SELECT (SELECT count(*) FROM " +
-            "(SELECT memberId, SUM(damage * hardness) as total from Record INNER JOIN Boss on Record.bossId = Boss.bossId WHERE Record.raidId = :raidId GROUP BY memberId) t2 " +
+            "(SELECT memberId, SUM(damage * hardness) as total " +
+            "from Record INNER JOIN Boss on Record.bossId = Boss.bossId " +
+            "WHERE Record.raidId = :raidId GROUP BY memberId) t2 " +
             "WHERE t2.total >= t1.total)" +
-            " FROM (SELECT memberId, SUM(damage * hardness) as total from Record INNER JOIN Boss on Record.bossId = Boss.bossId WHERE Record.raidId = :raidId GROUP BY memberId) t1 " +
+            " FROM (SELECT memberId, SUM(damage * hardness) as total " +
+            "from Record INNER JOIN Boss on Record.bossId = Boss.bossId " +
+            "WHERE Record.raidId = :raidId GROUP BY memberId) t1 " +
             " WHERE memberId = :memberId")
     public abstract int getRankFromAllAdjustRecords(int memberId, int raidId);
+
+    @Query("SELECT (SELECT COUNT(*) FROM " +
+            "(SELECT memberId, SUM(damage) as total from Record " +
+            "WHERE raidId = :raidId AND bossId = :bossId " +
+            "GROUP BY memberId) t2 " +
+            "WHERE t2.total >= t1.total)" +
+            " FROM (SELECT memberId, SUM(damage) as total from Record " +
+            "WHERE raidId = :raidId AND bossId = :bossId " +
+            "GROUP BY memberId) t1 " +
+            " WHERE memberId = :memberId")
+    public abstract int getTotalRankFromBossRecords(int memberId, int raidId, int bossId);
+
+    @Query("SELECT (SELECT COUNT(*) FROM " +
+            "(SELECT memberId, AVG(damage) as avg from Record " +
+            "WHERE raidId = :raidId AND bossId = :bossId " +
+            "GROUP BY memberId) t2 " +
+            "WHERE t2.avg >= t1.avg)" +
+            " FROM (SELECT memberId, AVG(damage) as avg " +
+            "from Record WHERE raidId = :raidId AND bossId = :bossId " +
+            "GROUP BY memberId) t1 " +
+            " WHERE memberId = :memberId")
+    public abstract int getAvgRankFromBossRecords(int memberId, int raidId, int bossId);
+
+    @Query("SELECT AVG(damage) FROM Record " +
+            "WHERE raidId = :raidId AND leaderId = :leaderId " +
+            "AND bossId = :bossId AND round >= :round AND isLastHit = 0")
+    public abstract long getAverageOfLeaderFromRecords(int raidId, int bossId, int leaderId, int round);
+
+    @Query("SELECT MAX(round) FROM Record " +
+            "WHERE raidId = :raidId")
+    public abstract int getMaxRound(int raidId);
+
+    @Query("SELECT SUM(damage) FROM Record " +
+            "WHERE raidId = :raidId AND round = :round")
+    public abstract long getMaxRoundRecordSum(int raidId, int round);
 
     @Query("UPDATE Record SET damage = :damage, bossId = :bossId, round = :round, leaderId = :leaderId, isLastHit = :isLastHit" +
             " WHERE recordID = :rId")

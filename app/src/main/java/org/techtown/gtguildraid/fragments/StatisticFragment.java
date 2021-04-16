@@ -92,6 +92,7 @@ public class StatisticFragment extends Fragment {
         sAdapter = new StatisticPagerAdapter(getChildFragmentManager(), getLifecycle());
         sAdapter.setData(raid.getRaidId());
         viewPager.setAdapter(sAdapter);
+        viewPager.setOffscreenPageLimit(2);
 
         new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
             if(position == 0)
