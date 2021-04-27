@@ -99,6 +99,11 @@ public abstract class RecordDao {
             "AND bossId = :bossId AND round >= :round AND isLastHit = 0")
     public abstract long getAverageOfLeaderFromRecords(int raidId, int bossId, int leaderId, int round);
 
+    @Query("SELECT AVG(damage) FROM Record " +
+            "WHERE raidId = :raidId AND leaderId = :leaderId AND memberId = :memberId " +
+            "AND bossId = :bossId AND round >= :round AND isLastHit = 0")
+    public abstract long getAverageOfMyLeader(int raidId, int memberId, int bossId, int leaderId, int round);
+
     @Query("SELECT MAX(round) FROM Record " +
             "WHERE raidId = :raidId")
     public abstract int getMaxRound(int raidId);
@@ -203,6 +208,7 @@ public abstract class RecordDao {
 
         return records;
     }
+
 
 
 }

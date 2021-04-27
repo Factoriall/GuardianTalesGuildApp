@@ -36,6 +36,9 @@ public abstract class RaidDao {
     @Query("SELECT * FROM Raid WHERE endDay <= :today")
     public abstract List<Raid> getPastRaids(Date today);
 
+    @Query("SELECT * FROM Raid WHERE endDay <= :today ORDER BY endDay DESC LIMIT 1")
+    public abstract Raid getPastRecentRaid(Date today);
+
     @Query("SELECT * FROM Boss WHERE raidId =:raidId")
     public abstract List<Boss> getBossesList(int raidId);
 
