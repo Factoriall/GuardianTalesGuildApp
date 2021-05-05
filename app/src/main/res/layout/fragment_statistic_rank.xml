@@ -123,6 +123,16 @@
             app:layout_constraintStart_toEndOf="@+id/toggleSwitchAvg"
             app:layout_constraintTop_toTopOf="@+id/toggleSwitchAvg" />
 
+        <Button
+            android:id="@+id/excelButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:text="엑셀 변환"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout

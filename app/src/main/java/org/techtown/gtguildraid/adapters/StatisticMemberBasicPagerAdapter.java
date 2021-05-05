@@ -6,7 +6,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import org.techtown.gtguildraid.fragments.RecordMemberFragment;
 import org.techtown.gtguildraid.fragments.StatisticMemberBasic2Fragment;
 
 public class StatisticMemberBasicPagerAdapter extends FragmentStateAdapter {

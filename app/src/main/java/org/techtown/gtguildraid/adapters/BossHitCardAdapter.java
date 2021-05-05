@@ -1,13 +1,10 @@
 package org.techtown.gtguildraid.adapters;
 
 import android.content.Context;
-import android.database.DataSetObserver;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.models.Boss;
-import org.techtown.gtguildraid.models.Record;
 import org.techtown.gtguildraid.utils.RoomDB;
 
 import java.util.ArrayList;
