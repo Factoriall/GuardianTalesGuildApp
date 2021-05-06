@@ -6,6 +6,7 @@ import androidx.room.Insert;
 import androidx.room.Query;
 
 import org.techtown.gtguildraid.models.Boss;
+import org.techtown.gtguildraid.models.DamageInfo;
 import org.techtown.gtguildraid.models.Hero;
 import org.techtown.gtguildraid.models.Record;
 
@@ -111,6 +112,12 @@ public abstract class RecordDao {
     @Query("SELECT SUM(damage) FROM Record " +
             "WHERE raidId = :raidId AND round = :round")
     public abstract long getMaxRoundRecordSum(int raidId, int round);
+
+    @Query("SELECT memberId, SUM(damage * hardness) as total " +
+            "from Record INNER JOIN Boss on Record.bossId = Boss.bossId " +
+            "WHERE Record.raidId = :raidId " +
+            "GROUP BY memberId ORDER BY total DESC LIMIT 5")
+    public abstract List<DamageInfo> getRanksOfAdjustRecords(int raidId);
 
     @Query("UPDATE Record SET damage = :damage, bossId = :bossId, round = :round, leaderId = :leaderId, isLastHit = :isLastHit" +
             " WHERE recordID = :rId")

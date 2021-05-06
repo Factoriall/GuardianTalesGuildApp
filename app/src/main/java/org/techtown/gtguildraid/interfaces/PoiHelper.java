@@ -30,6 +30,8 @@ public abstract class PoiHelper {
         directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
     }
 
+    public void exportDataToExcel() {}
+
     protected void writeFile(File file) {
         try {
             FileOutputStream os = new FileOutputStream(file);
@@ -39,6 +41,10 @@ public abstract class PoiHelper {
 
     protected void setColumnWidth(int col, int width) {
         sheet.setColumnWidth(col, width * 256 / 9);
+    }
+
+    protected void setRowHeight(Row row, int height){
+        row.setHeightInPoints((short) height);
     }
 
     protected void setCellValueAndStyle(int sr, int er, int sc, int ec, CellStyle style, String str) {
@@ -108,8 +114,33 @@ public abstract class PoiHelper {
         style.setFont(font);
     }
 
+    protected void setFontInStyle(CellStyle style, int fontSize, HSSFColor color){
+        Font font = wb.createFont();
+        font.setColor(color.getIndex());
+        font.setFontHeightInPoints((short) fontSize);
+        style.setFont(font);
+    }
+
     protected void setColorInStyle(CellStyle style, HSSFColor color){
         style.setFillForegroundColor(color.getIndex());
         style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+    }
+
+    protected HSSFColor getColorFromElement(int elementId, HSSFWorkbook wb) {
+        switch(elementId){
+            case 1://화
+                return wb.getCustomPalette().findSimilarColor(255, 153, 153);
+            case 2://수
+                return wb.getCustomPalette().findSimilarColor(204, 236, 255);
+            case 3://지
+                return wb.getCustomPalette().findSimilarColor(255, 204, 153);
+            case 4://광
+                return wb.getCustomPalette().findSimilarColor(255, 255, 153);
+            case 5://암
+                return wb.getCustomPalette().findSimilarColor(204, 204, 255);
+            case 6://무
+                return wb.getCustomPalette().findSimilarColor(180, 180, 180);
+        }
+        return wb.getCustomPalette().findSimilarColor(255, 255, 255);
     }
 }

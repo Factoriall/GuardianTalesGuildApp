@@ -31,6 +31,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.adapters.StatisticRankCardAdapter;
+import org.techtown.gtguildraid.etc.RankPoi;
 import org.techtown.gtguildraid.models.Boss;
 import org.techtown.gtguildraid.models.GuildMember;
 import org.techtown.gtguildraid.models.Raid;
@@ -159,7 +160,8 @@ public class StatisticRankFragment extends Fragment {
                 ProgressDialog mProgressDialog = ProgressDialog.show(getContext(), "잠시 대기","CSV 파일 생성 중...", true);
 
                 AppExecutor.getInstance().diskIO().execute(() -> {
-                    exportDataToExcel();
+                    RankPoi rp = new RankPoi(database.raidDao().getRaidWithBosses(raidId), database);
+                    rp.exportDataToExcel();
                     getActivity().runOnUiThread(() -> {
                         mProgressDialog.dismiss();
                         Toast.makeText(getContext(), "생성 완료", Toast.LENGTH_SHORT).show();
@@ -172,82 +174,6 @@ public class StatisticRankFragment extends Fragment {
 
         return view;
     }
-
-    private void exportDataToExcel() {
-        Raid raid = database.raidDao().getRaidWithBosses(raidId);
-        File directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
-        final File file =  new File(directory,raid.getName() + " 순위표.xls");
-
-        //색깔 만들어주기
-        ExcelHelper excelHelper = new ExcelHelper(new HSSFWorkbook());
-
-        excelHelper.addTotalRank();
-        excelHelper.addDetailRank();
-
-
-    }
-
-    private static class ExcelHelper{
-        HSSFWorkbook wb;
-        Sheet sheet;
-
-        HSSFColor goldColor = wb.getCustomPalette().findSimilarColor(255, 255, 0);
-        HSSFColor silverColor = wb.getCustomPalette().findSimilarColor(206, 206, 206);
-        HSSFColor bronzeColor = wb.getCustomPalette().findSimilarColor(191, 143, 0);
-        HSSFColor ironColor = wb.getCustomPalette().findSimilarColor(113, 113, 113);
-        HSSFColor sub1Color = wb.getCustomPalette().findSimilarColor(204, 255, 204);
-
-        public ExcelHelper(HSSFWorkbook wb) {
-            this.wb = wb;
-            sheet = wb.createSheet("new sheet");
-        }
-
-        public void addTotalRank() {
-        }
-
-        public void addDetailRank() {
-        }
-
-        private void setCellValueAndStyle(int sr, int er, int sc, int ec, CellStyle style, String str) {
-            setStyleWithBorder(style);
-            for(int i = sr; i <= er; i++){
-                Row row = getOrCreateRow(i);
-                for(int j = sc; j <= ec; j++){
-                    Cell cell = row.createCell(j);
-                    cell.setCellStyle(style);
-                }
-            }
-            mergeCell(sr, er, sc, ec, str);
-        }
-
-        private void setCellValueAndStyle(Cell cell, CellStyle style, String str) {
-            setStyleWithBorder(style);
-            cell.setCellValue(str);
-            cell.setCellStyle(style);
-        }
-
-        private void mergeCell(int sr, int er, int sc, int ec, String str) {
-            Row row = getOrCreateRow(sr);
-            Cell cell = row.getCell(sc) != null ? row.getCell(sc) : row.createCell(sc);
-            cell.setCellValue(str);
-            sheet.addMergedRegion(new CellRangeAddress(sr, er, sc, ec));
-        }
-
-        private void setStyleWithBorder(CellStyle style) {
-            style.setBorderBottom(BorderStyle.THIN);
-            style.setBorderLeft(BorderStyle.THIN);
-            style.setBorderRight(BorderStyle.THIN);
-            style.setBorderTop(BorderStyle.THIN);
-        }
-
-        private Row getOrCreateRow(int rowNum) {
-            return sheet.getRow(rowNum) == null ? sheet.createRow(rowNum) : sheet.getRow(rowNum);
-        }
-
-
-    }
-
-
 
     private void setRankView() {
         int[] rounds = {1, 7, 12, 17, 22};

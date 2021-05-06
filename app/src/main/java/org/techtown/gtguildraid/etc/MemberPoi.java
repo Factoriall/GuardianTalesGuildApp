@@ -55,6 +55,7 @@ public class MemberPoi extends PoiHelper {
         bosses = raid.getBossList();
     }
 
+    @Override
     public void exportDataToExcel() {
         File file = new File(directory,raid.getName() + "_" + member.getName() +  ".xls");
 
@@ -98,34 +99,9 @@ public class MemberPoi extends PoiHelper {
         Row row = getOrCreateRow(rowNum);
         row.setHeightInPoints((short) 36);
         rowNum = addSummaryToExcel(rowNum + 1);
-
-        rowNum = addHistoryToExcel(rowNum, member.getID());
-        rowNum = addBossInfoToExcel(rowNum, member.getID(), bosses);
-
-        //설명 추가
-        sheet.createRow(rowNum);
-        sheet.createRow(rowNum + 1);
-        sheet.createRow(rowNum + 2);
-        sheet.createRow(rowNum + 3);
-        String explanation1 = "* 모든 평균의 경우 막타를 제외하고 계산합니다. * 상승률은 전 시즌 대비 얼마나 평균이 올랐나, 배율 상승률은 현 시즌 배율OFF 대비 ON했을 시 얼마나 올랐나를 계산합니다.";
-        mergeCell(rowNum, rowNum, 0, 21, explanation1);
-        CellUtil.setAlignment(sheet.getRow(rowNum).getCell(0), HorizontalAlignment.CENTER);
-        String explanation2 = "* 특수 상황의 '부족'은 각 보스/덱 별 자신의 전체 평균 대비 75% 이상 85% 미만의 딜량 기록, '전복'은 각 보스/덱 별 자신의 전체 평균 대비 75% 미만의 딜량 기록";
-        mergeCell(rowNum + 1, rowNum+1, 0, 21, explanation2);
-        CellUtil.setAlignment(sheet.getRow(rowNum + 1).getCell(0), HorizontalAlignment.CENTER);
-        String explanation3 = "* '인분' 항목은 76렙 이후의 보스 및 공격 리더를 기준으로 길드원 평균 데미지에 비해 얼만큼 데미지를 가했는지 판정하며 3번 이상 막타를 제외하고 쳐야 통계에 계산됩나다.";
-        mergeCell(rowNum + 2, rowNum + 2, 0, 21, explanation3);
-        CellUtil.setAlignment(sheet.getRow(rowNum + 2).getCell(0), HorizontalAlignment.CENTER);
-        String explanation4 = "\n 예를 들어 76렙 이후 에리나에 가람 리더로 평균 300만 데미지를 가하고 전체가 76렙 이상 에리나에 가람 리더로 평균 200만을 쳤다면 1.5인분으로 표시됩니다.";
-        mergeCell(rowNum + 3, rowNum + 3, 0, 21, explanation4);
-        CellUtil.setAlignment(sheet.getRow(rowNum + 3).getCell(0), HorizontalAlignment.CENTER);
-
-        CellRangeAddress region = new CellRangeAddress(rowNum, rowNum + 3, 0, 21);
-        RegionUtil.setBorderBottom(BorderStyle.THIN, region, sheet);
-        RegionUtil.setBorderTop(BorderStyle.THIN, region, sheet);
-        RegionUtil.setBorderLeft(BorderStyle.THIN, region, sheet);
-        RegionUtil.setBorderRight(BorderStyle.THIN, region, sheet);
-
+        rowNum = addHistoryToExcel(rowNum);
+        rowNum = addBossInfoToExcel(rowNum);
+        addExplanationToExcel(rowNum);
 
         writeFile(file);
     }
@@ -341,7 +317,7 @@ public class MemberPoi extends PoiHelper {
         return rowNum + 5;
     }
 
-    private int addHistoryToExcel(int rowNum, int memberId) {
+    private int addHistoryToExcel(int rowNum) {
         setWidthAndSideTitle(rowNum, 10, "히스토리");
 
         //히스토리 설정
@@ -437,7 +413,7 @@ public class MemberPoi extends PoiHelper {
         return rowNum;
     }
 
-    private int addBossInfoToExcel(int rowNum, int memberId, List<Boss> bosses) {
+    private int addBossInfoToExcel(int rowNum) {
         setWidthAndSideTitle(rowNum, 14, "보스별 상세 정보");
 
         int bossIdx = 0;
@@ -597,6 +573,31 @@ public class MemberPoi extends PoiHelper {
         }
     }
 
+    private void addExplanationToExcel(int rowNum) {
+        sheet.createRow(rowNum);
+        sheet.createRow(rowNum + 1);
+        sheet.createRow(rowNum + 2);
+        sheet.createRow(rowNum + 3);
+        String explanation1 = "* 모든 평균의 경우 막타를 제외하고 계산합니다. * 상승률은 전 시즌 대비 얼마나 평균이 올랐나, 배율 상승률은 현 시즌 배율OFF 대비 ON했을 시 얼마나 올랐나를 계산합니다.";
+        mergeCell(rowNum, rowNum, 0, 21, explanation1);
+        CellUtil.setAlignment(sheet.getRow(rowNum).getCell(0), HorizontalAlignment.CENTER);
+        String explanation2 = "* 특수 상황의 '부족'은 각 보스/덱 별 자신의 전체 평균 대비 75% 이상 85% 미만의 딜량 기록, '전복'은 각 보스/덱 별 자신의 전체 평균 대비 75% 미만의 딜량 기록";
+        mergeCell(rowNum + 1, rowNum+1, 0, 21, explanation2);
+        CellUtil.setAlignment(sheet.getRow(rowNum + 1).getCell(0), HorizontalAlignment.CENTER);
+        String explanation3 = "* '인분' 항목은 76렙 이후의 보스 및 공격 리더를 기준으로 길드원 평균 데미지에 비해 얼만큼 데미지를 가했는지 판정하며 3번 이상 막타를 제외하고 쳐야 통계에 계산됩나다.";
+        mergeCell(rowNum + 2, rowNum + 2, 0, 21, explanation3);
+        CellUtil.setAlignment(sheet.getRow(rowNum + 2).getCell(0), HorizontalAlignment.CENTER);
+        String explanation4 = "\n 예를 들어 76렙 이후 에리나에 가람 리더로 평균 300만 데미지를 가하고 전체가 76렙 이상 에리나에 가람 리더로 평균 200만을 쳤다면 1.5인분으로 표시됩니다.";
+        mergeCell(rowNum + 3, rowNum + 3, 0, 21, explanation4);
+        CellUtil.setAlignment(sheet.getRow(rowNum + 3).getCell(0), HorizontalAlignment.CENTER);
+
+        CellRangeAddress region = new CellRangeAddress(rowNum, rowNum + 3, 0, 21);
+        RegionUtil.setBorderBottom(BorderStyle.THIN, region, sheet);
+        RegionUtil.setBorderTop(BorderStyle.THIN, region, sheet);
+        RegionUtil.setBorderLeft(BorderStyle.THIN, region, sheet);
+        RegionUtil.setBorderRight(BorderStyle.THIN, region, sheet);
+    }
+
     private void setWidthAndSideTitle(int sRow, int height, String title) {
         //너비 설정
         Row row;
@@ -637,23 +638,4 @@ public class MemberPoi extends PoiHelper {
 
         return ret;
     }
-
-    private HSSFColor getColorFromElement(int elementId, HSSFWorkbook wb) {
-        switch(elementId){
-            case 1://화
-                return wb.getCustomPalette().findSimilarColor(255, 153, 153);
-            case 2://수
-                return wb.getCustomPalette().findSimilarColor(204, 236, 255);
-            case 3://지
-                return wb.getCustomPalette().findSimilarColor(255, 204, 153);
-            case 4://광
-                return wb.getCustomPalette().findSimilarColor(255, 255, 153);
-            case 5://암
-                return wb.getCustomPalette().findSimilarColor(204, 204, 255);
-            case 6://무
-                return wb.getCustomPalette().findSimilarColor(180, 180, 180);
-        }
-        return wb.getCustomPalette().findSimilarColor(255, 255, 255);
-    }
-
 }
