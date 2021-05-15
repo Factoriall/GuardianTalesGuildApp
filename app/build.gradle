@@ -63,11 +63,9 @@ dependencies {
 
     debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
     implementation 'it.xabaras.android:recyclerview-swipedecorator:1.2.3'
-    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
     implementation 'com.github.arcadefire:nice-spinner:1.4.4'
     implementation 'com.flyco.tablayout:FlycoTabLayout_Lib:2.1.2@aar'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
     implementation 'com.llollox:androidtoggleswitch:2.0.1'
     implementation 'com.kyleduo.switchbutton:library:2.0.3'
-    implementation 'com.opencsv:opencsv:5.4'
 }
