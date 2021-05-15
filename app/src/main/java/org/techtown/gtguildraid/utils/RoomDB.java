@@ -26,7 +26,7 @@ import org.techtown.gtguildraid.models.Record;
 
 
 //Add database entities
-@Database(entities = {GuildMember.class, Boss.class, Raid.class, Hero.class, Record.class, Favorites.class}, version = 21, exportSchema = false)
+@Database(entities = {GuildMember.class, Boss.class, Raid.class, Hero.class, Record.class, Favorites.class}, version = 22, exportSchema = false)
 @TypeConverters(DateConverter.class)
 public abstract class RoomDB extends RoomDatabase {
     private static RoomDB database;
@@ -201,11 +201,21 @@ public abstract class RoomDB extends RoomDatabase {
     };
 
     //막뀨 데이터 삽입
-    static final Migration MIGRATION_20_21 = new Migration(20, 21) {//미기 데이터 업데이트
+    static final Migration MIGRATION_20_21 = new Migration(20, 21) {
         @Override
         public void migrate(SupportSQLiteDatabase database) {
             database.execSQL("INSERT INTO hero (koreanName, englishName, element, star, role) "
                     + "VALUES ('Mk.99', 'mk99', 4, 3, 3)");
+        }
+    };
+
+    //베로니카, 리리스 데이터 삽입 - 2021.05.15
+    static final Migration MIGRATION_21_22 = new Migration(21, 22) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            database.execSQL("INSERT INTO hero (koreanName, englishName, element, star, role) "
+                    + "VALUES ('베로니카', 'veronica', 2, 3, 4)," +
+                    " ('리리스', 'lilith', 5, 3, 1)");
         }
     };
 
@@ -233,6 +243,7 @@ public abstract class RoomDB extends RoomDatabase {
                     .addMigrations(MIGRATION_18_19)
                     .addMigrations(MIGRATION_19_20)
                     .addMigrations(MIGRATION_20_21)
+                    .addMigrations(MIGRATION_21_22)
                     .build();
         }
         else{
