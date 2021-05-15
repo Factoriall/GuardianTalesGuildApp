@@ -27,14 +27,14 @@
     + 탈퇴 멤버의 경우 복귀를 통해 다시 들여보낼 수도 있고 삭제도 가능.
 
   * RaidFragment: 현재 레이드의 정보 입력/과거 레이드 확인 프래그먼트
-    <img src="./image/gt_app_raid.jpg" width="30%">
+  <img src="./image/gt_app_raid.jpg" width="30%">
 
     + 현재 레이드의 경우 시작 날짜 및 레이드 이름 입력, 시작 날짜의 경우 오늘로부터 2주 전까지만 입력 가능
     + 입력 후 보스 정보 입력 가능. 보스의 정보는 이름, 사진, 속성, 배율로 나뉨
     + 아래의 과거 레이드를 통해 옛날 데이터 확인 가능
 
   * RecordFragment: 현 레이드 기록 입력 프래그먼트
-    <img src="./image/gt_app_record.jpg" width="30%">
+  <img src="./image/gt_app_record.jpg" width="30%">
 
     + RaidFragment에서 입력한 날짜를 토대로 14일의 칸이 존재
     + Spinner를 활용해서 닉네임 서칭 - 기본적으로 사전순으로 정렬되며 오늘 할당량을 채울 시 무조건 아래쪽으로 밀어넣음
