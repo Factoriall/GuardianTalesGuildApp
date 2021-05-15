@@ -6,7 +6,9 @@ import androidx.room.Insert;
 import androidx.room.Query;
 
 import org.techtown.gtguildraid.models.Boss;
-import org.techtown.gtguildraid.models.DamageInfo;
+import org.techtown.gtguildraid.models.IdDouble;
+import org.techtown.gtguildraid.models.IdLongCnt;
+import org.techtown.gtguildraid.models.IdLong;
 import org.techtown.gtguildraid.models.Hero;
 import org.techtown.gtguildraid.models.Record;
 
@@ -113,11 +115,36 @@ public abstract class RecordDao {
             "WHERE raidId = :raidId AND round = :round")
     public abstract long getMaxRoundRecordSum(int raidId, int round);
 
-    @Query("SELECT memberId, SUM(damage * hardness) as total " +
+    @Query("SELECT memberId, SUM(damage * hardness) as value " +
             "from Record INNER JOIN Boss on Record.bossId = Boss.bossId " +
             "WHERE Record.raidId = :raidId " +
-            "GROUP BY memberId ORDER BY total DESC LIMIT 5")
-    public abstract List<DamageInfo> getRanksOfAdjustRecords(int raidId);
+            "GROUP BY memberId ORDER BY value DESC LIMIT 5")
+    public abstract List<IdLong> getRanksOfAdjustRecords(int raidId);
+
+    @Query("SELECT memberId, SUM(damage) AS value " +
+            "FROM Record WHERE raidId = :raidId AND bossId = :bossId " +
+            "GROUP BY memberId ORDER BY value DESC LIMIT 5")
+    public abstract List<IdLong> getRanksOfBossTotal(int raidId, int bossId);
+
+    @Query("SELECT SUM(damage) " +
+            "FROM Record WHERE raidId = :raidId AND bossId = :bossId ")
+    public abstract long getTotalOfBoss(int raidId, int bossId);
+
+    @Query("SELECT memberId, COUNT(*) as value FROM Record " +
+            "WHERE raidId = :raidId AND isLastHit = 1 " +
+            "GROUP BY memberId ORDER BY value DESC LIMIT 5")
+    public abstract List<IdLong> getRanksOfLastHit(int raidId);
+
+    @Query("SELECT memberId, (SUM(damage * hardness * 1.0) / SUM(damage)) - 1.0 as value" +
+            " from Record INNER JOIN Boss on Record.bossId = Boss.bossId " +
+            "WHERE Record.raidId = :raidId " +
+            "GROUP BY memberId ORDER BY value DESC LIMIT 5")
+    public abstract List<IdDouble> getRanksOfAdjustGrowth(int raidId);
+
+    @Query("SELECT memberId, AVG(damage) as value, COUNT(damage) as count FROM Record " +
+            "WHERE raidId = :raidId AND bossId = :bossId AND isLastHit = 0 " +
+            "GROUP BY memberId HAVING count(memberId) > 2 ORDER BY value DESC LIMIT 5")
+    public abstract List<IdLongCnt> getRanksOfBossAverage(int raidId, int bossId);
 
     @Query("UPDATE Record SET damage = :damage, bossId = :bossId, round = :round, leaderId = :leaderId, isLastHit = :isLastHit" +
             " WHERE recordID = :rId")

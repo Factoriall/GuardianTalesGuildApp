@@ -3,12 +3,15 @@ package org.techtown.gtguildraid.etc;
 import android.util.Log;
 
 import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.ss.formula.functions.Rank;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.techtown.gtguildraid.interfaces.CalculateFormatHelper;
 import org.techtown.gtguildraid.interfaces.PoiHelper;
 import org.techtown.gtguildraid.models.Boss;
-import org.techtown.gtguildraid.models.DamageInfo;
+import org.techtown.gtguildraid.models.IdDouble;
+import org.techtown.gtguildraid.models.IdLong;
+import org.techtown.gtguildraid.models.IdLongCnt;
 import org.techtown.gtguildraid.models.Raid;
 import org.techtown.gtguildraid.utils.RoomDB;
 
@@ -82,7 +85,6 @@ public class RankPoi extends PoiHelper {
         writeFile(file);
     }
 
-
     private int addTotalRank(int rowNum) {
         HSSFColor goldColor = wb.getCustomPalette().findSimilarColor(255, 192, 0);
         HSSFColor silverColor = wb.getCustomPalette().findSimilarColor(206, 206, 206);
@@ -99,8 +101,8 @@ public class RankPoi extends PoiHelper {
         setRowHeight(sheet.createRow(rowNum + 2), 35);
 
         int[] rankOrder = {4,2,1,3,5};
-        List<DamageInfo> damageInfos = database.recordDao().getRanksOfAdjustRecords(raidId);
-        for(DamageInfo info : damageInfos)
+        List<IdLong> idLongs = database.recordDao().getRanksOfAdjustRecords(raidId);
+        for(IdLong info : idLongs)
             Log.d("info", "name:" + database.memberDao().getMember(info.memberId).getName());
 
         setCellValueAndStyle(getOrCreateRow(rowNum).createCell(colNum), subtitle2Style, "순위");
@@ -135,24 +137,83 @@ public class RankPoi extends PoiHelper {
             setColorInStyle(cellStyle, color);
             setCellValueAndStyle(rowNum, rowNum, first, second, cellStyle, rankOrder[i] + "위");
 
-            DamageInfo damageInfo = damageInfos.get(rank - 1);
+            IdLong idLong = idLongs.get(rank - 1);
 
             cellStyle = wb.createCellStyle();
             setCellStyle(cellStyle, true);
             setFontInStyle(cellStyle, fontSize, color);
 
-            String name = database.memberDao().getMember(damageInfo.memberId).getName();
+            String name = database.memberDao().getMember(idLong.memberId).getName();
             setCellValueAndStyle(rowNum+1, rowNum+1, first, second, cellStyle, name);
 
-            long damage = damageInfo.total;
+            long damage = idLong.value;
             setCellValueAndStyle(rowNum+2, rowNum+2, first, second, cellStyle, calcHelper.getNumberFormat(damage));
         }
 
         return rowNum + 3;
     }
 
+    private int addDetailRank(int rowNum) {
+        //제목 설정 - row: 1
+        setCellValueAndStyle(rowNum, rowNum, 0, MAX_COLUMN - 3, subtitleStyle, "보스 별 딜링 및 평균");
+        setCellValueAndStyle(rowNum, rowNum+1, MAX_COLUMN - 2, MAX_COLUMN - 1, subtitleStyle, "헌신도");
 
-    private int addDetailRank(int i) {
+        //자잘한 제목 붙이기
+        rowNum += 1;
+        setCellValueAndStyle(getOrCreateRow(rowNum).createCell(0), subtitleStyle, "보스");
+        setCellValueAndStyle(getOrCreateRow(rowNum + 1).createCell(0), subtitleStyle, "순위");
+        setCellValueAndStyle(rowNum + 1, rowNum + 1, 1, MAX_COLUMN - 3, subtitle2Style, "지분");
+        setCellValueAndStyle(rowNum + 1, rowNum + 1, MAX_COLUMN - 2, MAX_COLUMN - 1, subtitle2Style, "막타 횟수");
+
+        rowNum += 2;
+        for(int i=0; i<5; i++)
+            setCellValueAndStyle(getOrCreateRow(rowNum + i).createCell(0), subtitle2Style, (i+1) +"위");
+
+        rowNum += 5;
+        setCellValueAndStyle(getOrCreateRow(rowNum).createCell(0), subtitleStyle, "순위");
+        setCellValueAndStyle(rowNum, rowNum, 1, MAX_COLUMN - 3, subtitle2Style, "평균(횟수)");
+        setCellValueAndStyle(rowNum, rowNum, MAX_COLUMN - 2, MAX_COLUMN - 1, subtitle2Style, "배율 상승률");
+
+        rowNum += 1;
+        for(int i=0; i<5; i++)
+            setCellValueAndStyle(getOrCreateRow(rowNum + i).createCell(0), subtitle2Style, (i+1) +"위");
+
+        final int BOSS = 6;
+        final int FIRST = 8;
+        final int SECOND = 14;
+        for(int i=0; i<bosses.size(); i++){
+            Boss boss = bosses.get(i);
+            HSSFColor color = getColorFromElement(boss.getElementId());
+            int firstCol = i * 2 + 1;
+            int secondCol = i * 2 + 2;
+
+            CellStyle cellStyle = wb.createCellStyle();
+            setCellStyle(cellStyle, true);
+            setColorInStyle(cellStyle, color);
+            setCellValueAndStyle(BOSS, BOSS, firstCol, secondCol, cellStyle, boss.getName());
+            List<IdLong> totalRank = database.recordDao().getRanksOfBossTotal(raidId, boss.getBossId());
+            List<IdLongCnt> avgRank = database.recordDao().getRanksOfBossAverage(raidId, boss.getBossId());
+
+            for(int r=0; r<5; r++) {
+                setCellValueAndStyle(getOrCreateRow(FIRST + r).createCell(firstCol), dataCellStyle, database.memberDao().getMember(totalRank.get(r).memberId).getName());
+                setCellValueAndStyle(getOrCreateRow(FIRST + r).createCell(secondCol), dataCellStyle, calcHelper.getPercentage(totalRank.get(r).value, database.recordDao().getTotalOfBoss(raidId, boss.getBossId())));
+                Log.d("rank", database.memberDao().getMember(totalRank.get(r).memberId).getName() + ":" + totalRank.get(r).value );
+
+                setCellValueAndStyle(getOrCreateRow(SECOND + r).createCell(firstCol), dataCellStyle, database.memberDao().getMember(avgRank.get(r).memberId).getName());
+                setCellValueAndStyle(getOrCreateRow(SECOND + r).createCell(secondCol), dataCellStyle, calcHelper.getNumberFormat(avgRank.get(r).value) + " (" + avgRank.get(r).count + ")");
+            }
+        }
+
+        List<IdLong> lastRank = database.recordDao().getRanksOfLastHit(raidId);
+        List<IdDouble> growthRank = database.recordDao().getRanksOfAdjustGrowth(raidId);
+        for(int i=0; i<5; i++){
+            setCellValueAndStyle(getOrCreateRow(FIRST + i).createCell(9), dataCellStyle, database.memberDao().getMember(lastRank.get(i).memberId).getName());
+            setCellValueAndStyle(getOrCreateRow(FIRST + i).createCell(10), dataCellStyle, lastRank.get(i).value + "회");
+
+            setCellValueAndStyle(getOrCreateRow(SECOND + i).createCell(9), dataCellStyle, database.memberDao().getMember(growthRank.get(i).memberId).getName());
+            setCellValueAndStyle(getOrCreateRow(SECOND + i).createCell(10), dataCellStyle, calcHelper.getPercentage(growthRank.get(i).value));
+        }
+
         return 0;
     }
 }

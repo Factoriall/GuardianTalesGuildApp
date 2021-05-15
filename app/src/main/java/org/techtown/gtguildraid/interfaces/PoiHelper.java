@@ -30,7 +30,7 @@ public abstract class PoiHelper {
         directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
     }
 
-    public void exportDataToExcel() {}
+    protected abstract void exportDataToExcel();
 
     protected void writeFile(File file) {
         try {
@@ -126,7 +126,7 @@ public abstract class PoiHelper {
         style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
     }
 
-    protected HSSFColor getColorFromElement(int elementId, HSSFWorkbook wb) {
+    protected HSSFColor getColorFromElement(int elementId) {
         switch(elementId){
             case 1://화
                 return wb.getCustomPalette().findSimilarColor(255, 153, 153);

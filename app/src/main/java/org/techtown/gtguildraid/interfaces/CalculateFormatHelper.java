@@ -112,6 +112,12 @@ public class CalculateFormatHelper {
         return String.format("%.2f", memberDamage/(double)allDamage * 100) + "%";
     }
 
+    public String getPercentage(double div) {
+        if(div == 0)
+            return "0.00";
+        return String.format("%.2f", div * 100.0) + "%";
+    }
+
     public boolean betweenRange(long damage, long average, int min, int max) {
         float percent = (float) damage / average * 100f;
         if(percent >= min && percent < max)

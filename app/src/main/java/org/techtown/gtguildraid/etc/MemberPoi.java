@@ -117,7 +117,7 @@ public class MemberPoi extends PoiHelper {
         colNum += 1;
         setCellValueAndStyle(rowNum, rowNum, colNum, colNum + 1, subtitle3Style, "총 딜량&달성률");
         long totalDamageInGuild = database.recordDao().getTotalDamageInRaid(raidId);
-        setCellValueAndStyle(rowNum+1, rowNum+1, colNum, colNum + 1,
+        setCellValueAndStyle(rowNum+1, rowNum+2, colNum, colNum + 1,
                 dataCellStyle, calcHelper.getNumberFormat(totalDamageInGuild));
         int maxRound = database.recordDao().getMaxRound(raidId);
         long maxRoundSum = database.recordDao().getMaxRoundRecordSum(raidId, maxRound);
@@ -130,10 +130,7 @@ public class MemberPoi extends PoiHelper {
                 100000000, 140000000, 200000000};
         long allBossHp = (maxRound >= hpPerRound.length) ? hpPerRound[21] * 4 : hpPerRound[maxRound-1] * 4;
 
-        setCellValueAndStyle(rowNum+2, rowNum+2, colNum, colNum + 1,
-                dataCellStyle, maxRound + "회차/" + calcHelper.getPercentage(maxRoundSum, allBossHp));
-        setCellValueAndStyle(rowNum + 3, rowNum + 3, colNum, colNum + 1, subtitle3Style, "길드 순위");
-        setCellValueAndStyle(rowNum + 4, rowNum + 4, colNum, colNum + 1, dataCellStyle, "100");
+        setCellValueAndStyle(rowNum + 3, rowNum + 4, colNum, colNum + 1, dataCellStyle, maxRound + "회차/" + calcHelper.getPercentage(maxRoundSum, allBossHp));
 
         //보스 요약
         colNum += 2;
@@ -153,7 +150,7 @@ public class MemberPoi extends PoiHelper {
             int nRow = rowNum + b;
             row = sheet.getRow(nRow);
             int elementId = boss.getElementId();
-            HSSFColor elementColor = getColorFromElement(elementId, (HSSFWorkbook) wb);
+            HSSFColor elementColor = getColorFromElement(elementId);
             setColorInStyle(elementStyle, elementColor);
             setCellValueAndStyle(row.createCell(colNum), elementStyle, calcHelper.getElementFromId(elementId));
             setCellValueAndStyle(row.createCell(colNum+1), dataCellStyle, boss.getName());
@@ -364,8 +361,8 @@ public class MemberPoi extends PoiHelper {
 
                     int bossElementId = boss.getElementId();
                     int leaderElementId = leader.getElement();
-                    HSSFColor bossElementColor = getColorFromElement(bossElementId, (HSSFWorkbook) wb);
-                    HSSFColor leaderElementColor = getColorFromElement(leaderElementId, (HSSFWorkbook) wb);
+                    HSSFColor bossElementColor = getColorFromElement(bossElementId);
+                    HSSFColor leaderElementColor = getColorFromElement(leaderElementId);
 
                     colorStyle = wb.createCellStyle();
                     setCellStyle(colorStyle, true);
