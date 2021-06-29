@@ -43,12 +43,14 @@
   <androidx.drawerlayout/>
   <androidx.dynamicanimation/>
   <androidx.emoji/>
+  <androidx.emoji2/>
   <androidx.enterprise/>
   <androidx.exifinterface/>
   <androidx.fragment/>
   <androidx.games/>
   <androidx.gaming/>
   <androidx.gridlayout/>
+  <androidx.health/>
   <androidx.heifwriter/>
   <androidx.hilt/>
   <androidx.interpolator/>
@@ -62,11 +64,14 @@
   <androidx.mediarouter/>
   <androidx.multidex/>
   <androidx.navigation/>
+  <androidx.navigation.safeargs/>
+  <androidx.navigation.safeargs.kotlin/>
   <androidx.paging/>
   <androidx.palette/>
   <androidx.percentlayout/>
   <androidx.preference/>
   <androidx.print/>
+  <androidx.profileinstaller/>
   <androidx.recommendation/>
   <androidx.recyclerview/>
   <androidx.remotecallback/>
@@ -152,14 +157,17 @@
   <com.google.android.enterprise.connectedapps/>
   <com.google.android.exoplayer/>
   <com.google.android.fhir/>
+  <com.google.android.flexbox/>
   <com.google.android.games/>
   <com.google.android.gms/>
   <com.google.android.instantapps/>
   <com.google.android.instantapps.thirdpartycompat/>
   <com.google.android.libraries.car/>
   <com.google.android.libraries.maps/>
+  <com.google.android.libraries.mapsplatform.secrets-gradle-plugin/>
   <com.google.android.libraries.places/>
   <com.google.android.material/>
+  <com.google.android.mediahome/>
   <com.google.android.play/>
   <com.google.android.support/>
   <com.google.android.things/>

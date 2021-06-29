@@ -3,12 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
+        android:background="@color/bg_text"
         android:orientation="vertical"
-        android:padding="5dp">
+        android:padding="10dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -21,7 +22,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="XXX / 0일차 "
-                android:textColor="@color/bar_chart_color"
+                android:textColor="@color/bg_icon"
                 android:textSize="24sp"
                 android:textStyle="bold" />
         </LinearLayout>
@@ -32,7 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:text="상대 보스"
-            android:textColor="@color/bar_chart_color"
+            android:textColor="@color/bg_icon"
             android:textSize="20sp" />
 
         <com.llollox.androidtoggleswitch.widgets.ToggleSwitch
@@ -52,7 +53,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:text="레벨(회차)"
-            android:textColor="@color/bar_chart_color"
+            android:textColor="@color/bg_icon"
             android:textSize="20sp" />
 
 
@@ -87,7 +88,7 @@
                     android:gravity="center"
                     android:inputType="number"
                     android:text="80(23)"
-                    android:textColor="@android:color/black"
+                    android:textColor="@color/bg_icon"
                     android:textSize="20sp" />
 
                 <Button
@@ -121,7 +122,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
                 android:text="리더 정보"
-                android:textColor="@color/bar_chart_color"
+                android:textColor="@color/bg_icon"
                 android:textSize="20sp" />
 
             <com.kyleduo.switchbutton.SwitchButton
@@ -131,6 +132,7 @@
                 android:layout_margin="5dp"
                 android:layout_marginStart="10dp"
                 android:showText="true"
+                android:textColor="@color/bg_icon"
                 app:kswAnimationDuration="0"
                 app:kswTextExtra="10dp"
                 app:kswTextOff="즐겨찾기"
@@ -236,7 +238,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:text="데미지"
-            android:textColor="@color/bar_chart_color"
+            android:textColor="@color/bg_icon"
             android:textSize="20sp" />
 
         <LinearLayout
@@ -249,6 +251,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:autofillHints=""
                 android:background="@android:drawable/editbox_background"
                 android:digits="0123456789"
                 android:gravity="top"
@@ -256,8 +259,7 @@
                 android:inputType="numberDecimal"
                 android:maxLength="12"
                 android:padding="10dp"
-                android:textSize="24sp"
-                android:autofillHints="" />
+                android:textSize="24sp" />
 
             <CheckBox
                 android:id="@+id/isLastHit"
@@ -267,7 +269,8 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:gravity="center"
-                android:text="막타 여부" />
+                android:text="막타 여부"
+                android:textColor="@color/bg_icon" />
 
         </LinearLayout>
 

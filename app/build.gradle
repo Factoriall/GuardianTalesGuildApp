@@ -68,4 +68,5 @@ dependencies {
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
     implementation 'com.llollox:androidtoggleswitch:2.0.1'
     implementation 'com.kyleduo.switchbutton:library:2.0.3'
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
 }

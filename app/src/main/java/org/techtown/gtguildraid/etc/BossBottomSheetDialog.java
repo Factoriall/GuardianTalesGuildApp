@@ -41,7 +41,7 @@ public class BossBottomSheetDialog extends BottomSheetDialogFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.dialog_gallery, container, false);
+        View view = inflater.inflate(R.layout.dialog_gallery_boss, container, false);
         mInflater = LayoutInflater.from(getContext());
         initData();
         initView(view);

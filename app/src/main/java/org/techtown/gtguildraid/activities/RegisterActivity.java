@@ -1,28 +1,46 @@
 package org.techtown.gtguildraid.activities;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.techtown.gtguildraid.R;
+import org.techtown.gtguildraid.etc.HeroBottomSheetDialog;
 import org.techtown.gtguildraid.models.GuildMember;
+import org.techtown.gtguildraid.models.Hero;
 import org.techtown.gtguildraid.utils.RoomDB;
 
-public class RegisterActivity extends AppCompatActivity {
+public class RegisterActivity extends AppCompatActivity
+        implements HeroBottomSheetDialog.BottomSheetListener{
+    SharedPreferences.Editor editor;
+    ImageView profileImage;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
+        editor = getSharedPreferences("pref", Activity.MODE_PRIVATE).edit();
+
         final EditText nickname = findViewById(R.id.myName);
         final EditText guildName = findViewById(R.id.guildName);
+        profileImage = findViewById(R.id.profileImage);
+        profileImage.setImageResource(
+                getResources().getIdentifier("character_knight" , "drawable", getPackageName()));
+        profileImage.setOnClickListener(view -> {
+            HeroBottomSheetDialog dialog = new HeroBottomSheetDialog(this);
+            dialog.show(getSupportFragmentManager(), "bottomSheetDialog");
+        });
 
         Button button = findViewById(R.id.button);
         button.setOnClickListener(view -> {
@@ -32,9 +50,6 @@ public class RegisterActivity extends AppCompatActivity {
                 showToast("닉네임과 길드 이름을 적어주세요.");
                 return;
             }
-
-            SharedPreferences pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
-            SharedPreferences.Editor editor = pref.edit();
 
             RoomDB database = RoomDB.getInstance(RegisterActivity.this);
             GuildMember member = new GuildMember();
@@ -61,5 +76,12 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void showToast(String message){
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onImageClicked(Hero hero) {
+        editor.putString("profileImage", hero.getEnglishName());
+        profileImage.setImageResource(
+                getResources().getIdentifier("character_" + hero.getEnglishName() , "drawable", getPackageName()));
     }
 }

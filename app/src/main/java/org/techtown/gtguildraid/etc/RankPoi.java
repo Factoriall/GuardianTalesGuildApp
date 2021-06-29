@@ -16,6 +16,7 @@ import org.techtown.gtguildraid.models.Raid;
 import org.techtown.gtguildraid.utils.RoomDB;
 
 import java.io.File;
+import java.util.Calendar;
 import java.util.List;
 
 public class RankPoi extends PoiHelper {
@@ -74,12 +75,17 @@ public class RankPoi extends PoiHelper {
         }
 
         int rowNum = 0;
-        String titleName = raid.getName() + " - 순위표";
+        int dayRemain = (int) (Calendar.getInstance().getTimeInMillis() - raid.getStartDay().getTime())
+                / (1000*60*60*24);
+        String dayText = dayRemain >= 14
+                ? "최종" : (dayRemain + 1) + "일차";
+        String titleName = raid.getName() + " - " + dayText + " 순위표";
         setCellValueAndStyle(0, 0, 0, MAX_COLUMN - 1, title, titleName);
         Row row = getOrCreateRow(rowNum);
         row.setHeightInPoints((short) 36);
 
         rowNum = addTotalRank(rowNum + 1);
+        Log.d("rowNum", "" + rowNum);
         rowNum = addDetailRank(rowNum);
 
         writeFile(file);
@@ -102,8 +108,6 @@ public class RankPoi extends PoiHelper {
 
         int[] rankOrder = {4,2,1,3,5};
         List<IdLong> idLongs = database.recordDao().getRanksOfAdjustRecords(raidId);
-        for(IdLong info : idLongs)
-            Log.d("info", "name:" + database.memberDao().getMember(info.memberId).getName());
 
         setCellValueAndStyle(getOrCreateRow(rowNum).createCell(colNum), subtitle2Style, "순위");
         setCellValueAndStyle(getOrCreateRow(rowNum + 1).createCell(colNum), subtitle2Style, "이름");
@@ -150,11 +154,38 @@ public class RankPoi extends PoiHelper {
             setCellValueAndStyle(rowNum+2, rowNum+2, first, second, cellStyle, calcHelper.getNumberFormat(damage));
         }
 
-        return rowNum + 3;
+        rowNum += 3;
+        colNum = 0;
+        for(int i=1; i<=5; i++) {
+            setCellValueAndStyle(getOrCreateRow(rowNum + i - 1).createCell(colNum), subtitle2Style,
+                    (i*5 + 1) + "~" + ((i+1)*5) );
+        }
+
+        for(int i=0; i<5; i++){
+            colNum = 1;
+            boolean isFinished = false;
+            for(int j=0; j<5; j++){
+                int rIdx = ((i+1) * 5)+j;
+                if(rIdx >= idLongs.size()){
+                    isFinished = true;
+                    break;
+                }
+                setCellValueAndStyle(getOrCreateRow(rowNum + i).createCell(colNum), dataCellStyle,
+                        database.memberDao().getMember(idLongs.get(rIdx).memberId).getName());
+                setCellValueAndStyle(getOrCreateRow(rowNum + i).createCell(colNum + 1), dataCellStyle,
+                        calcHelper.getNumberFormat(idLongs.get(((i+1)*5)+j).value));
+                colNum += 2;
+            }
+            if(isFinished) break;
+        }
+
+
+        return rowNum + 5;
     }
 
     private int addDetailRank(int rowNum) {
         //제목 설정 - row: 1
+        int initial = rowNum;
         setCellValueAndStyle(rowNum, rowNum, 0, MAX_COLUMN - 3, subtitleStyle, "보스 별 딜링 및 평균");
         setCellValueAndStyle(rowNum, rowNum+1, MAX_COLUMN - 2, MAX_COLUMN - 1, subtitleStyle, "헌신도");
 
@@ -178,26 +209,30 @@ public class RankPoi extends PoiHelper {
         for(int i=0; i<5; i++)
             setCellValueAndStyle(getOrCreateRow(rowNum + i).createCell(0), subtitle2Style, (i+1) +"위");
 
-        final int BOSS = 6;
-        final int FIRST = 8;
-        final int SECOND = 14;
+        final int BOSS = initial + 1;
+        final int FIRST = initial + 3;
+        final int SECOND = initial + 9;
         for(int i=0; i<bosses.size(); i++){
             Boss boss = bosses.get(i);
             HSSFColor color = getColorFromElement(boss.getElementId());
             int firstCol = i * 2 + 1;
             int secondCol = i * 2 + 2;
 
+            int dayNow = Math.min((int) (Calendar.getInstance().getTimeInMillis() - raid.getStartDay().getTime())
+                    / (1000*60*60*24), 14);
+
             CellStyle cellStyle = wb.createCellStyle();
             setCellStyle(cellStyle, true);
             setColorInStyle(cellStyle, color);
-            setCellValueAndStyle(BOSS, BOSS, firstCol, secondCol, cellStyle, boss.getName());
+            setCellValueAndStyle(BOSS, BOSS, firstCol, secondCol, cellStyle, boss.getName() + " - " + boss.getHardness() + "배율");
             List<IdLong> totalRank = database.recordDao().getRanksOfBossTotal(raidId, boss.getBossId());
-            List<IdLongCnt> avgRank = database.recordDao().getRanksOfBossAverage(raidId, boss.getBossId());
+            List<IdLongCnt> avgRank;
+            int cnt = dayNow / 2;
+            avgRank = database.recordDao().getRanksOfBossAverage(raidId, boss.getBossId(), cnt);
 
             for(int r=0; r<5; r++) {
                 setCellValueAndStyle(getOrCreateRow(FIRST + r).createCell(firstCol), dataCellStyle, database.memberDao().getMember(totalRank.get(r).memberId).getName());
                 setCellValueAndStyle(getOrCreateRow(FIRST + r).createCell(secondCol), dataCellStyle, calcHelper.getPercentage(totalRank.get(r).value, database.recordDao().getTotalOfBoss(raidId, boss.getBossId())));
-                Log.d("rank", database.memberDao().getMember(totalRank.get(r).memberId).getName() + ":" + totalRank.get(r).value );
 
                 setCellValueAndStyle(getOrCreateRow(SECOND + r).createCell(firstCol), dataCellStyle, database.memberDao().getMember(avgRank.get(r).memberId).getName());
                 setCellValueAndStyle(getOrCreateRow(SECOND + r).createCell(secondCol), dataCellStyle, calcHelper.getNumberFormat(avgRank.get(r).value) + " (" + avgRank.get(r).count + ")");

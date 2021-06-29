@@ -48,6 +48,10 @@ public abstract class RecordDao {
             "AND round >= :round")
     public abstract List<Record> get1BossRoundRecords(int memberId, int raidId, int bossId, int round);
 
+    @Query("SELECT SUM(damage) FROM Record WHERE raidId = :raidId AND bossId = :bossId " +
+            "AND round = :round")
+    public abstract long get1Boss1RoundSum(int raidId, int bossId, int round);
+
     @Query("SELECT * FROM Record WHERE raidId = :raidId AND bossId = :bossId")
     public abstract List<Record> getAllMemberBossRecords(int raidId, int bossId);
 
@@ -115,10 +119,12 @@ public abstract class RecordDao {
             "WHERE raidId = :raidId AND round = :round")
     public abstract long getMaxRoundRecordSum(int raidId, int round);
 
-    @Query("SELECT memberId, SUM(damage * hardness) as value " +
+    @Query("SELECT memberId, " +
+            "SUM(CASE WHEN isLastHit == 1 THEN (damage * hardness * 1.3) " +
+            "ELSE (damage * hardness) END) as value " +
             "from Record INNER JOIN Boss on Record.bossId = Boss.bossId " +
-            "WHERE Record.raidId = :raidId " +
-            "GROUP BY memberId ORDER BY value DESC LIMIT 5")
+            "WHERE Record.raidId = :raidId AND Record.day != 1 " +
+            "GROUP BY memberId ORDER BY value DESC LIMIT 30")
     public abstract List<IdLong> getRanksOfAdjustRecords(int raidId);
 
     @Query("SELECT memberId, SUM(damage) AS value " +
@@ -143,8 +149,13 @@ public abstract class RecordDao {
 
     @Query("SELECT memberId, AVG(damage) as value, COUNT(damage) as count FROM Record " +
             "WHERE raidId = :raidId AND bossId = :bossId AND isLastHit = 0 " +
-            "GROUP BY memberId HAVING count(memberId) > 2 ORDER BY value DESC LIMIT 5")
-    public abstract List<IdLongCnt> getRanksOfBossAverage(int raidId, int bossId);
+            "GROUP BY memberId HAVING count(memberId) >= :cnt ORDER BY value DESC LIMIT 5")
+    public abstract List<IdLongCnt> getRanksOfBossAverage(int raidId, int bossId, int cnt);
+
+    @Query("SELECT memberId, AVG(damage) as value, COUNT(damage) as count FROM Record " +
+            "WHERE raidId = :raidId AND bossId = :bossId AND isLastHit = 0 " +
+            "GROUP BY memberId ORDER BY value DESC LIMIT 5")
+    public abstract List<IdLongCnt> getRanksOfBossAverageAll(int raidId, int bossId);
 
     @Query("UPDATE Record SET damage = :damage, bossId = :bossId, round = :round, leaderId = :leaderId, isLastHit = :isLastHit" +
             " WHERE recordID = :rId")

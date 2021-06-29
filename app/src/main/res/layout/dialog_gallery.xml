@@ -11,22 +11,13 @@
         android:layout_height="50dp"
         android:background="#2D2F34"
         android:gravity="center"
-        android:text="보스 이미지"
+        android:text="이미지 선택"
         android:textColor="#D8B38E"
         android:textSize="20sp" />
 
-    <HorizontalScrollView
-        android:layout_width="wrap_content"
-        android:layout_height="120dp"
-        android:layout_gravity="center_vertical"
-        android:scrollbars="none">
-
-        <LinearLayout
-            android:id="@+id/id_gallery"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:orientation="horizontal" />
-    </HorizontalScrollView>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="300dp" />
 
 </LinearLayout>

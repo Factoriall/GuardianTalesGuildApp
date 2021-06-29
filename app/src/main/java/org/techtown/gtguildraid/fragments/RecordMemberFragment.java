@@ -324,10 +324,7 @@ public class RecordMemberFragment extends Fragment {
         dialogInfo.setText(memberList.get(sMemberIdx).getName() + " / "
                 + day + "일차 / " + (isEditing ? "수정\n리더: " + record.getLeader().getKoreanName() : "생성"));
 
-        if(day <= 3)
-            switchButton.setChecked(false);
-        else
-            switchButton.setChecked(true);
+        switchButton.setChecked(day > 3);
 
         isSetByRecord = switchButton.isChecked();
 
@@ -336,7 +333,7 @@ public class RecordMemberFragment extends Fragment {
         bossSwitch.setView(
                 R.layout.dialog_record_boss_select,
                 bosses.size(),
-                (ToggleSwitchButton.ToggleSwitchButtonDecorator) (toggleSwitchButton, view, position) -> {
+                (toggleSwitchButton, view, position) -> {
                     TextView textView = view.findViewById(R.id.bossName);
                     String name = bosses.get(position).getName();
                     if (name.length() > 5)
@@ -421,11 +418,11 @@ public class RecordMemberFragment extends Fragment {
                     heroList.add(hero.getKoreanName());
                     imageList.add(imageId);
                 }
+
                 SpinnerAdapter adapter = new DialogImageSpinnerAdapter(getContext(), R.layout.spinner_value_layout, heroList, imageList);
                 heroNames.setAdapter(adapter);
                 for (int j = 0; j < elementHeroes.size(); j++) {
                     if (selectedHeroId == elementHeroes.get(j).getHeroId()) {
-                        Log.d("setSelection", elementHeroes.get(j).getKoreanName());
                         heroNames.setSelection(j);
                         break;
                     }
@@ -459,12 +456,9 @@ public class RecordMemberFragment extends Fragment {
         });
 
         //스위치 누를 때 listener 생성
-        bossSwitch.setOnChangeListener(new ToggleSwitch.OnChangeListener() {
-            @Override
-            public void onToggleSwitchChanged(int position) {
-                selectedBossId = bosses.get(position).getBossId();
-                setFavoriteView(elements, favoritesList);
-            }
+        bossSwitch.setOnChangeListener(position -> {
+            selectedBossId = bosses.get(position).getBossId();
+            setFavoriteView(elements, favoritesList);
         });
 
         if (isEditing) {
