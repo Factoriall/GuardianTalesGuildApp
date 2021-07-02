@@ -90,8 +90,6 @@ public class StatisticMemberBasic2Fragment extends Fragment {
             BossHitCardAdapter adapter = new BossHitCardAdapter();
             recyclerView.setAdapter(adapter);
 
-            ProgressDialog mProgressDialog = ProgressDialog.show(getContext(), "잠시 대기","데이터베이스 접속 중", true);
-
             AppExecutor.getInstance().diskIO().execute(() -> {
                 List<Record> allRecords = database.recordDao().getAllRecordsWithExtra(raidId);
                 List<Record> memberRecords = database.recordDao()
@@ -115,8 +113,6 @@ public class StatisticMemberBasic2Fragment extends Fragment {
 
                 int finalLastHitCount = lastHitCount;
                 getActivity().runOnUiThread(() -> {
-                    mProgressDialog.dismiss();
-
                     damage.setText(getNumberFormat(memberDamage));
                     contribution.setText(getPercentage(memberDamage, allDamage));
                     hitNum.setText(memberRecords.size() + " / " + finalLastHitCount);

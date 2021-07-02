@@ -463,55 +463,5 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <LinearLayout
-            android:id="@+id/pastRaid"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/pastTab"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:background="#1B1B1B">
-
-                <TextView
-                    android:id="@+id/pastTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:padding="5dp"
-                    android:text="과거 레이드"
-                    android:textColor="#D8B38E"
-                    android:textSize="20sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <ImageView
-                    android:id="@+id/tabArrow"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="20dp"
-                    android:src="@drawable/icon_arrow_down"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:tint="#FFFFFF" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/raidRecyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/background_color"
-                android:visibility="gone"
-                tools:listitem="@layout/card_raid">
-
-            </androidx.recyclerview.widget.RecyclerView>
-
-        </LinearLayout>
-
     </LinearLayout>
 </ScrollView>

@@ -307,10 +307,9 @@ public class StatisticBossFragment extends Fragment {
     }
 
     private void setAllData() {
-        ProgressDialog mProgressDialog = ProgressDialog.show(getContext(), "잠시 대기","데이터베이스 접속 중", true);
+        ProgressDialog mProgressDialog = ProgressDialog.show(getContext(), "잠시 대기","보스 - 전체 데이터 저장", true);
         AppExecutor.getInstance().diskIO().execute(() -> {
             List<Record> records = database.recordDao().getAllRecordsWithExtra(raidId);
-
             getActivity().runOnUiThread(() -> {
                 mProgressDialog.dismiss();
                 setData(records);
@@ -319,12 +318,10 @@ public class StatisticBossFragment extends Fragment {
     }
 
     private void setBossData(Boss boss) {
-        ProgressDialog mProgressDialog = ProgressDialog.show(getContext(), "잠시 대기","데이터베이스 접속 중", true);
         int bossId = boss.getBossId();
         AppExecutor.getInstance().diskIO().execute(() -> {
             List<Record> records = database.recordDao().get1BossRecordsWithExtra(raidId, bossId);
             getActivity().runOnUiThread(() -> {
-                mProgressDialog.dismiss();
                 setData(records);
             });
         });

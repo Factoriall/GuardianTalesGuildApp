@@ -41,6 +41,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 public class RaidFragment extends Fragment implements BossBottomSheetDialog.BottomSheetListener {
     final String dateFormat = "yy/MM/dd";
@@ -54,9 +55,6 @@ public class RaidFragment extends Fragment implements BossBottomSheetDialog.Bott
     TextView raidName;
     TextView raidTerm;
     LinearLayout raidInfo;
-    LinearLayoutManager linearLayoutManager;
-    RecyclerView recyclerView;
-    RaidCardAdapter adapter;
 
     ImageView[] bossBtnList;
     LinearLayout bossInfo;
@@ -117,29 +115,6 @@ public class RaidFragment extends Fragment implements BossBottomSheetDialog.Bott
             bossBtnList[i-1].setOnClickListener(view -> updateBoss(finalI -1));
         }
 
-        List<Raid> pastRaids = database.raidDao().getPastRaids(today);
-
-        linearLayoutManager = new LinearLayoutManager(getActivity());
-        recyclerView = view.findViewById(R.id.raidRecyclerView);
-        recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.setNestedScrollingEnabled(false);
-
-        adapter = new RaidCardAdapter(pastRaids);
-        recyclerView.setAdapter(adapter);
-
-        ConstraintLayout pastTab = view.findViewById(R.id.pastTab);
-        final ImageView tabArrow = view.findViewById(R.id.tabArrow);
-        pastTab.setOnClickListener(view -> {
-            if(recyclerView.getVisibility() == View.VISIBLE){
-                tabArrow.setImageResource(R.drawable.icon_arrow_down);
-                recyclerView.setVisibility(View.GONE);
-            }
-            else{
-                tabArrow.setImageResource(R.drawable.icon_arrow_up);
-                recyclerView.setVisibility(View.VISIBLE);
-            }
-        });
-
         return view;
     }
 
@@ -159,15 +134,14 @@ public class RaidFragment extends Fragment implements BossBottomSheetDialog.Bott
         MySpinner elements = dialog.findViewById(R.id.elementSpinner);
         bossImageInDialog = dialog.findViewById(R.id.bossImage);
 
-        List<String> elementEnglishList = Arrays.asList(elementsEnglish);
         List<Integer> elementImageList = new ArrayList<>();
         elementImageList.add(0);
-        for (String elementName : elementEnglishList) {
+        for (String elementName : elementsEnglish) {
             int imageId = getIdentifierFromResource("element_" + elementName, "drawable");
             elementImageList.add(imageId);
         }
 
-        List<String> elementList = Arrays.asList(new String[]{"선택", "화", "수", "지", "광", "암", "무"});
+        List<String> elementList = Arrays.asList("선택", "화", "수", "지", "광", "암", "무");
         DialogImageSpinnerAdapter elementAdapter
                 = new DialogImageSpinnerAdapter(getContext(), R.layout.spinner_value_layout, elementList, elementImageList);
 
@@ -346,9 +320,6 @@ public class RaidFragment extends Fragment implements BossBottomSheetDialog.Bott
         Date aEnd = adjustEndTime(currentRaid.getEndDay());
 
         List<Boss> bosses = currentRaid.getBossList();
-        for(int i=0; i<bosses.size(); i++){
-            Log.d("bossName", bosses.get(i).getName());
-        }
 
         for(int i=1; i<=4; i++){
             int nameId = getIdentifierFromResource("boss" + i, "id");
@@ -404,6 +375,6 @@ public class RaidFragment extends Fragment implements BossBottomSheetDialog.Bott
 
     int getIdentifierFromResource(String name, String defType){
         return getResources().getIdentifier(
-                name, defType, getContext().getPackageName());
+                name, defType, Objects.requireNonNull(getContext()).getPackageName());
     }
 }

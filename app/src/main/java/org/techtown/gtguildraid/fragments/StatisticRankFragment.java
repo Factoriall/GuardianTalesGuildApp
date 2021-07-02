@@ -1,13 +1,15 @@
 package org.techtown.gtguildraid.fragments;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,30 +22,20 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.llollox.androidtoggleswitch.widgets.ToggleSwitch;
-
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.hssf.util.HSSFColor;
-import org.apache.poi.ss.usermodel.BorderStyle;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.util.CellRangeAddress;
 import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.adapters.StatisticRankCardAdapter;
 import org.techtown.gtguildraid.etc.RankPoi;
 import org.techtown.gtguildraid.models.Boss;
 import org.techtown.gtguildraid.models.GuildMember;
-import org.techtown.gtguildraid.models.Raid;
 import org.techtown.gtguildraid.models.RankInfo;
 import org.techtown.gtguildraid.models.Record;
 import org.techtown.gtguildraid.utils.AppExecutor;
 import org.techtown.gtguildraid.utils.RoomDB;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class StatisticRankFragment extends Fragment {
     static int raidId;
@@ -52,6 +44,7 @@ public class StatisticRankFragment extends Fragment {
     static int levelPosition;
     static boolean isAverageMode;
     static boolean isAdjustMode;
+    static boolean isDay1Contained;
     static ArrayList<String> bossLabels = new ArrayList<>();
     static ArrayList<String> levelLabels = new ArrayList<>();
     RoomDB database;
@@ -76,25 +69,13 @@ public class StatisticRankFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter = new StatisticRankCardAdapter();
         recyclerView.setAdapter(adapter);
+        isDay1Contained = true;
 
         if (getArguments() != null) {
             raidId = getArguments().getInt("raidId");
         }
 
         database = RoomDB.getInstance(getActivity());
-
-        ImageButton arrow = view.findViewById(R.id.arrow);
-        ConstraintLayout cl = view.findViewById(R.id.conditionLayout);
-        arrow.setOnClickListener(view -> {
-            if(cl.getVisibility() == View.VISIBLE){
-                cl.setVisibility(View.GONE);
-                arrow.setImageResource(R.drawable.icon_arrow_down);
-            }
-            else{
-                cl.setVisibility(View.VISIBLE);
-                arrow.setImageResource(R.drawable.icon_arrow_up);
-            }
-        });
 
         ToggleSwitch bossSwitch = view.findViewById(R.id.toggleSwitchBoss);
         List<Boss> bossesInRaid = database.raidDao().getBossesList(raidId);
@@ -116,7 +97,26 @@ public class StatisticRankFragment extends Fragment {
             setRankView();
         });
 
-        ToggleSwitch levelSwitch = view.findViewById(R.id.toggleSwitchLevel);
+        ImageView settingButton = view.findViewById(R.id.setting);
+        settingButton.setOnClickListener(view -> {
+            setSettingDialog();
+        });
+
+
+
+        setRankView();
+
+        return view;
+    }
+
+    private void setSettingDialog() {
+        final Dialog dialog = new Dialog(getActivity());
+
+        dialog.setContentView(R.layout.dialog_rank_setting);
+        int width = WindowManager.LayoutParams.MATCH_PARENT;
+        int height = WindowManager.LayoutParams.WRAP_CONTENT;
+        dialog.getWindow().setLayout(width, height);
+        dialog.show();
 
         if(levelLabels.isEmpty()) {
             levelLabels.add("Lv.50↑");
@@ -126,60 +126,66 @@ public class StatisticRankFragment extends Fragment {
             levelLabels.add("Lv.80");
         }
 
+        ToggleSwitch levelSwitch = dialog.findViewById(R.id.toggleSwitchLevel);
         levelSwitch.setEntries(levelLabels);
-        levelSwitch.setCheckedPosition(0);
-        levelPosition = 0;
+        levelSwitch.setCheckedPosition(levelPosition);
+
         levelSwitch.setOnChangeListener(i -> {
             levelPosition = i;
-            setRankView();
         });
 
-        ToggleSwitch avgSwitch = view.findViewById(R.id.toggleSwitchAvg);
-        avgSwitch.setCheckedPosition(0);
-        isAverageMode = false;
+        ToggleSwitch avgSwitch = dialog.findViewById(R.id.toggleSwitchAvg);
+        avgSwitch.setCheckedPosition(isAverageMode ? 1 : 0);
         avgSwitch.setOnChangeListener(i -> {
             isAverageMode = i == 1;
-            setRankView();
         });
 
-        Switch adjustSwitch = view.findViewById(R.id.adjustSwitch);
-        isAdjustMode = adjustSwitch.isChecked();
+        Switch adjustSwitch = dialog.findViewById(R.id.adjustSwitch);
+        adjustSwitch.setChecked(isAdjustMode);
         adjustSwitch.setOnCheckedChangeListener((compoundButton, b) -> {
             isAdjustMode = b;
+        });
+
+        Switch day1AdjustSwitch = dialog.findViewById(R.id.day1AdjustSwitch);
+        day1AdjustSwitch.setChecked(isDay1Contained);
+        day1AdjustSwitch.setOnCheckedChangeListener((compoundButton, b) -> {
+            isDay1Contained = b;
+        });
+
+        Button completeButton = dialog.findViewById(R.id.completeButton);
+        completeButton.setOnClickListener(view -> {
             setRankView();
+            dialog.dismiss();
         });
 
-        excelButton = view.findViewById(R.id.excelButton);
-        excelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(database.recordDao().getAllRecords(raidId).size() == 0) {
-                    Toast.makeText(getContext(), "데이터 없음", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                ProgressDialog mProgressDialog = ProgressDialog.show(getContext(), "잠시 대기","CSV 파일 생성 중...", true);
-
-                AppExecutor.getInstance().diskIO().execute(() -> {
-                    RankPoi rp = new RankPoi(database.raidDao().getRaidWithBosses(raidId), database);
-                    rp.exportDataToExcel();
-                    getActivity().runOnUiThread(() -> {
-                        mProgressDialog.dismiss();
-                        Toast.makeText(getContext(), "생성 완료", Toast.LENGTH_SHORT).show();
-                    });
-                });
+        excelButton = dialog.findViewById(R.id.excelButton);
+        excelButton.setOnClickListener(view -> {
+            if(database.recordDao().getAllRecords(raidId).size() == 0) {
+                Toast.makeText(getContext(), "데이터 없음", Toast.LENGTH_SHORT).show();
+                return;
             }
+            ProgressDialog mProgressDialog = ProgressDialog.show(getContext(), "잠시 대기","CSV 파일 생성 중...", true);
+
+            AppExecutor.getInstance().diskIO().execute(() -> {
+                RankPoi rp = new RankPoi(database.raidDao().getRaidWithBosses(raidId), database);
+                rp.exportDataToExcel();
+                Objects.requireNonNull(getActivity()).runOnUiThread(() -> {
+                    mProgressDialog.dismiss();
+                    Toast.makeText(getContext(), "생성 완료", Toast.LENGTH_SHORT).show();
+                });
+            });
         });
-
-        setRankView();
-
-        return view;
     }
 
     private void setRankView() {
         int[] rounds = {1, 7, 12, 17, 22};
-
+        ProgressDialog mProgressDialog = null;
         List<RankInfo> rankInfos = new ArrayList<>();
-        ProgressDialog mProgressDialog = ProgressDialog.show(getContext(), "잠시 대기","데이터베이스 접속 중", true);
+        if(bossPosition == 0) {
+            mProgressDialog
+                    = ProgressDialog.show(getContext(), "잠시 대기", "보스 - 전체 데이터 저장", true);
+        }
+        ProgressDialog finalMProgressDialog = mProgressDialog;
         AppExecutor.getInstance().diskIO().execute(() -> {
             List<GuildMember> members = database.memberDao().getAllMembers();
             for(GuildMember m : members) {
@@ -187,18 +193,22 @@ public class StatisticRankFragment extends Fragment {
                     continue;
 
                 List<Record> recordList;
+                int day = 1;
+                if(!isDay1Contained) day = 2;
                 if(bossPosition != 0) {
                     recordList = database.recordDao().get1MemberRoundRecordsWithExtra(
                             m.getID(),
                             raidId,
                             database.raidDao().getBossesList(raidId).get(bossPosition-1).getBossId(),
-                            rounds[levelPosition]);
+                            rounds[levelPosition],
+                            day);
                 }
                 else{
                     recordList = database.recordDao().get1MemberRoundRecordsWithExtra(
                             m.getID(),
                             raidId,
-                            rounds[levelPosition]);
+                            rounds[levelPosition],
+                            day);
                 }
 
                 RankInfo ri = new RankInfo(m.getName(), recordList.size());
@@ -221,11 +231,31 @@ public class StatisticRankFragment extends Fragment {
             Collections.sort(rankInfos);
             adapter.setItems(rankInfos);
 
-            getActivity().runOnUiThread(() -> {
-                mProgressDialog.dismiss();
+            Objects.requireNonNull(getActivity()).runOnUiThread(() -> {
+                if(bossPosition == 0) finalMProgressDialog.dismiss();
                 TextView conditionText = view.findViewById(R.id.conditionText);
-                conditionText.setText(bossLabels.get(bossPosition) + " / " + levelLabels.get(levelPosition) +
-                        " / " + (isAverageMode ? "평균" : "총합") + " / 배율 " + (isAdjustMode ? "ON" : "OFF"));
+                String levelInfo = "";
+                switch(levelPosition){
+                    case 0:
+                        levelInfo = "전체";
+                        break;
+                    case 1:
+                        levelInfo = "Lv.66 이상";
+                        break;
+                    case 2:
+                        levelInfo = "Lv.71 이상";
+                        break;
+                    case 3:
+                        levelInfo = "Lv.76 이상";
+                        break;
+                    case 4:
+                        levelInfo = "Lv.80";
+
+                }
+                conditionText.setText(levelInfo + " / "
+                        + (isAverageMode ? "평균" : "총합")
+                        + "\n배율 " + (isAdjustMode ? "ON" : "OFF")
+                        + " / 1일차 적용 " + (isDay1Contained ? "ON" : "OFF"));
                 adapter.setItems(rankInfos);
                 adapter.notifyDataSetChanged();
             });

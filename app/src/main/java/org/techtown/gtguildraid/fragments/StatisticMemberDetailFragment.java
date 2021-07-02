@@ -29,6 +29,11 @@ import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.utils.MPPointF;
 import com.llollox.androidtoggleswitch.widgets.ToggleSwitch;
 
+import org.apache.poi.ss.usermodel.Drawing;
+import org.apache.poi.xssf.usermodel.XSSFChart;
+import org.apache.poi.xssf.usermodel.XSSFDrawing;
+import org.apache.poi.xssf.usermodel.charts.XSSFChartAxis;
+import org.apache.poi.xssf.usermodel.charts.XSSFValueAxis;
 import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.adapters.StatisticMemberLeaderAdapter;
 import org.techtown.gtguildraid.models.Boss;
@@ -265,6 +270,8 @@ public class StatisticMemberDetailFragment extends Fragment {
             setView();
         });
 
+
+
         setView();
 
         return view;
@@ -291,14 +298,12 @@ public class StatisticMemberDetailFragment extends Fragment {
 
     private void setBossData(Boss boss) {
         int bossId = boss.getBossId();
-        ProgressDialog mProgressDialog = ProgressDialog.show(getContext(), "잠시 대기","데이터베이스 접속 중", true);
         AppExecutor.getInstance().diskIO().execute(() -> {
             List<Record> allRecords = database.recordDao().get1BossRecordsWithExtra(raidId, bossId);
             List<Record> memberRecords = database.recordDao()
                     .get1MemberRecordsWithExtra(memberId, raidId, bossId);
 
             getActivity().runOnUiThread(() -> {
-                mProgressDialog.dismiss();
                 setLeaderCard(memberRecords);
                 setData(allRecords, memberRecords);
             });

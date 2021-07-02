@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/info_card_out"
+    android:padding="10dp">
+
+    <TextView
+        android:id="@+id/rankSettingText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:text="순위표 정렬 기준 설정"
+        android:textColor="@color/bg_icon"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/levelText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="20dp"
+        android:text="레벨"
+        android:textColor="#FFFFFF"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rankSettingText" />
+
+    <com.llollox.androidtoggleswitch.widgets.ToggleSwitch
+        android:id="@+id/toggleSwitchLevel"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="@+id/levelText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/levelText"
+        app:layout_constraintTop_toTopOf="@+id/levelText">
+
+    </com.llollox.androidtoggleswitch.widgets.ToggleSwitch>
+
+    <TextView
+        android:id="@+id/averageText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="30dp"
+        android:text="기준"
+        android:textColor="#FFFFFF"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/levelText" />
+
+    <com.llollox.androidtoggleswitch.widgets.ToggleSwitch
+        android:id="@+id/toggleSwitchAvg"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:gravity="center"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="@+id/averageText"
+        app:layout_constraintStart_toEndOf="@+id/averageText"
+        app:layout_constraintTop_toTopOf="@+id/averageText"
+        app:textToggleLeft="총합"
+        app:textToggleRight="평균" />
+
+    <Switch
+        android:id="@+id/adjustSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="30dp"
+        android:text="배율 적용"
+        android:textColor="#FFFFFF"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/averageText" />
+
+    <Button
+        android:id="@+id/completeButton"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_marginStart="10dp"
+        android:background="@drawable/bg_login_button"
+        android:text="적용"
+        app:layout_constraintBottom_toBottomOf="@+id/rankSettingText"
+        app:layout_constraintStart_toEndOf="@+id/rankSettingText"
+        app:layout_constraintTop_toTopOf="@+id/rankSettingText" />
+
+    <Switch
+        android:id="@+id/day1AdjustSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:text="Day 1 적용"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="@+id/adjustSwitch"
+        app:layout_constraintStart_toEndOf="@+id/adjustSwitch"
+        app:layout_constraintTop_toTopOf="@+id/adjustSwitch" />
+
+    <TextView
+        android:id="@+id/textView19"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="10dp"
+        android:text="Excel로 순위표 추출"
+        android:textColor="@color/bg_icon"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/adjustSwitch" />
+
+    <Button
+        android:id="@+id/excelButton"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_marginStart="10dp"
+        android:background="@drawable/bg_login_button"
+        android:text="엑셀 변환"
+        app:layout_constraintBottom_toBottomOf="@+id/textView19"
+        app:layout_constraintStart_toEndOf="@+id/textView19"
+        app:layout_constraintTop_toTopOf="@+id/textView19" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

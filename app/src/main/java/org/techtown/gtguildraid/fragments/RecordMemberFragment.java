@@ -316,6 +316,7 @@ public class RecordMemberFragment extends Fragment {
         HorizontalScrollView hsv = dialog.findViewById(R.id.favoriteScrollView);
         LinearLayout favoritesList = dialog.findViewById(R.id.favoriteList);
         SwitchButton switchButton = dialog.findViewById(R.id.viewSwitch);
+
         MySpinner elements;
         Spinner heroNames;
 
@@ -344,11 +345,11 @@ public class RecordMemberFragment extends Fragment {
                     imageView.setImageResource(
                             getIdentifierFromResource("boss_" + bosses.get(position).getImgName(), "drawable"));
                 },
-                (ToggleSwitchButton.ViewDecorator) (view, position) -> {
+                (view, position) -> {
                     TextView textView = view.findViewById(R.id.bossName);
                     textView.setTextColor(ContextCompat.getColor(getActivity(), android.R.color.white));
                 },
-                (ToggleSwitchButton.ViewDecorator) (view, position) -> {
+                (view, position) -> {
                     TextView textView = (TextView) view.findViewById(R.id.bossName);
                     textView.setTextColor(ContextCompat.getColor(getActivity(), R.color.gray));
                 });
@@ -438,21 +439,18 @@ public class RecordMemberFragment extends Fragment {
         else
             oneCutButton.setVisibility(View.GONE);
 
-        oneCutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                isLastHit.setChecked(true);
-                final int[] hpPerRound = {1080000, 1080000,
-                        1237500, 1237500,
-                        1500000, 1500000,
-                        2025000, 2640000, 3440000, 4500000, 5765625,
-                        7500000, 9750000, 12000000, 16650000, 24000000,
-                        35000000, 50000000, 72000000,
-                        100000000, 140000000, 200000000};
+        oneCutButton.setOnClickListener(view -> {
+            isLastHit.setChecked(true);
+            final int[] hpPerRound = {1080000, 1080000,
+                    1237500, 1237500,
+                    1500000, 1500000,
+                    2025000, 2640000, 3440000, 4500000, 5765625,
+                    7500000, 9750000, 12000000, 16650000, 24000000,
+                    35000000, 50000000, 72000000,
+                    100000000, 140000000, 200000000};
 
-                int idx = pickerIdx[0] < hpPerRound.length ? pickerIdx[0] : hpPerRound.length - 1;
-                damage.setText(Integer.toString(hpPerRound[idx]));
-            }
+            int idx = pickerIdx[0] < hpPerRound.length ? pickerIdx[0] : hpPerRound.length - 1;
+            damage.setText(Integer.toString(hpPerRound[idx]));
         });
 
         //스위치 누를 때 listener 생성
@@ -482,12 +480,9 @@ public class RecordMemberFragment extends Fragment {
             }
         }
 
-        switchButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                isSetByRecord = isChecked;
-                setFavoriteView(elements, favoritesList);
-            }
+        switchButton.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+            isSetByRecord = isChecked;
+            setFavoriteView(elements, favoritesList);
         });
 
         setFavoriteView(elements, favoritesList);
@@ -600,10 +595,10 @@ public class RecordMemberFragment extends Fragment {
 
     private void refreshRecordFavorites(Spinner elements, LinearLayout favoritesList){
         favoritesList.removeAllViews();
-        List<Integer> leaderids = database.recordDao()
+        List<Integer> leaderIds = database.recordDao()
                 .getLeaderIdsDesc(memberList.get(sMemberIdx).getId(), raidId, selectedBossId);
         boolean isFirst = true;
-        for(int id: leaderids){
+        for(int id: leaderIds){
             LayoutInflater vi = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View v = vi.inflate(R.layout.card_favorites, null);
 

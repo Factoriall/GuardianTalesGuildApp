@@ -7,6 +7,36 @@
     android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/bossSwitchLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/tab_color"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/conditionAdjustLayout">
+
+        <com.llollox.androidtoggleswitch.widgets.ToggleSwitch
+            android:id="@+id/toggleSwitchBoss"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:paddingStart="20dp"
+            android:paddingTop="10dp"
+            android:paddingEnd="20dp"
+            android:paddingBottom="10dp"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+        </com.llollox.androidtoggleswitch.widgets.ToggleSwitch>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/conditionAdjustLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -17,121 +47,28 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/conditionTabTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="10dp"
-            android:text="조건"
-            android:textColor="#FFFFFF"
-            android:textSize="20sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageButton
-            android:id="@+id/arrow"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginEnd="20dp"
-            android:background="@null"
-            android:src="@drawable/icon_arrow_up"
-            android:tint="#FFFFFF"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
             android:id="@+id/conditionText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="3dp"
-            android:layout_marginBottom="10dp"
             android:text="///"
             android:textColor="@color/member_card_out"
+            android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/conditionTabTitle" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="3dp"
-        android:background="@color/background_color"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/conditionLayout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/conditionAdjustLayout"/>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/conditionLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/tab_color"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/conditionAdjustLayout">
-
-        <com.llollox.androidtoggleswitch.widgets.ToggleSwitch
-            android:id="@+id/toggleSwitchBoss"
-            android:layout_width="320dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
+        <ImageView
+            android:id="@+id/setting"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_marginTop="10dp"
-            android:textSize="14sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-        </com.llollox.androidtoggleswitch.widgets.ToggleSwitch>
-
-
-        <com.llollox.androidtoggleswitch.widgets.ToggleSwitch
-            android:id="@+id/toggleSwitchLevel"
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="10dp"
-            android:gravity="center"
-            android:textSize="14sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/toggleSwitchBoss" />
-
-        <com.llollox.androidtoggleswitch.widgets.ToggleSwitch
-            android:id="@+id/toggleSwitchAvg"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginEnd="20dp"
             android:layout_marginBottom="10dp"
-            android:gravity="center"
-            android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/toggleSwitchLevel"
-            app:textToggleLeft="총합"
-            app:textToggleRight="평균" />
-
-        <Switch
-            android:id="@+id/adjustSwitch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
-            android:text="배율"
-            android:textColor="#FFFFFF"
-            app:layout_constraintBottom_toBottomOf="@+id/toggleSwitchAvg"
-            app:layout_constraintStart_toEndOf="@+id/toggleSwitchAvg"
-            app:layout_constraintTop_toTopOf="@+id/toggleSwitchAvg" />
-
-        <Button
-            android:id="@+id/excelButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="10dp"
-            android:text="엑셀 변환"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/icon_setting" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -141,8 +78,9 @@
         android:layout_height="wrap_content"
         android:background="@color/record_card_in"
         android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/conditionLayout"
-        tools:layout_editor_absoluteX="7dp">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/bossSwitchLayout">
 
         <TextView
             android:id="@+id/rankNum"

@@ -35,8 +35,8 @@ public abstract class RecordDao {
             "GROUP BY leaderId ORDER BY COUNT(*) DESC")
     public abstract List<Integer> getLeaderIdsDesc(int memberId, int raidId, int bossId);
 
-    @Query("SELECT * FROM Record WHERE memberId = :memberId AND raidId = :raidId AND round >= :round")
-    public abstract List<Record> get1MemberRoundRecords(int memberId, int raidId, int round);
+    @Query("SELECT * FROM Record WHERE memberId = :memberId AND raidId = :raidId AND round >= :round AND day >= :day")
+    public abstract List<Record> get1MemberRoundRecords(int memberId, int raidId, int round, int day);
 
     @Query("SELECT * FROM Record WHERE memberId = :memberId AND raidId = :raidId AND day = :day")
     public abstract List<Record> get1DayRecords(int memberId, int raidId, int day);
@@ -45,8 +45,8 @@ public abstract class RecordDao {
     public abstract List<Record> get1BossRecords(int memberId, int raidId, int bossId);
 
     @Query("SELECT * FROM Record WHERE memberId = :memberId AND raidId = :raidId AND bossId = :bossId " +
-            "AND round >= :round")
-    public abstract List<Record> get1BossRoundRecords(int memberId, int raidId, int bossId, int round);
+            "AND round >= :round AND day >= :day")
+    public abstract List<Record> get1BossRoundRecords(int memberId, int raidId, int bossId, int round, int day);
 
     @Query("SELECT SUM(damage) FROM Record WHERE raidId = :raidId AND bossId = :bossId " +
             "AND round = :round")
@@ -228,8 +228,8 @@ public abstract class RecordDao {
         return records;
     }
 
-    public List<Record> get1MemberRoundRecordsWithExtra(int memberId, int raidId, int bossId, int round) {
-        List<Record> records = get1BossRoundRecords(memberId, raidId, bossId, round);
+    public List<Record> get1MemberRoundRecordsWithExtra(int memberId, int raidId, int bossId, int round, int day) {
+        List<Record> records = get1BossRoundRecords(memberId, raidId, bossId, round, day);
         for (Record record : records) {
             Boss boss = getBoss(record.getBossId());
             record.setBoss(boss);
@@ -241,8 +241,8 @@ public abstract class RecordDao {
         return records;
     }
 
-    public List<Record> get1MemberRoundRecordsWithExtra(int memberId, int raidId, int round) {
-        List<Record> records = get1MemberRoundRecords(memberId, raidId, round);
+    public List<Record> get1MemberRoundRecordsWithExtra(int memberId, int raidId, int round, int day) {
+        List<Record> records = get1MemberRoundRecords(memberId, raidId, round, day);
         for (Record record : records) {
             Boss boss = getBoss(record.getBossId());
             record.setBoss(boss);
