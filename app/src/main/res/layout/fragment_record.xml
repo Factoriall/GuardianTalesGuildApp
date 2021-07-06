@@ -5,8 +5,62 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+    <androidx.cardview.widget.CardView
+        android:id="@+id/currentRaidCard"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        app:cardElevation="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/currentTab">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_card_raid_main">
+
+            <ImageView
+                android:id="@+id/raidThumbnail"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginStart="10dp"
+                android:background="#133C38"
+                android:padding="5dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:srcCompat="@tools:sample/avatars" />
+
+            <TextView
+                android:id="@+id/raidName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="10dp"
+                android:text="출동! 해양 구조대"
+                android:textSize="32sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@+id/raidThumbnail"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/raidTerm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="15dp"
+                android:layout_marginBottom="10dp"
+                android:text="20-06-05 ~ 20-06-18"
+                android:textSize="18sp"
+                android:textStyle="italic"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
 
 
+    <!--
     <LinearLayout
         android:id="@+id/termCard"
         android:layout_width="match_parent"
@@ -69,7 +123,7 @@
             android:text="기간"
             android:textColor="#FFFFFF"
             android:textStyle="bold" />
-    </LinearLayout>
+    </LinearLayout> -->
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabs"
@@ -77,7 +131,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/raidCard"
+        app:layout_constraintTop_toBottomOf="@+id/currentRaidCard"
         app:tabBackground="@drawable/tab_color_selector_record"
         app:tabIndicatorHeight="0dp"
         app:tabMode="scrollable"

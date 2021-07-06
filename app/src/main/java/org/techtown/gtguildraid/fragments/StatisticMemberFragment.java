@@ -15,13 +15,8 @@ import androidx.fragment.app.Fragment;
 import com.kyleduo.switchbutton.SwitchButton;
 
 import org.angmarch.views.NiceSpinner;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.hssf.util.HSSFColor;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Sheet;
 import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.etc.MemberPoi;
-import org.techtown.gtguildraid.interfaces.CalculateFormatHelper;
 import org.techtown.gtguildraid.models.GuildMember;
 import org.techtown.gtguildraid.utils.AppExecutor;
 import org.techtown.gtguildraid.utils.RoomDB;

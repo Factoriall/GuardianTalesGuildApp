@@ -6,10 +6,10 @@ import androidx.room.Insert;
 import androidx.room.Query;
 
 import org.techtown.gtguildraid.models.Boss;
-import org.techtown.gtguildraid.models.IdDouble;
-import org.techtown.gtguildraid.models.IdLongCnt;
-import org.techtown.gtguildraid.models.IdLong;
 import org.techtown.gtguildraid.models.Hero;
+import org.techtown.gtguildraid.models.IdDouble;
+import org.techtown.gtguildraid.models.IdLong;
+import org.techtown.gtguildraid.models.IdLongCnt;
 import org.techtown.gtguildraid.models.Record;
 
 import java.util.List;

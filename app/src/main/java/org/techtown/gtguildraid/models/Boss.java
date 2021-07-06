@@ -26,6 +26,9 @@ public class Boss implements Serializable {
     @ColumnInfo(name = "elementId")
     private int elementId;
 
+    @ColumnInfo(name = "isFurious")
+    private boolean isFurious;
+
     public int getBossId() {
         return bossId;
     }
@@ -72,5 +75,13 @@ public class Boss implements Serializable {
 
     public void setElementId(int elementId) {
         this.elementId = elementId;
+    }
+
+    public boolean isFurious() {
+        return isFurious;
+    }
+
+    public void setFurious(boolean furious) {
+        isFurious = furious;
     }
 }

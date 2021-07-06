@@ -1,6 +1,5 @@
 package org.techtown.gtguildraid.fragments;
 
-import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -29,11 +28,6 @@ import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.utils.MPPointF;
 import com.llollox.androidtoggleswitch.widgets.ToggleSwitch;
 
-import org.apache.poi.ss.usermodel.Drawing;
-import org.apache.poi.xssf.usermodel.XSSFChart;
-import org.apache.poi.xssf.usermodel.XSSFDrawing;
-import org.apache.poi.xssf.usermodel.charts.XSSFChartAxis;
-import org.apache.poi.xssf.usermodel.charts.XSSFValueAxis;
 import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.adapters.StatisticMemberLeaderAdapter;
 import org.techtown.gtguildraid.models.Boss;

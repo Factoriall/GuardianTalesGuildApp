@@ -11,6 +11,7 @@ import androidx.room.TypeConverters;
 import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
+import org.techtown.gtguildraid.interfaces.BossDao;
 import org.techtown.gtguildraid.interfaces.FavoritesDao;
 import org.techtown.gtguildraid.interfaces.HeroDao;
 import org.techtown.gtguildraid.interfaces.MemberDao;
@@ -26,7 +27,7 @@ import org.techtown.gtguildraid.models.Record;
 
 
 //Add database entities
-@Database(entities = {GuildMember.class, Boss.class, Raid.class, Hero.class, Record.class, Favorites.class}, version = 23, exportSchema = false)
+@Database(entities = {GuildMember.class, Boss.class, Raid.class, Hero.class, Record.class, Favorites.class}, version = 24, exportSchema = false)
 @TypeConverters(DateConverter.class)
 public abstract class RoomDB extends RoomDatabase {
     private static RoomDB database;
@@ -230,6 +231,17 @@ public abstract class RoomDB extends RoomDatabase {
         }
     };
 
+    //엘레노아 데이터 추가, 보스 isFurious 추가 - 2021.07.06
+    static final Migration MIGRATION_23_24 = new Migration(23, 24) {//hero 데이터 업데이트
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            database.execSQL("INSERT INTO hero (koreanName, englishName, element, star, role) "
+                    + "VALUES ('엘레노아', 'eleanor', 4, 3, 4)");
+            database.execSQL("ALTER TABLE Boss " +
+                    "ADD COLUMN isFurious INTEGER NOT NULL DEFAULT 0");
+        }
+    };
+
 
     public synchronized static RoomDB getInstance(Context context){//Singleton Pattern!
         if(database == null){//initialize
@@ -256,6 +268,7 @@ public abstract class RoomDB extends RoomDatabase {
                     .addMigrations(MIGRATION_20_21)
                     .addMigrations(MIGRATION_21_22)
                     .addMigrations(MIGRATION_22_23)
+                    .addMigrations(MIGRATION_23_24)
                     .build();
         }
         else{
@@ -270,4 +283,5 @@ public abstract class RoomDB extends RoomDatabase {
     public abstract RecordDao recordDao();
     public abstract HeroDao heroDao();
     public abstract FavoritesDao favoritesDao();
+    public abstract BossDao bossDao();
 }

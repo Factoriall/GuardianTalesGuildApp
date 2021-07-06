@@ -9,19 +9,18 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.llollox.androidtoggleswitch.widgets.ToggleSwitch;
+
 import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.adapters.StatisticRankCardAdapter;
 import org.techtown.gtguildraid.etc.RankPoi;
@@ -97,7 +96,7 @@ public class StatisticRankFragment extends Fragment {
             setRankView();
         });
 
-        ImageView settingButton = view.findViewById(R.id.setting);
+        ImageButton settingButton = view.findViewById(R.id.setting);
         settingButton.setOnClickListener(view -> {
             setSettingDialog();
         });
@@ -130,27 +129,19 @@ public class StatisticRankFragment extends Fragment {
         levelSwitch.setEntries(levelLabels);
         levelSwitch.setCheckedPosition(levelPosition);
 
-        levelSwitch.setOnChangeListener(i -> {
-            levelPosition = i;
-        });
+        levelSwitch.setOnChangeListener(i -> levelPosition = i);
 
         ToggleSwitch avgSwitch = dialog.findViewById(R.id.toggleSwitchAvg);
         avgSwitch.setCheckedPosition(isAverageMode ? 1 : 0);
-        avgSwitch.setOnChangeListener(i -> {
-            isAverageMode = i == 1;
-        });
+        avgSwitch.setOnChangeListener(i -> isAverageMode = i == 1);
 
         Switch adjustSwitch = dialog.findViewById(R.id.adjustSwitch);
         adjustSwitch.setChecked(isAdjustMode);
-        adjustSwitch.setOnCheckedChangeListener((compoundButton, b) -> {
-            isAdjustMode = b;
-        });
+        adjustSwitch.setOnCheckedChangeListener((compoundButton, b) -> isAdjustMode = b);
 
         Switch day1AdjustSwitch = dialog.findViewById(R.id.day1AdjustSwitch);
         day1AdjustSwitch.setChecked(isDay1Contained);
-        day1AdjustSwitch.setOnCheckedChangeListener((compoundButton, b) -> {
-            isDay1Contained = b;
-        });
+        day1AdjustSwitch.setOnCheckedChangeListener((compoundButton, b) -> isDay1Contained = b);
 
         Button completeButton = dialog.findViewById(R.id.completeButton);
         completeButton.setOnClickListener(view -> {

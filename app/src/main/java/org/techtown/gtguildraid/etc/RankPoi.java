@@ -3,7 +3,6 @@ package org.techtown.gtguildraid.etc;
 import android.util.Log;
 
 import org.apache.poi.hssf.util.HSSFColor;
-import org.apache.poi.ss.formula.functions.Rank;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.techtown.gtguildraid.interfaces.CalculateFormatHelper;

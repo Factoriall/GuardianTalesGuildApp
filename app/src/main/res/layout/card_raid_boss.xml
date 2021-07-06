@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="2dp"
+    android:background="@drawable/bg_card_raid_boss">
+
+    <ImageView
+        android:id="@+id/bossImage"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_margin="10dp"
+        android:background="@color/bg_text"
+        android:padding="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@drawable/boss_gast" />
+
+    <TextView
+        android:id="@+id/bossName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:text="설인 장군 가스트"
+        android:textColor="#FFFFFF"
+        android:textSize="26sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/bossImage"
+        app:layout_constraintTop_toTopOf="@+id/bossImage" />
+
+    <TextView
+        android:id="@+id/elementText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginBottom="10dp"
+        android:text="속성"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="@+id/bossImage"
+        app:layout_constraintStart_toEndOf="@+id/bossImage" />
+
+    <ImageView
+        android:id="@+id/elementImage"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="5dp"
+        app:layout_constraintBottom_toBottomOf="@+id/elementText"
+        app:layout_constraintStart_toEndOf="@+id/elementText"
+        app:layout_constraintTop_toTopOf="@+id/elementText"
+        app:srcCompat="@drawable/element_water" />
+
+    <TextView
+        android:id="@+id/hardnessText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:text="배율"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="@+id/elementText"
+        app:layout_constraintStart_toEndOf="@+id/elementImage"
+        app:layout_constraintTop_toTopOf="@+id/elementText" />
+
+    <TextView
+        android:id="@+id/hardness"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:text="x 1.6"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        android:textStyle="italic"
+        app:layout_constraintBottom_toBottomOf="@+id/hardnessText"
+        app:layout_constraintStart_toEndOf="@+id/hardnessText"
+        app:layout_constraintTop_toTopOf="@+id/hardnessText" />
+
+    <ImageButton
+        android:id="@+id/editButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/icon_create" />
+
+    <ImageView
+        android:id="@+id/furious"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/bossName"
+        app:layout_constraintStart_toEndOf="@+id/bossName"
+        app:layout_constraintTop_toTopOf="@+id/bossName"
+        app:srcCompat="@drawable/icon_furious" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

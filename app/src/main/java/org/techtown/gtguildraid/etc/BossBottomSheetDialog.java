@@ -1,5 +1,7 @@
 package org.techtown.gtguildraid.etc;
 
+import android.app.Activity;
+import android.app.FragmentManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +20,7 @@ import org.techtown.gtguildraid.R;
 public class BossBottomSheetDialog extends BottomSheetDialogFragment {
     private final BottomSheetListener mListener;
     private LayoutInflater mInflater;
+
 
     private static class imageInfo{
         final String imgName;
@@ -54,6 +57,10 @@ public class BossBottomSheetDialog extends BottomSheetDialogFragment {
 
     public BossBottomSheetDialog(Fragment fragment){
         this.mListener = (BottomSheetListener) fragment;
+    }
+
+    public BossBottomSheetDialog(Activity activity){
+        this.mListener = (BottomSheetListener) activity;
     }
 
     private void initData() {

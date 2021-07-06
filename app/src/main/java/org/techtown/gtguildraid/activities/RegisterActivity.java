@@ -1,11 +1,9 @@
 package org.techtown.gtguildraid.activities;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -32,7 +30,7 @@ public class RegisterActivity extends AppCompatActivity
 
         editor = getSharedPreferences("pref", Activity.MODE_PRIVATE).edit();
 
-        final EditText nickname = findViewById(R.id.myName);
+        final EditText nickname = findViewById(R.id.nickname);
         final EditText guildName = findViewById(R.id.guildName);
         profileImage = findViewById(R.id.profileImage);
         profileImage.setImageResource(

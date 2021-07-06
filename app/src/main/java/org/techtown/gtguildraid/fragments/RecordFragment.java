@@ -4,10 +4,10 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,6 +51,7 @@ public class RecordFragment extends Fragment {
 
         TextView raidName = view.findViewById(R.id.raidName);
         TextView raidTerm = view.findViewById(R.id.raidTerm);
+        ImageView raidThumbnail = view.findViewById(R.id.raidThumbnail);
         FloatingActionButton checkFab = view.findViewById(R.id.fabCheck);
         viewPager = view.findViewById(R.id.viewpager);
         tabLayout = view.findViewById(R.id.tabs);

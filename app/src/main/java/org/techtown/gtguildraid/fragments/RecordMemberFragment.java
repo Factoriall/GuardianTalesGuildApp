@@ -18,7 +18,6 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
@@ -40,7 +39,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.llollox.androidtoggleswitch.widgets.ToggleSwitch;
-import com.llollox.androidtoggleswitch.widgets.ToggleSwitchButton;
 
 import org.angmarch.views.NiceSpinner;
 import org.techtown.gtguildraid.R;

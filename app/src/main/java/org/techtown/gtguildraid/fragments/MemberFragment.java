@@ -1,5 +1,6 @@
 package org.techtown.gtguildraid.fragments;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
@@ -24,12 +25,12 @@ import androidx.fragment.app.FragmentTransaction;
 import com.google.android.material.tabs.TabLayout;
 
 import org.techtown.gtguildraid.R;
-import org.techtown.gtguildraid.activities.MainActivity;
-import org.techtown.gtguildraid.activities.RegisterActivity;
 import org.techtown.gtguildraid.etc.HeroBottomSheetDialog;
 import org.techtown.gtguildraid.models.GuildMember;
 import org.techtown.gtguildraid.models.Hero;
 import org.techtown.gtguildraid.utils.RoomDB;
+
+import java.util.Objects;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -54,18 +55,19 @@ public class MemberFragment extends Fragment implements HeroBottomSheetDialog.Bo
                 myName.setText(database.memberDao().getMe().getName());
                 myGuildName.setText(pref.getString("guildName", ""));
                 profileImage.setImageResource(
-                        getResources().getIdentifier("character_" + pref.getString("profileImage", "knight"), "drawable", getContext().getPackageName()));
+                        getResources().getIdentifier("character_" + pref.getString("profileImage", "knight"), "drawable", requireContext().getPackageName()));
             }
         }
     }
 
+    @SuppressLint("CommitPrefEdits")
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = (ViewGroup) inflater.inflate(R.layout.fragment_member, container, false);
         database = RoomDB.getInstance(getActivity());
 
-        pref = getActivity().getSharedPreferences("pref", Activity.MODE_PRIVATE);
+        pref = requireActivity().getSharedPreferences("pref", Activity.MODE_PRIVATE);
         editor = pref.edit();
 
         GuildMember me = database.memberDao().getMe();
@@ -80,12 +82,10 @@ public class MemberFragment extends Fragment implements HeroBottomSheetDialog.Bo
         myName.setText(nickname);
         myGuildName.setText(guildName);
         profileImage.setImageResource(
-                getResources().getIdentifier("character_" + profileImageName, "drawable", getContext().getPackageName()));
+                getResources().getIdentifier("character_" + profileImageName, "drawable", requireContext().getPackageName()));
 
         Button editButton = view.findViewById(R.id.editButton);
-        editButton.setOnClickListener(view -> {
-            setDialogView();
-        });
+        editButton.setOnClickListener(view -> setDialogView());
 
 
         memberCurrentFragment = new MemberCurrentFragment();
@@ -109,6 +109,7 @@ public class MemberFragment extends Fragment implements HeroBottomSheetDialog.Bo
                 else if(position == 1)
                     selected = memberResignedFragment;
 
+                assert selected != null;
                 getChildFragmentManager().beginTransaction().replace(R.id.childContainer, selected).commit();
             }
 
@@ -140,47 +141,43 @@ public class MemberFragment extends Fragment implements HeroBottomSheetDialog.Bo
         dialogGuildName.setText(pref.getString("guildName", ""));
         profileImageInDialog.setImageResource(
                 getResources().getIdentifier("character_" +
-                        pref.getString("profileImage", "knight"), "drawable", getContext().getPackageName()));
+                        pref.getString("profileImage", "knight"), "drawable", requireContext().getPackageName()));
         profileImageInDialog.setOnClickListener(view1 -> {
             HeroBottomSheetDialog bottomDialog = new HeroBottomSheetDialog(this);
-            bottomDialog.show(getActivity().getSupportFragmentManager(), "bottomSheetDialog");
+            bottomDialog.show(requireActivity().getSupportFragmentManager(), "bottomSheetDialog");
         });
 
         Button button = dialog.findViewById(R.id.updateButton);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String sGuildName = dialogGuildName.getText().toString().trim();
-                String sNickname = dialogNickname.getText().toString().trim();
-                if(!sGuildName.equals("") && !sNickname.equals("")) {
-                    database.memberDao().update(me1.getID(), sNickname, me1.getRemark());
-                    myName.setText(sNickname);
+        button.setOnClickListener(view -> {
+            String sGuildName = dialogGuildName.getText().toString().trim();
+            String sNickname = dialogNickname.getText().toString().trim();
+            if(!sGuildName.equals("") && !sNickname.equals("")) {
+                database.memberDao().update(me1.getID(), sNickname, me1.getRemark());
+                myName.setText(sNickname);
 
-                    editor.putString("guildName", sGuildName);
-                    myGuildName.setText(sGuildName);
+                editor.putString("guildName", sGuildName);
+                editor.apply();
+                myGuildName.setText(sGuildName);
 
-                    profileImage.setImageResource(
-                            getResources().getIdentifier("character_" +
-                                    pref.getString("profileImage", "knight"), "drawable", getContext().getPackageName()));
-                    editor.apply();
-                    dialog.dismiss();
-                }
-                else{
-                    showToast("길드 이름 및 닉네임을 입력하세요");
-                }
+                String newProfileString = pref.getString("profileImage", "knight");
+                Log.d("dialog", newProfileString);
+
+                profileImage.setImageResource(
+                        getResources().getIdentifier("character_" +
+                                newProfileString, "drawable", getContext().getPackageName()));
+
+                dialog.dismiss();
+            }
+            else{
+                Toast.makeText(getActivity(), "길드 이름 및 닉네임을 입력하세요", Toast.LENGTH_LONG).show();
             }
         });
-    }
-
-
-    private void showToast(String msg){
-        Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void onImageClicked(Hero hero) {
         editor.putString("profileImage", hero.getEnglishName());
         profileImageInDialog.setImageResource(
-                getResources().getIdentifier("character_" + hero.getEnglishName() , "drawable", getContext().getPackageName()));
+                getResources().getIdentifier("character_" + hero.getEnglishName() , "drawable", requireContext().getPackageName()));
     }
 }

@@ -15,7 +15,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.fragments.MemberFragment;
-import org.techtown.gtguildraid.fragments.RaidFragment;
+import org.techtown.gtguildraid.fragments.RaidRenewalFragment;
 import org.techtown.gtguildraid.fragments.RecordFragment;
 import org.techtown.gtguildraid.fragments.StatisticFragment;
 import org.techtown.gtguildraid.utils.RoomDB;
@@ -24,7 +24,7 @@ import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
     MemberFragment memberFragment;
-    RaidFragment raidFragment;
+    RaidRenewalFragment raidFragment;
     RecordFragment recordFragment;
     StatisticFragment statisticFragment;
 
@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         memberFragment = new MemberFragment();
-        raidFragment = new RaidFragment();
+        raidFragment = new RaidRenewalFragment();
         recordFragment = new RecordFragment();
         statisticFragment = new StatisticFragment();
 
