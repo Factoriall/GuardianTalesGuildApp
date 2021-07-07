@@ -27,7 +27,7 @@ import org.techtown.gtguildraid.models.Record;
 
 
 //Add database entities
-@Database(entities = {GuildMember.class, Boss.class, Raid.class, Hero.class, Record.class, Favorites.class}, version = 24, exportSchema = false)
+@Database(entities = {GuildMember.class, Boss.class, Raid.class, Hero.class, Record.class, Favorites.class}, version = 26, exportSchema = false)
 @TypeConverters(DateConverter.class)
 public abstract class RoomDB extends RoomDatabase {
     private static RoomDB database;
@@ -242,6 +242,34 @@ public abstract class RoomDB extends RoomDatabase {
         }
     };
 
+    static final Migration MIGRATION_24_25 = new Migration(24, 25) {//hero 데이터 업데이트
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            database.execSQL("ALTER TABLE Raid " +
+                    "ADD COLUMN thumbnail TEXT DEFAULT 'knight'");
+        }
+    };
+
+    static final Migration MIGRATION_25_26 = new Migration(25, 26) {//hero 데이터 업데이트
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            database.execSQL("CREATE TABLE Boss_backup "
+                    + "(bossId INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
+                    "raidId INTEGER NOT NULL, " +
+                    "name TEXT, " +
+                    "hardness REAL NOT NULL," +
+                    "imgName TEXT," +
+                    "elementId INTEGER NOT NULL," +
+                    "isFurious INTEGER NOT NULL, " +
+                    "FOREIGN KEY(raidId) REFERENCES raid(raidId) ON UPDATE NO ACTION ON DELETE CASCADE) ");
+            database.execSQL("INSERT INTO Boss_backup "
+                    + "SELECT bossId, raidId, name, hardness, imgName, elementId, isFurious FROM Boss");
+            database.execSQL("DROP TABLE Boss");
+            database.execSQL("ALTER TABLE Boss_backup RENAME TO Boss");
+            database.execSQL("CREATE INDEX index_boss_raid ON Boss(raidId)");
+        }
+    };
+
 
     public synchronized static RoomDB getInstance(Context context){//Singleton Pattern!
         if(database == null){//initialize
@@ -269,6 +297,8 @@ public abstract class RoomDB extends RoomDatabase {
                     .addMigrations(MIGRATION_21_22)
                     .addMigrations(MIGRATION_22_23)
                     .addMigrations(MIGRATION_23_24)
+                    .addMigrations(MIGRATION_24_25)
+                    .addMigrations(MIGRATION_25_26)
                     .build();
         }
         else{

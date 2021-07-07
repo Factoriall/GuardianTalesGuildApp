@@ -1,10 +1,14 @@
 package org.techtown.gtguildraid.fragments;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -32,6 +36,8 @@ public class StatisticFragment extends Fragment {
     TabLayout tabLayout;
     ViewPager2 viewPager;
     StatisticPagerAdapter sAdapter;
+    AlertDialog.Builder builder;
+    NiceSpinner spinner;
 
     RoomDB database;
 
@@ -47,7 +53,7 @@ public class StatisticFragment extends Fragment {
 
         tabLayout = view.findViewById(R.id.tabs);
         viewPager = view.findViewById(R.id.viewPager);
-        NiceSpinner spinner = view.findViewById(R.id.raidName);
+        spinner = view.findViewById(R.id.raidName);
 
         raids = database.raidDao().getAllRaids();
 
@@ -59,8 +65,11 @@ public class StatisticFragment extends Fragment {
 
         spinner.attachDataSource(raidNameList);
         spinner.setOnSpinnerItemSelectedListener((parent, view, position, id) -> {
-            if (position != 0)
+            if (position != 0) {
+                viewPager.setVisibility(View.VISIBLE);
                 setView(raids.get(position - 1));
+            }
+            else viewPager.setVisibility(View.GONE);
         });
 
         if(raids.size() != 0) {
@@ -93,6 +102,34 @@ public class StatisticFragment extends Fragment {
         sAdapter.setData(raid.getRaidId());
         viewPager.setAdapter(sAdapter);
         viewPager.setOffscreenPageLimit(2);
+        Button deleteButton = view.findViewById(R.id.deleteButton);
+        builder = new AlertDialog.Builder(view.getContext());
+        deleteButton.setOnClickListener(view1 -> {
+            if(raid.getRaidId() == database.raidDao().getCurrentRaid(new Date()).getRaidId()){
+                Toast.makeText(view.getContext(), "현재 진행 중인 레이드는 삭제할 수 없습니다", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            builder.setMessage("삭제 진행 시 관련 데이터도 같이 삭제되며 복구가 불가능합니다. 그래도 삭제하시겠습니까?")
+                    .setCancelable(false)
+                    .setPositiveButton("네", (dialog, id) -> {
+                        database.raidDao().delete(raid);
+                        raids = database.raidDao().getAllRaids();
+                        raidNameList.clear();
+                        raidNameList.add("[레이드 선택]");
+                        for (Raid r : raids) {
+                            raidNameList.add(r.getName());
+                        }
+
+                        spinner.attachDataSource(raidNameList);
+                        dialog.dismiss();
+                    })
+                    .setNegativeButton("아니오", (dialog, id) -> {
+                        dialog.dismiss();
+                    });
+            AlertDialog alert = builder.create();
+            alert.setTitle("길드 레이드 삭제");
+            alert.show();
+        });
 
         new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
             if(position == 0)

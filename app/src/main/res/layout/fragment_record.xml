@@ -5,10 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+
     <androidx.cardview.widget.CardView
         android:id="@+id/currentRaidCard"
         android:layout_width="match_parent"
-        android:layout_height="120dp"
+        android:layout_height="100dp"
         app:cardElevation="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -21,8 +22,8 @@
 
             <ImageView
                 android:id="@+id/raidThumbnail"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
                 android:layout_marginStart="10dp"
                 android:background="#133C38"
                 android:padding="5dp"
@@ -36,9 +37,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="15dp"
                 android:text="출동! 해양 구조대"
-                android:textSize="32sp"
+                android:textSize="28sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@+id/raidThumbnail"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -50,6 +51,7 @@
                 android:layout_marginEnd="15dp"
                 android:layout_marginBottom="10dp"
                 android:text="20-06-05 ~ 20-06-18"
+                android:textColor="#15290F"
                 android:textSize="18sp"
                 android:textStyle="italic"
                 app:layout_constraintBottom_toBottomOf="parent"

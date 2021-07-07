@@ -24,8 +24,12 @@ public class Raid implements Serializable {
     @ColumnInfo(name = "endDay")
     private Date endDay;
 
+    @ColumnInfo(name = "thumbnail")
+    private String thumbnail;
+
     @Ignore
     public List<Boss> bossList;
+
 
     public int getRaidId() {
         return raidId;
@@ -57,6 +61,14 @@ public class Raid implements Serializable {
 
     public void setEndDay(Date endDay) {
         this.endDay = endDay;
+    }
+
+    public String getThumbnail() {
+        return thumbnail;
+    }
+
+    public void setThumbnail(String thumbnail) {
+        this.thumbnail = thumbnail;
     }
 
     public List<Boss> getBossList() {

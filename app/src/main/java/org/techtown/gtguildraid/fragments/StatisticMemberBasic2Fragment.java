@@ -1,6 +1,7 @@
 package org.techtown.gtguildraid.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -74,7 +75,6 @@ public class StatisticMemberBasic2Fragment extends Fragment {
             damageText.setText(day + "일차 총 데미지");
             totalDamage = view.findViewById(R.id.totalDamage);
             setTotalDamage();
-            return view;
         }
         else{
             view = inflater.inflate(R.layout.fragment_statistic_member_basic_all, container, false);
@@ -95,12 +95,18 @@ public class StatisticMemberBasic2Fragment extends Fragment {
                         .get1MemberRecordsWithExtra(memberId, raidId);
                 HashMap<Integer, Integer> bossCount = new HashMap<>();
                 List<Boss> bosses = database.raidDao().getBossesList(raidId);
-                for(Boss boss : bosses)
+                for(Boss boss : bosses) {
+                    Log.d("statisticMember", "bossId: " + boss.getBossId());
                     bossCount.put(boss.getBossId(), 0);
+                }
 
                 int lastHitCount = 0;
                 for(Record r : memberRecords){
                     int bossId = r.getBoss().getBossId();
+                    if(bossCount.get(bossId) == null){
+                        Log.d("statisticMember", "invalid data");
+                        continue;
+                    }
                     bossCount.put(bossId, bossCount.get(bossId) + 1);
 
                     if(r.isLastHit())
@@ -121,8 +127,8 @@ public class StatisticMemberBasic2Fragment extends Fragment {
                     adapter.notifyDataSetChanged();
                 });
             });
-            return view;
         }
+        return view;
     }
 
     private String getPercentage(long memberDamage, long allDamage) {

@@ -68,6 +68,11 @@ public class RecordFragment extends Fragment {
         String dateFormat = "yy/MM/dd";
         raidTerm.setText((new SimpleDateFormat(dateFormat).format(raid.getStartDay()) + "~" +
                 new SimpleDateFormat(dateFormat).format(adjustEndTime(raid.getEndDay()))));
+        raidThumbnail.setImageResource(getResources().getIdentifier(
+                "character_" + raid.getThumbnail(),
+                "drawable",
+                requireContext().getPackageName()));
+
 
         vAdapter = new RecordPagerAdapter(getChildFragmentManager(), getLifecycle());
         setViewPager(getIntegerFromToday());

@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,7 +28,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.activities.BossEditActivity;
 import org.techtown.gtguildraid.adapters.RaidBossRecyclerAdapter;
+import org.techtown.gtguildraid.etc.HeroBottomSheetDialog;
 import org.techtown.gtguildraid.models.Boss;
+import org.techtown.gtguildraid.models.Hero;
 import org.techtown.gtguildraid.models.Raid;
 import org.techtown.gtguildraid.utils.RoomDB;
 
@@ -39,7 +42,11 @@ import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
 
-public class RaidRenewalFragment extends Fragment implements RaidBossRecyclerAdapter.RecyclerViewListener {
+public class RaidRenewalFragment
+        extends Fragment
+        implements RaidBossRecyclerAdapter.RecyclerViewListener,
+        HeroBottomSheetDialog.BottomSheetListener {
+    private static final long DAY_13 = 60*60*24*13;
     final String dateFormat = "yy/MM/dd";
     ViewGroup view;
     RoomDB database;
@@ -49,6 +56,8 @@ public class RaidRenewalFragment extends Fragment implements RaidBossRecyclerAda
     RecyclerView bossRecyclerView;
     RaidBossRecyclerAdapter adapter;
     ConstraintLayout bossTab;
+    ImageView raidThumbnailDialog;
+    ImageView raidThumbnail;
 
     TextView raidName;
     TextView raidTerm;
@@ -76,6 +85,7 @@ public class RaidRenewalFragment extends Fragment implements RaidBossRecyclerAda
         isNotFound = view.findViewById(R.id.notFound);
         raidName = view.findViewById(R.id.raidName);
         raidTerm = view.findViewById(R.id.raidTerm);
+        raidThumbnail = view.findViewById(R.id.raidThumbnail);
         currentRaidCard = view.findViewById(R.id.currentRaidCard);
         bossRecyclerView = view.findViewById(R.id.recyclerView);
         bossTab = view.findViewById(R.id.bossTab);
@@ -99,26 +109,41 @@ public class RaidRenewalFragment extends Fragment implements RaidBossRecyclerAda
         return view;
     }
 
-    @SuppressLint("SimpleDateFormat")
-    private void updateRaid() {
+    private void updateRaid(){
         final Dialog dialog = new Dialog(getActivity());
 
-        dialog.setContentView(R.layout.dialog_raid);
+        dialog.setContentView(R.layout.dialog_raid_renewal);
         int width = WindowManager.LayoutParams.MATCH_PARENT;
         int height = WindowManager.LayoutParams.WRAP_CONTENT;
         dialog.getWindow().setLayout(width, height);
         dialog.show();
 
-        EditText raidName = dialog.findViewById(R.id.raidName);
-        ImageView raidThumbnail = dialog.findViewById(R.id.raidThumbnail);
-        EditText startDate = dialog.findViewById(R.id.startDate);
+        EditText raidNameDialog = dialog.findViewById(R.id.raidName);
+        EditText raidTermDialog = dialog.findViewById(R.id.raidTerm);
+        raidThumbnailDialog = dialog.findViewById(R.id.raidThumbnail);
+
         Date defaultDate = today;
         if (isCurrentExist) {
-            raidName.setText(currentRaid.getName());
-            //raidThumbnail.setImageResource();
+            raidNameDialog.setText(currentRaid.getName());
+            raidThumbnailDialog.setImageResource(
+                    getResources().getIdentifier(
+                            "character_" + currentRaid.getThumbnail(),
+                            "drawable",
+                            requireContext().getPackageName())
+            );
+            raidThumbnailDialog.setTag(0xffffffff, currentRaid.getThumbnail());
             defaultDate = currentRaid.getStartDay();
         }
-        startDate.setText(new SimpleDateFormat(dateFormat).format(defaultDate));
+        else {
+            raidThumbnailDialog.setImageResource(
+                    getResources().getIdentifier(
+                            "character_normal",
+                            "drawable",
+                            requireContext().getPackageName())
+            );
+            raidThumbnailDialog.setTag(0xffffffff,"normal");
+        }
+        raidTermDialog.setText(setRaidTerm(defaultDate));
 
         Calendar myCalendar = Calendar.getInstance();
         myCalendar.setTime(defaultDate);
@@ -128,12 +153,11 @@ public class RaidRenewalFragment extends Fragment implements RaidBossRecyclerAda
             myCalendar.set(Calendar.MONTH, monthOfYear);
             myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
-            startDate.setText(new SimpleDateFormat(dateFormat).format(myCalendar.getTime()));
+            raidTermDialog.setText(setRaidTerm(myCalendar.getTime()));
         };
 
-        startDate.setOnClickListener(v -> {
+        raidTermDialog.setOnClickListener(v -> {
             // TODO Auto-generated method stub
-            final int DAY_13 = (13 * 1000 * 60 * 60 * 24);
             DatePickerDialog datePickerDialog = new DatePickerDialog(
                     getActivity(),
                     date,
@@ -141,8 +165,15 @@ public class RaidRenewalFragment extends Fragment implements RaidBossRecyclerAda
                     myCalendar.get(Calendar.MONTH),
                     myCalendar.get(Calendar.DAY_OF_MONTH));
 
-            datePickerDialog.getDatePicker().setMinDate(Calendar.getInstance().getTimeInMillis() - DAY_13);
+            datePickerDialog.getDatePicker().setMinDate(
+                    Calendar.getInstance().getTimeInMillis() - DAY_13);
+            datePickerDialog.setMessage("시작 날짜를 입력해주세요.");
             datePickerDialog.show();
+        });
+
+        raidThumbnailDialog.setOnClickListener(view1 -> {
+            HeroBottomSheetDialog bottomDialog = new HeroBottomSheetDialog(this);
+            bottomDialog.show(requireActivity().getSupportFragmentManager(), "bottomSheetDialog");
         });
 
         Button updateButton = dialog.findViewById(R.id.updateButton);
@@ -151,6 +182,7 @@ public class RaidRenewalFragment extends Fragment implements RaidBossRecyclerAda
             String sName = raidName.getText().toString().trim();
             Date sDate = myCalendar.getTime();
             Date eDate = getEndDate(sDate);
+            String sThumbnail = (String) raidThumbnailDialog.getTag(0xffffffff);
             if (!sName.equals("")) {
                 dialog.dismiss();
 
@@ -159,6 +191,7 @@ public class RaidRenewalFragment extends Fragment implements RaidBossRecyclerAda
                     raid.setName(sName);
                     raid.setStartDay(sDate);
                     raid.setEndDay(eDate);
+                    raid.setThumbnail(sThumbnail);
 
                     List<Boss> bosses = new ArrayList<>();
                     for (int i = 1; i <= 4; i++) {
@@ -173,14 +206,25 @@ public class RaidRenewalFragment extends Fragment implements RaidBossRecyclerAda
                     }
                     database.raidDao().insertRaidWithBosses(raid, bosses);
                 } else {//업데이트
-                    database.raidDao().updateRaid(currentRaid.getRaidId(), sName, sDate, eDate);
+                    database.raidDao().updateRaid(currentRaid.getRaidId(), sName, sDate, eDate, sThumbnail );
                 }
                 setCurrentRaidView();
-            } else {
-                //showToast("이름을 입력하세요");
-            }
-
+            } else Toast.makeText(getContext(), "이름을 입력해주세요.", Toast.LENGTH_SHORT).show();
         });
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    private String setRaidTerm(Date date) {
+        return getString(R.string.raid_term,
+                new SimpleDateFormat(dateFormat).format(date),
+                new SimpleDateFormat(dateFormat).format(getDate(date, 13)));
+    }
+
+    private Date getDate(Date sDate, int addDays) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(sDate);
+        cal.add(Calendar.DATE, addDays);
+        return cal.getTime();
     }
 
     private Date getEndDate(Date sDate) {
@@ -204,6 +248,10 @@ public class RaidRenewalFragment extends Fragment implements RaidBossRecyclerAda
                 new SimpleDateFormat(dateFormat).format(currentRaid.getStartDay()),
                 new SimpleDateFormat(dateFormat).format(aEnd)));
         raidButton.setText("수정");
+        raidThumbnail.setImageResource(getResources().getIdentifier(
+                "character_" + currentRaid.getThumbnail(),
+                "drawable",
+                requireContext().getPackageName()));
 
         List<Boss> bosses = currentRaid.getBossList();
         bossRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -225,5 +273,16 @@ public class RaidRenewalFragment extends Fragment implements RaidBossRecyclerAda
         intent.putExtra("bossId", bossId);
         intent.putExtra("position", position);
         startActivityForResult(intent, 101);
+    }
+
+    @Override
+    public void onImageClicked(Hero hero) {
+        Log.d("raidThumbnail", hero.getEnglishName());
+
+        raidThumbnailDialog.setTag(0xffffffff, hero.getEnglishName());
+        Log.d("raidThumbnail", (String) raidThumbnailDialog.getTag(0xffffffff));
+
+        raidThumbnailDialog.setImageResource(
+                getResources().getIdentifier("character_" + hero.getEnglishName() , "drawable", requireContext().getPackageName()));
     }
 }

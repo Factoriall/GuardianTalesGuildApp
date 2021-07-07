@@ -2,11 +2,21 @@ package org.techtown.gtguildraid.models;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 import java.io.Serializable;
 
-@Entity(tableName = "boss")
+import static androidx.room.ForeignKey.CASCADE;
+
+
+@Entity(tableName = "boss", foreignKeys={
+        @ForeignKey(onDelete = CASCADE, entity = Raid.class,
+                parentColumns = "raidId",childColumns = "raidId")},
+        indices = {
+                @Index("raidId")
+        })
 public class Boss implements Serializable {
     @PrimaryKey(autoGenerate = true)
     private int bossId;
