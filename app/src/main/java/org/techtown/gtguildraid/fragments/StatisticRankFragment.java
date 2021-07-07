@@ -160,7 +160,7 @@ public class StatisticRankFragment extends Fragment {
             AppExecutor.getInstance().diskIO().execute(() -> {
                 RankPoi rp = new RankPoi(database.raidDao().getRaidWithBosses(raidId), database);
                 rp.exportDataToExcel();
-                Objects.requireNonNull(getActivity()).runOnUiThread(() -> {
+                requireActivity().runOnUiThread(() -> {
                     mProgressDialog.dismiss();
                     Toast.makeText(getContext(), "생성 완료", Toast.LENGTH_SHORT).show();
                 });
@@ -222,7 +222,7 @@ public class StatisticRankFragment extends Fragment {
             Collections.sort(rankInfos);
             adapter.setItems(rankInfos);
 
-            Objects.requireNonNull(getActivity()).runOnUiThread(() -> {
+            requireActivity().runOnUiThread(() -> {
                 if(bossPosition == 0) finalMProgressDialog.dismiss();
                 TextView conditionText = view.findViewById(R.id.conditionText);
                 String levelInfo = "";

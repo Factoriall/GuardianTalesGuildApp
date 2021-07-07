@@ -3,10 +3,14 @@ package org.techtown.gtguildraid.fragments;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,6 +25,7 @@ import com.google.android.material.tabs.TabLayoutMediator;
 import org.angmarch.views.NiceSpinner;
 import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.adapters.StatisticPagerAdapter;
+import org.techtown.gtguildraid.adapters.StatisticRaidSpinnerAdapter;
 import org.techtown.gtguildraid.models.Raid;
 import org.techtown.gtguildraid.utils.RoomDB;
 
@@ -32,14 +37,18 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class StatisticFragment extends Fragment {
+    private final String dateFormat = "yy/MM/dd";
+
     View view;
     TabLayout tabLayout;
     ViewPager2 viewPager;
     StatisticPagerAdapter sAdapter;
     AlertDialog.Builder builder;
-    NiceSpinner spinner;
+    Spinner spinner;
+    //NiceSpinner spinner;
 
     RoomDB database;
+    Boolean isSpinnerTouched;
 
     List<Raid> raids = new ArrayList<>();
     List<String> raidNameList = new LinkedList<>();
@@ -50,19 +59,41 @@ public class StatisticFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_statistic, container, false);
 
         database = RoomDB.getInstance(getActivity());
+        isSpinnerTouched = false;
 
         tabLayout = view.findViewById(R.id.tabs);
         viewPager = view.findViewById(R.id.viewPager);
+        //spinner = view.findViewById(R.id.raidName);
         spinner = view.findViewById(R.id.raidName);
 
         raids = database.raidDao().getAllRaids();
+        if(raids.size() == 0){
+            return view;
+        }
 
+        List<Integer> imageList = new ArrayList<>();
+        List<String> raidInfoList = new ArrayList<>();
+        for (Raid raid : raids) {
+            raidInfoList.add(
+            raid.getName()
+            + "_" +
+            (new SimpleDateFormat(dateFormat).format(raid.getStartDay()) + "~" +
+                new SimpleDateFormat(dateFormat).format(getEndTime(raid.getStartDay()))));
+            int imageId = getResources().getIdentifier("character_" + raid.getThumbnail(), "drawable", getContext().getPackageName());
+            imageList.add(imageId);
+        }
+
+        StatisticRaidSpinnerAdapter adapter = new StatisticRaidSpinnerAdapter(getContext(), raidInfoList, imageList);
+        spinner.setAdapter(adapter);
+
+        /*
         raidNameList.clear();
         raidNameList.add("[레이드 선택]");
         for (Raid r : raids) {
             raidNameList.add(r.getName());
-        }
+        }*/
 
+        /*
         spinner.attachDataSource(raidNameList);
         spinner.setOnSpinnerItemSelectedListener((parent, view, position, id) -> {
             if (position != 0) {
@@ -70,20 +101,39 @@ public class StatisticFragment extends Fragment {
                 setView(raids.get(position - 1));
             }
             else viewPager.setVisibility(View.GONE);
-        });
+        });*/
 
         if(raids.size() != 0) {
             if (!database.raidDao().isStartedRaidExist(new Date())
                     && database.raidDao().isCurrentRaidExist(new Date())
                     && raids.size() >= 2) {//미리 만들었는데 실제 시작은 안했고 size가 2 이상이면
-                spinner.setSelectedIndex(raidNameList.size() - 2);
+                spinner.setSelection(raids.size() - 2);
                 setView(raids.get(raids.size() - 2));
             }
             else {
-                spinner.setSelectedIndex(raidNameList.size() - 1);
+                spinner.setSelection(raids.size() - 1);
                 setView(raids.get(raids.size() - 1));
             }
         }
+
+
+        spinner.setOnTouchListener((v, event) -> {
+            isSpinnerTouched = true;
+            return false;
+        });
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+                if(!isSpinnerTouched) return;
+                viewPager.setVisibility(View.VISIBLE);
+                setView(raids.get(position));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
 
         return view;
     }
@@ -92,11 +142,11 @@ public class StatisticFragment extends Fragment {
         tabLayout.setVisibility(View.VISIBLE);
         viewPager.setVisibility(View.VISIBLE);
 
-        TextView raidTerm = view.findViewById(R.id.raidTerm);
+        //TextView raidTerm = view.findViewById(R.id.raidTerm);
 
-        String dateFormat = "yy/MM/dd";
-        raidTerm.setText((new SimpleDateFormat(dateFormat).format(raid.getStartDay()) + "~" +
-                new SimpleDateFormat(dateFormat).format(getEndTime(raid.getStartDay()))));
+        //String dateFormat = "yy/MM/dd";
+       // raidTerm.setText((new SimpleDateFormat(dateFormat).format(raid.getStartDay()) + "~" +
+        //        new SimpleDateFormat(dateFormat).format(getEndTime(raid.getStartDay()))));
 
         sAdapter = new StatisticPagerAdapter(getChildFragmentManager(), getLifecycle());
         sAdapter.setData(raid.getRaidId());
@@ -113,14 +163,20 @@ public class StatisticFragment extends Fragment {
                     .setCancelable(false)
                     .setPositiveButton("네", (dialog, id) -> {
                         database.raidDao().delete(raid);
-                        raids = database.raidDao().getAllRaids();
-                        raidNameList.clear();
-                        raidNameList.add("[레이드 선택]");
+                        List<Integer> imageList = new ArrayList<>();
+                        List<String> raidInfoList = new ArrayList<>();
                         for (Raid r : raids) {
-                            raidNameList.add(r.getName());
+                            raidInfoList.add(
+                                    raid.getName()
+                                            + "_" +
+                                            (new SimpleDateFormat(dateFormat).format(r.getStartDay()) + "~" +
+                                                    new SimpleDateFormat(dateFormat).format(getEndTime(r.getStartDay()))));
+                            int imageId = getResources().getIdentifier("character_" + r.getThumbnail(), "drawable", getContext().getPackageName());
+                            imageList.add(imageId);
                         }
 
-                        spinner.attachDataSource(raidNameList);
+                        StatisticRaidSpinnerAdapter adapter = new StatisticRaidSpinnerAdapter(getContext(), raidInfoList, imageList);
+                        spinner.setAdapter(adapter);
                         dialog.dismiss();
                     })
                     .setNegativeButton("아니오", (dialog, id) -> {

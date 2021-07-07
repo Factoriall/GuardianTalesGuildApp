@@ -13,7 +13,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="삭제"
+        app:layout_constraintBottom_toTopOf="@+id/tabs"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Spinner
+        android:id="@+id/raidName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        app:layout_constraintEnd_toStartOf="@+id/deleteButton"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
@@ -25,16 +35,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:id="@+id/raid_icon"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:background="@drawable/bg_spinner_icon"
-            android:padding="10dp"
-            android:src="@drawable/icon_raid" />
-
+        <!--
         <org.angmarch.views.NiceSpinner
             android:id="@+id/raidName"
             android:layout_width="0dp"
@@ -46,41 +47,9 @@
             app:arrowTint="#FFFFFF"
             app:backgroundSelector="@drawable/bg_spinner_nice"
             app:popupTextAlignment="start"
-            app:textTint="#FFFFFF" />
+            app:textTint="#FFFFFF" />-->
 
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/termCard"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@drawable/bg_info_card"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/raidCard">
-
-        <ImageView
-            android:id="@+id/imageView3"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:padding="10dp"
-            app:srcCompat="@drawable/icon_time"
-            tools:ignore="VectorDrawableCompat" />
-
-        <TextView
-            android:id="@+id/raidTerm"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="3"
-            android:gravity="center_vertical"
-            android:paddingStart="20dp"
-            android:text="기간"
-            android:textColor="#FFFFFF"
-            android:textStyle="bold" />
     </LinearLayout>
 
     <com.google.android.material.tabs.TabLayout
@@ -90,7 +59,7 @@
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/termCard"
+        app:layout_constraintTop_toBottomOf="@+id/raidName"
         app:tabBackground="@drawable/tab_color_selector"
         app:tabGravity="fill"
         app:tabMaxWidth="0dp"
