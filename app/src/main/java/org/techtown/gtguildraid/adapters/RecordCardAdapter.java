@@ -29,7 +29,7 @@ public class RecordCardAdapter extends RecyclerView.Adapter<RecordCardAdapter.Vi
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.card_record, parent, false);
 
-        return new RecordCardAdapter.ViewHolder(itemView);
+        return new ViewHolder(itemView);
     }
 
     @Override

@@ -1,7 +1,6 @@
 package org.techtown.gtguildraid.etc;
 
 import android.app.Activity;
-import android.app.FragmentManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;

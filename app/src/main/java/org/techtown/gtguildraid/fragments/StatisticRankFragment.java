@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,7 +35,6 @@ import org.techtown.gtguildraid.utils.RoomDB;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 public class StatisticRankFragment extends Fragment {
     static int raidId;
@@ -102,7 +102,6 @@ public class StatisticRankFragment extends Fragment {
         });
 
 
-
         setRankView();
 
         return view;
@@ -149,6 +148,10 @@ public class StatisticRankFragment extends Fragment {
             dialog.dismiss();
         });
 
+        Switch excelAdjustSwitch = dialog.findViewById(R.id.excelAdjustSwitch);
+        Switch excelDay1Switch = dialog.findViewById(R.id.excelDay1Switch);
+        SeekBar maxDayBar = dialog.findViewById(R.id.maxDayBar);
+        //maxDayBar.setMax();
         excelButton = dialog.findViewById(R.id.excelButton);
         excelButton.setOnClickListener(view -> {
             if(database.recordDao().getAllRecords(raidId).size() == 0) {

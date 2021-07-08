@@ -66,6 +66,7 @@ public class BossEditActivity extends AppCompatActivity
         bossName.setText(boss.getName());
         elementSpinner.setSelection(boss.getElementId());
         isFuriousCheck.setChecked(boss.isFurious());
+
         hardness.setProgress((int)(boss.getHardness() * 10));
         hardnessValue.setText("x " + boss.getHardness());
 

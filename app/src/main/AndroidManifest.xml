@@ -26,6 +26,9 @@
         <activity android:name=".activities.BossEditActivity"
             android:screenOrientation="portrait">
         </activity>
+        <activity android:name=".activities.StatisticRaidActivity"
+            android:screenOrientation="portrait">
+        </activity>
     </application>
 
 </manifest>

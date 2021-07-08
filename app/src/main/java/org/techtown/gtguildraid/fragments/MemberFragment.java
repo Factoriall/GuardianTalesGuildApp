@@ -30,8 +30,6 @@ import org.techtown.gtguildraid.models.GuildMember;
 import org.techtown.gtguildraid.models.Hero;
 import org.techtown.gtguildraid.utils.RoomDB;
 
-import java.util.Objects;
-
 import static android.app.Activity.RESULT_OK;
 
 public class MemberFragment extends Fragment implements HeroBottomSheetDialog.BottomSheetListener {

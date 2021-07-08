@@ -17,7 +17,7 @@ import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.fragments.MemberFragment;
 import org.techtown.gtguildraid.fragments.RaidRenewalFragment;
 import org.techtown.gtguildraid.fragments.RecordFragment;
-import org.techtown.gtguildraid.fragments.StatisticFragment;
+import org.techtown.gtguildraid.fragments.StatisticRenewalFragment;
 import org.techtown.gtguildraid.utils.RoomDB;
 
 import java.util.Date;
@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
     MemberFragment memberFragment;
     RaidRenewalFragment raidFragment;
     RecordFragment recordFragment;
-    StatisticFragment statisticFragment;
+    StatisticRenewalFragment statisticRenewalFragment;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -52,7 +52,8 @@ public class MainActivity extends AppCompatActivity {
         memberFragment = new MemberFragment();
         raidFragment = new RaidRenewalFragment();
         recordFragment = new RecordFragment();
-        statisticFragment = new StatisticFragment();
+        //statisticFragment = new StatisticFragment();
+        statisticRenewalFragment = new StatisticRenewalFragment();
 
         SharedPreferences pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
         boolean isRegistered = pref.getBoolean("isRegistered", false);
@@ -82,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
                             getSupportFragmentManager().beginTransaction().replace(R.id.container, recordFragment).commit();
                             return true;
                         case R.id.statisticTab:
-                            getSupportFragmentManager().beginTransaction().replace(R.id.container, statisticFragment).commit();
+                            getSupportFragmentManager().beginTransaction().replace(R.id.container, statisticRenewalFragment).commit();
                             return true;
                     }
                     return false;

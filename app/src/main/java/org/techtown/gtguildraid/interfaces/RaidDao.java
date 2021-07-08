@@ -25,6 +25,9 @@ public abstract class RaidDao {
     @Query("SELECT * FROM Raid")
     public abstract List<Raid> getAllRaids();
 
+    @Query("SELECT * FROM Raid WHERE endDay <= :today ORDER BY endDay")
+    public abstract List<Raid> getAllRaidsExceptRecent(Date today);
+
     @Query("SELECT * FROM Raid WHERE raidId =:id")
     public abstract Raid getRaid(int id);
 

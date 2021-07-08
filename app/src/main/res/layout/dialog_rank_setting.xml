@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/info_card_out"
@@ -93,23 +94,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
-        android:text="Day 1 적용"
+        android:text="Day 1 포함"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="@+id/adjustSwitch"
         app:layout_constraintStart_toEndOf="@+id/adjustSwitch"
         app:layout_constraintTop_toTopOf="@+id/adjustSwitch" />
 
     <TextView
-        android:id="@+id/textView19"
+        android:id="@+id/excelSettingText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="50dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginTop="30dp"
         android:text="Excel로 순위표 추출"
         android:textColor="@color/bg_icon"
         android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/adjustSwitch" />
 
@@ -120,8 +119,65 @@
         android:layout_marginStart="10dp"
         android:background="@drawable/bg_login_button"
         android:text="엑셀 변환"
-        app:layout_constraintBottom_toBottomOf="@+id/textView19"
-        app:layout_constraintStart_toEndOf="@+id/textView19"
-        app:layout_constraintTop_toTopOf="@+id/textView19" />
+        app:layout_constraintBottom_toBottomOf="@+id/excelSettingText"
+        app:layout_constraintStart_toEndOf="@+id/excelSettingText"
+        app:layout_constraintTop_toTopOf="@+id/excelSettingText" />
+
+    <Switch
+        android:id="@+id/excelAdjustSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="20dp"
+        android:text="배율 적용"
+        android:textColor="#FFFFFF"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/excelSettingText" />
+
+    <Switch
+        android:id="@+id/excelDay1Switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:text="Day 1 포함"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="@+id/excelAdjustSwitch"
+        app:layout_constraintStart_toEndOf="@+id/excelAdjustSwitch"
+        app:layout_constraintTop_toTopOf="@+id/excelAdjustSwitch" />
+
+    <SeekBar
+        android:id="@+id/maxDayBar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        app:layout_constraintBottom_toBottomOf="@+id/textView5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textView5"
+        app:layout_constraintTop_toTopOf="@+id/textView5" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="30dp"
+        android:text="포함 날짜"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/excelAdjustSwitch" />
+
+    <TextView
+        android:id="@+id/textView9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="~ Day 9"
+        android:textColor="#FFFFFF"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@+id/maxDayBar"
+        app:layout_constraintEnd_toEndOf="@+id/maxDayBar"
+        app:layout_constraintStart_toStartOf="@+id/maxDayBar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

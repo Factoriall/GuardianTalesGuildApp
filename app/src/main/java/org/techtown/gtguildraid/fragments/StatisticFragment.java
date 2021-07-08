@@ -1,17 +1,13 @@
 package org.techtown.gtguildraid.fragments;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -22,7 +18,6 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
-import org.angmarch.views.NiceSpinner;
 import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.adapters.StatisticPagerAdapter;
 import org.techtown.gtguildraid.adapters.StatisticRaidSpinnerAdapter;
@@ -33,7 +28,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 
 public class StatisticFragment extends Fragment {
@@ -45,13 +39,11 @@ public class StatisticFragment extends Fragment {
     StatisticPagerAdapter sAdapter;
     AlertDialog.Builder builder;
     Spinner spinner;
-    //NiceSpinner spinner;
 
     RoomDB database;
     Boolean isSpinnerTouched;
 
     List<Raid> raids = new ArrayList<>();
-    List<String> raidNameList = new LinkedList<>();
 
     @Nullable
     @Override

@@ -13,7 +13,7 @@
         app:cardElevation="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/currentTab">
+        app:layout_constraintTop_toBottomOf="@+id/explanationTab">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
