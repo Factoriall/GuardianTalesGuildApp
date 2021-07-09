@@ -162,15 +162,13 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginTop="30dp"
-        android:layout_marginBottom="30dp"
         android:text="포함 날짜"
         android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/excelAdjustSwitch" />
 
     <TextView
-        android:id="@+id/textView9"
+        android:id="@+id/maxDayValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="~ Day 9"
@@ -179,5 +177,41 @@
         app:layout_constraintBottom_toTopOf="@+id/maxDayBar"
         app:layout_constraintEnd_toEndOf="@+id/maxDayBar"
         app:layout_constraintStart_toStartOf="@+id/maxDayBar" />
+
+    <TextView
+        android:id="@+id/textView9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="10dp"
+        android:text="막타 배율"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+
+    <SeekBar
+        android:id="@+id/lastHitBar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:max="10"
+        app:layout_constraintBottom_toBottomOf="@+id/textView9"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textView9"
+        app:layout_constraintTop_toTopOf="@+id/textView9" />
+
+    <TextView
+        android:id="@+id/lastHitValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="x 1.0"
+        android:textColor="#FFFFFF"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@+id/lastHitBar"
+        app:layout_constraintEnd_toEndOf="@+id/lastHitBar"
+        app:layout_constraintStart_toStartOf="@+id/lastHitBar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

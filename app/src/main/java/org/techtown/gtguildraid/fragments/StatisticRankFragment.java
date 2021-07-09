@@ -27,14 +27,20 @@ import org.techtown.gtguildraid.adapters.StatisticRankCardAdapter;
 import org.techtown.gtguildraid.etc.RankPoi;
 import org.techtown.gtguildraid.models.Boss;
 import org.techtown.gtguildraid.models.GuildMember;
+import org.techtown.gtguildraid.models.Raid;
 import org.techtown.gtguildraid.models.RankInfo;
 import org.techtown.gtguildraid.models.Record;
 import org.techtown.gtguildraid.utils.AppExecutor;
 import org.techtown.gtguildraid.utils.RoomDB;
 
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class StatisticRankFragment extends Fragment {
     static int raidId;
@@ -148,20 +154,70 @@ public class StatisticRankFragment extends Fragment {
             dialog.dismiss();
         });
 
+        Raid raid = database.raidDao().getRaid(raidId);
+        int maxDay = getMaxDay(raid.getStartDay());
         Switch excelAdjustSwitch = dialog.findViewById(R.id.excelAdjustSwitch);
         Switch excelDay1Switch = dialog.findViewById(R.id.excelDay1Switch);
+        TextView maxDayValue = dialog.findViewById(R.id.maxDayValue);
         SeekBar maxDayBar = dialog.findViewById(R.id.maxDayBar);
-        //maxDayBar.setMax();
+
+        maxDayBar.setMax(maxDay);
+        maxDayBar.setProgress(maxDay);
+        maxDayValue.setText("~ Day " + maxDay);
+        maxDayBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
+                if(progress < 1) {
+                    maxDayBar.setProgress(1);
+                    maxDayValue.setText("~ Day 1");
+                }
+                else
+                    maxDayValue.setText("~ Day " + progress);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) { }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) { }
+        });
+
+        SeekBar lastHitBar = dialog.findViewById(R.id.lastHitBar);
+        TextView lastHitValue = dialog.findViewById(R.id.lastHitValue);
+
+        lastHitBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                double value = 1f + i * 0.1;
+                lastHitValue.setText("x " + String.format("%.1f", value));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) { }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) { }
+        });
+
         excelButton = dialog.findViewById(R.id.excelButton);
         excelButton.setOnClickListener(view -> {
             if(database.recordDao().getAllRecords(raidId).size() == 0) {
                 Toast.makeText(getContext(), "데이터 없음", Toast.LENGTH_SHORT).show();
                 return;
             }
+            else if(excelDay1Switch.isChecked() == true && maxDay == 1){
+                Toast.makeText(getContext(), "1일차 적용 여부 스위치를 끄거나 범위를 늘려주세요.", Toast.LENGTH_SHORT).show();
+                return;
+            }
             ProgressDialog mProgressDialog = ProgressDialog.show(getContext(), "잠시 대기","CSV 파일 생성 중...", true);
 
             AppExecutor.getInstance().diskIO().execute(() -> {
-                RankPoi rp = new RankPoi(database.raidDao().getRaidWithBosses(raidId), database);
+                RankPoi rp = new RankPoi(database.raidDao().getRaidWithBosses(raidId),
+                        database,
+                        excelAdjustSwitch.isChecked(),
+                        excelDay1Switch.isChecked(),
+                        maxDayBar.getProgress(),
+                        1 + lastHitBar.getProgress() * 0.1);
                 rp.exportDataToExcel();
                 requireActivity().runOnUiThread(() -> {
                     mProgressDialog.dismiss();
@@ -169,6 +225,16 @@ public class StatisticRankFragment extends Fragment {
                 });
             });
         });
+    }
+
+    private int getMaxDay(Date start) {
+        Calendar end = Calendar.getInstance();
+        end.setTime(start);
+        end.add(Calendar.DATE, 14);
+        Date today = new Date();
+
+        if(today.compareTo(end.getTime()) >= 0) return 14;
+        else return Math.max((int)((today.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)), 0) + 1;
     }
 
     private void setRankView() {
@@ -244,12 +310,11 @@ public class StatisticRankFragment extends Fragment {
                         break;
                     case 4:
                         levelInfo = "Lv.80";
-
                 }
-                conditionText.setText(levelInfo + " / "
+                conditionText.setText("회차 범위: " + levelInfo + " / 기준: "
                         + (isAverageMode ? "평균" : "총합")
-                        + "\n배율 " + (isAdjustMode ? "ON" : "OFF")
-                        + " / 1일차 적용 " + (isDay1Contained ? "ON" : "OFF"));
+                        + "\n배율: " + (isAdjustMode ? "ON" : "OFF")
+                        + " / 1일차 적용: " + (isDay1Contained ? "ON" : "OFF"));
                 adapter.setItems(rankInfos);
                 adapter.notifyDataSetChanged();
             });

@@ -120,37 +120,45 @@ public abstract class RecordDao {
     public abstract long getMaxRoundRecordSum(int raidId, int round);
 
     @Query("SELECT memberId, " +
-            "SUM(CASE WHEN isLastHit == 1 THEN (damage * hardness * 1.3) " +
+            "SUM(CASE WHEN isLastHit == 1 THEN (damage * hardness * :lastHitValue) " +
             "ELSE (damage * hardness) END) as value " +
             "from Record INNER JOIN Boss on Record.bossId = Boss.bossId " +
-            "WHERE Record.raidId = :raidId AND Record.day != 1 " +
+            "WHERE Record.raidId = :raidId AND Record.day >= :start AND Record.day <= :end " +
             "GROUP BY memberId ORDER BY value DESC LIMIT 30")
-    public abstract List<IdLong> getRanksOfAdjustRecords(int raidId);
+    public abstract List<IdLong> getRanksOfAdjustRecords(int raidId, int start, int end, double lastHitValue);
+
+    @Query("SELECT memberId, " +
+            "SUM(CASE WHEN isLastHit == 1 THEN (damage * :lastHitValue) " +
+            "ELSE damage END) as value " +
+            "from Record INNER JOIN Boss on Record.bossId = Boss.bossId " +
+            "WHERE Record.raidId = :raidId AND Record.day >= :start AND Record.day <= :end " +
+            "GROUP BY memberId ORDER BY value DESC LIMIT 30")
+    public abstract List<IdLong> getRanksOfNormalRecords(int raidId, int start, int end, double lastHitValue);
 
     @Query("SELECT memberId, SUM(damage) AS value " +
-            "FROM Record WHERE raidId = :raidId AND bossId = :bossId " +
+            "FROM Record WHERE raidId = :raidId AND bossId = :bossId AND day >= :start AND day <= :end " +
             "GROUP BY memberId ORDER BY value DESC LIMIT 5")
-    public abstract List<IdLong> getRanksOfBossTotal(int raidId, int bossId);
+    public abstract List<IdLong> getRanksOfBossTotal(int raidId, int bossId, int start, int end);
 
     @Query("SELECT SUM(damage) " +
-            "FROM Record WHERE raidId = :raidId AND bossId = :bossId ")
-    public abstract long getTotalOfBoss(int raidId, int bossId);
+            "FROM Record WHERE raidId = :raidId AND bossId = :bossId AND day >= :start AND day <= :end")
+    public abstract long getTotalOfBoss(int raidId, int bossId, int start, int end);
 
     @Query("SELECT memberId, COUNT(*) as value FROM Record " +
-            "WHERE raidId = :raidId AND isLastHit = 1 " +
+            "WHERE raidId = :raidId AND isLastHit = 1 AND day >= :start AND day <= :end " +
             "GROUP BY memberId ORDER BY value DESC LIMIT 5")
-    public abstract List<IdLong> getRanksOfLastHit(int raidId);
+    public abstract List<IdLong> getRanksOfLastHit(int raidId, int start, int end);
 
     @Query("SELECT memberId, (SUM(damage * hardness * 1.0) / SUM(damage)) - 1.0 as value" +
             " from Record INNER JOIN Boss on Record.bossId = Boss.bossId " +
-            "WHERE Record.raidId = :raidId " +
+            "WHERE Record.raidId = :raidId AND Record.day >= :start AND Record.day <= :end " +
             "GROUP BY memberId ORDER BY value DESC LIMIT 5")
-    public abstract List<IdDouble> getRanksOfAdjustGrowth(int raidId);
+    public abstract List<IdDouble> getRanksOfAdjustGrowth(int raidId, int start, int end);
 
     @Query("SELECT memberId, AVG(damage) as value, COUNT(damage) as count FROM Record " +
-            "WHERE raidId = :raidId AND bossId = :bossId AND isLastHit = 0 " +
+            "WHERE raidId = :raidId AND bossId = :bossId AND isLastHit = 0 AND day >= :start AND day <= :end " +
             "GROUP BY memberId HAVING count(memberId) >= :cnt ORDER BY value DESC LIMIT 5")
-    public abstract List<IdLongCnt> getRanksOfBossAverage(int raidId, int bossId, int cnt);
+    public abstract List<IdLongCnt> getRanksOfBossAverage(int raidId, int bossId, int cnt, int start, int end);
 
     @Query("SELECT memberId, AVG(damage) as value, COUNT(damage) as count FROM Record " +
             "WHERE raidId = :raidId AND bossId = :bossId AND isLastHit = 0 " +
