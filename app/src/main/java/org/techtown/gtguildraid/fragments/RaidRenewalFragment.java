@@ -45,7 +45,7 @@ public class RaidRenewalFragment
         extends Fragment
         implements RaidBossRecyclerAdapter.RecyclerViewListener,
         HeroBottomSheetDialog.BottomSheetListener {
-    private static final long DAY_13 = 60*60*24*13;
+    private static final long DAY_13 = 60*60*24*13*1000;
     final String dateFormat = "yy/MM/dd";
     ViewGroup view;
     RoomDB database;
@@ -165,7 +165,9 @@ public class RaidRenewalFragment
                     myCalendar.get(Calendar.DAY_OF_MONTH));
 
             datePickerDialog.getDatePicker().setMinDate(
-                    Calendar.getInstance().getTimeInMillis() - DAY_13);
+                    System.currentTimeMillis() - DAY_13);
+            datePickerDialog.getDatePicker().setMaxDate(
+                    System.currentTimeMillis() + DAY_13);
             datePickerDialog.setMessage("시작 날짜를 입력해주세요.");
             datePickerDialog.show();
         });
@@ -178,7 +180,7 @@ public class RaidRenewalFragment
         Button updateButton = dialog.findViewById(R.id.updateButton);
 
         updateButton.setOnClickListener(view -> {
-            String sName = raidName.getText().toString().trim();
+            String sName = raidNameDialog.getText().toString().trim();
             Date sDate = myCalendar.getTime();
             Date eDate = getEndDate(sDate);
             String sThumbnail = (String) raidThumbnailDialog.getTag(0xffffffff);

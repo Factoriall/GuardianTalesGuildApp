@@ -53,7 +53,7 @@ public class StatisticRenewalFragment
         ImageView currentThumbnail = view.findViewById(R.id.raidThumbnail);
         TextView isNotFound = view.findViewById(R.id.isNotFound);
         Raid currentRaid = database.raidDao().getCurrentRaid(new Date());
-        if(currentRaid == null){
+        if(currentRaid == null || currentRaid.getStartDay().compareTo(new Date()) >= 0){
             isNotFound.setVisibility(View.VISIBLE);
             currentName.setVisibility(View.GONE);
             currentTerm.setVisibility(View.GONE);
@@ -82,7 +82,9 @@ public class StatisticRenewalFragment
     private void setPastRaidsView() {
         pastRaids = database.raidDao().getAllRaidsExceptRecent(new Date());
         RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        LinearLayoutManager lm = new LinearLayoutManager(requireActivity());
+        lm.setReverseLayout(true);
+        recyclerView.setLayoutManager(lm);
 
         adapter = new StatisticRaidCardAdapter(this, pastRaids);
         recyclerView.setAdapter(adapter);

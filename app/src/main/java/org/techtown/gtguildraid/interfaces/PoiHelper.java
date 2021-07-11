@@ -14,6 +14,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.util.RegionUtil;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -24,10 +25,13 @@ public abstract class PoiHelper {
     protected Sheet sheet;
     protected File directory;
 
-    protected PoiHelper(){
+    protected PoiHelper(String raidName){
         wb = new HSSFWorkbook();
         sheet = wb.createSheet("new sheet");
-        directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
+        directory = new File(
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS),
+                "가테_길레_" + raidName);
+        if(!directory.exists()) directory.mkdirs();
     }
 
     protected abstract void exportDataToExcel();
@@ -70,6 +74,14 @@ public abstract class PoiHelper {
         Cell cell = row.getCell(sc) != null ? row.getCell(sc) : row.createCell(sc);
         cell.setCellValue(str);
         sheet.addMergedRegion(new CellRangeAddress(sr, er, sc, ec));
+    }
+
+    protected void addBorder(int sRow, int eRow, int sCol, int eCol){
+        CellRangeAddress region = new CellRangeAddress(sRow, eRow, sCol, eCol);
+        RegionUtil.setBorderBottom(BorderStyle.THIN, region, sheet);
+        RegionUtil.setBorderTop(BorderStyle.THIN, region, sheet);
+        RegionUtil.setBorderLeft(BorderStyle.THIN, region, sheet);
+        RegionUtil.setBorderRight(BorderStyle.THIN, region, sheet);
     }
 
     protected void setStyleWithBorder(CellStyle style) {

@@ -35,6 +35,7 @@ public class BossEditActivity extends AppCompatActivity
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_boss_edit);
+        setTitle("보스 편집");
 
         RoomDB database = RoomDB.getInstance(this);
         int position = getIntent().getIntExtra("position", 0);

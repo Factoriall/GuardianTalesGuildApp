@@ -81,11 +81,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="15dp"
                 android:text="친 횟수"
                 android:textColor="#FFFFFF"
                 app:layout_constraintStart_toStartOf="@+id/guideline2"
-                app:layout_constraintTop_toBottomOf="@+id/CV" />
+                app:layout_constraintTop_toTopOf="@+id/averageText" />
 
             <TextView
                 android:id="@+id/hitNum"
@@ -123,25 +122,6 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 app:layout_constraintGuide_percent="0.5" />
-
-            <TextView
-                android:id="@+id/stdevText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:text="변동 계수"
-                android:textColor="#FFFFFF"
-                app:layout_constraintStart_toStartOf="@+id/guideline2"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/CV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="100"
-                app:layout_constraintStart_toStartOf="@+id/stdevText"
-                app:layout_constraintTop_toBottomOf="@+id/stdevText" />
 
             <TextView
                 android:id="@+id/totalText"

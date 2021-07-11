@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -18,9 +19,12 @@ import org.techtown.gtguildraid.fragments.MemberFragment;
 import org.techtown.gtguildraid.fragments.RaidRenewalFragment;
 import org.techtown.gtguildraid.fragments.RecordFragment;
 import org.techtown.gtguildraid.fragments.StatisticRenewalFragment;
+import org.techtown.gtguildraid.models.Boss;
+import org.techtown.gtguildraid.models.Raid;
 import org.techtown.gtguildraid.utils.RoomDB;
 
 import java.util.Date;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     MemberFragment memberFragment;
@@ -48,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getSupportActionBar().hide();
 
         memberFragment = new MemberFragment();
         raidFragment = new RaidRenewalFragment();
@@ -75,9 +80,20 @@ public class MainActivity extends AppCompatActivity {
                             getSupportFragmentManager().beginTransaction().replace(R.id.container, raidFragment).commit();
                             return true;
                         case R.id.recordTab:
-                            Boolean isRaidExist = database.raidDao().isCurrentRaidExist(new Date());
-                            if(!isRaidExist){
+                            if(!database.raidDao().isCurrentRaidExist(new Date())){
                                 Toast.makeText(MainActivity.this, "레이드 정보를 입력하세요!", Toast.LENGTH_LONG).show();
+                                return false;
+                            }
+                            List<Boss> bosses = database.raidDao().getCurrentRaidWithBosses(new Date()).getBossList();
+                            boolean isElementAllExist = true;
+                            for(Boss boss : bosses){
+                                if(boss.getElementId() == 0){
+                                    isElementAllExist = false;
+                                    break;
+                                }
+                            }
+                            if(!isElementAllExist){
+                                Toast.makeText(MainActivity.this, "보스 속성 정보를 모두 입력하세요!", Toast.LENGTH_LONG).show();
                                 return false;
                             }
                             getSupportFragmentManager().beginTransaction().replace(R.id.container, recordFragment).commit();

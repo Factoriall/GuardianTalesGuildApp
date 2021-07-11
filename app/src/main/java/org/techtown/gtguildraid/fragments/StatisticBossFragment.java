@@ -1,7 +1,7 @@
 package org.techtown.gtguildraid.fragments;
 
-import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -9,9 +9,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -60,20 +57,18 @@ public class StatisticBossFragment extends Fragment {
     RoomDB database;
     private static int raidId;
     private static int bossPosition;
-    private static ArrayList<String> bossLabels = new ArrayList<>();
+    private static final ArrayList<String> bossLabels = new ArrayList<>();
 
     View view;
     StatisticBossLeaderAdapter adapter;
     TextView averageDamage;
-    TextView stDev;
     TextView hitNum;
     HoriBarChart leaderNumChart;
     HoriBarChart leaderDamageChart;
     RecyclerView recyclerView;
 
     private class HoriBarChart {
-        private HorizontalBarChart chart;
-        private final int MAX_NUM = 5;
+        private final HorizontalBarChart chart;
         private List<Record> records;
 
         public HoriBarChart(HorizontalBarChart chart) {
@@ -161,8 +156,8 @@ public class StatisticBossFragment extends Fragment {
 
             List<HeroWithValue> hwc = new ArrayList<>();
             for ( Map.Entry<String, Integer> entry : count.entrySet()) {
-                final double MIN_PERCT = 0.03;
-                final int MIN_COUNT = (int)(records.size() * MIN_PERCT);//min 카운트를 record 개수의 5%로 설정
+                final double MIN_PER = 0.03;
+                final int MIN_COUNT = (int)(records.size() * MIN_PER);//min 카운트를 record 개수의 5%로 설정
                 String key = entry.getKey();
                 long value = entry.getValue();
                 if(isDamage) {//평균값 삽입
@@ -174,13 +169,14 @@ public class StatisticBossFragment extends Fragment {
             }
             Collections.sort(hwc);
 
+            int MAX_NUM = 5;
             int axisNum = Math.min(hwc.size(), MAX_NUM);
             for(int i=1; i<=axisNum; i++) {
                 HeroWithValue hero = hwc.get(axisNum - i);
                 Drawable dr = getResources().getDrawable(getResources().getIdentifier(
                         "character_" + hero.heroName,
                         "drawable",
-                        getActivity().getPackageName()));
+                        requireActivity().getPackageName()));
                 Bitmap bitmap = ((BitmapDrawable) dr).getBitmap();
                 int adjustSize = Math.min(90, 360 / axisNum);
                 Drawable d = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, adjustSize, adjustSize, true));
@@ -199,12 +195,12 @@ public class StatisticBossFragment extends Fragment {
                 set1.setDrawIcons(true);
                 set1.setIconsOffset(new MPPointF(-25, 0));
 
-
-                set1.setColors(getColor(getContext(), android.R.color.holo_orange_dark),
-                        getColor(getContext(), android.R.color.holo_blue_dark),
-                        getColor(getContext(), android.R.color.holo_green_dark),
-                        getColor(getContext(), android.R.color.holo_red_dark),
-                        getColor(getContext(), android.R.color.holo_purple));
+                Context ctx = requireContext();
+                set1.setColors(getColor(ctx, android.R.color.holo_orange_dark),
+                        getColor(ctx, android.R.color.holo_blue_dark),
+                        getColor(ctx, android.R.color.holo_green_dark),
+                        getColor(ctx, android.R.color.holo_red_dark),
+                        getColor(ctx, android.R.color.holo_purple));
 
                 ArrayList<IBarDataSet> dataSets = new ArrayList<>();
                 dataSets.add(set1);
@@ -269,22 +265,9 @@ public class StatisticBossFragment extends Fragment {
 
     private void setView() {
         averageDamage = view.findViewById(R.id.averageDamage);
-        stDev = view.findViewById(R.id.CV);
         hitNum = view.findViewById(R.id.hitNum);
         leaderNumChart = new HoriBarChart(view.findViewById(R.id.leaderNumChart));
         leaderDamageChart = new HoriBarChart(view.findViewById(R.id.leaderDamageChart));
-        ImageView help = view.findViewById(R.id.help);
-        help.setOnClickListener(view -> {
-            final Dialog dialog = new Dialog(getActivity());
-            dialog.setContentView(R.layout.dialog_cvhelp);
-            int width = WindowManager.LayoutParams.MATCH_PARENT;
-            int height = WindowManager.LayoutParams.WRAP_CONTENT;
-            dialog.getWindow().setLayout(width, height);
-            dialog.show();
-
-            Button button = dialog.findViewById(R.id.button);
-            button.setOnClickListener(view1 -> dialog.dismiss());
-        });
         
         List<Boss> bosses = database.raidDao().getBossesList(raidId);
         switch(bossPosition){
@@ -310,7 +293,7 @@ public class StatisticBossFragment extends Fragment {
         ProgressDialog mProgressDialog = ProgressDialog.show(getContext(), "잠시 대기","보스 - 전체 데이터 저장", true);
         AppExecutor.getInstance().diskIO().execute(() -> {
             List<Record> records = database.recordDao().getAllRecordsWithExtra(raidId);
-            getActivity().runOnUiThread(() -> {
+            requireActivity().runOnUiThread(() -> {
                 mProgressDialog.dismiss();
                 setData(records);
             });
@@ -321,37 +304,27 @@ public class StatisticBossFragment extends Fragment {
         int bossId = boss.getBossId();
         AppExecutor.getInstance().diskIO().execute(() -> {
             List<Record> records = database.recordDao().get1BossRecordsWithExtra(raidId, bossId);
-            getActivity().runOnUiThread(() -> {
-                setData(records);
-            });
+            requireActivity().runOnUiThread(() -> setData(records));
         });
     }
 
     private void setData(List<Record> records) {
-        int xAxisNum;
-        if (records.size() != 0)
-            xAxisNum = records.get(records.size() - 1).getRound();
-        else
-            xAxisNum = 1;
-
         long damage = getDamageFromList(records);
         long average = 0;
         if (records.size() != 0)
             average = damage / records.size();
         hitNum.setText(Integer.toString(records.size()));
-        averageDamage.setText(NumberFormat.getNumberInstance(Locale.US)
-                .format(average));
-        stDev.setText(getCV(average, records));
+        averageDamage.setText(NumberFormat.getNumberInstance(Locale.US).format(average));
 
         leaderNumChart.setRecords(records);
         leaderNumChart.setChartUi(false);
 
         leaderDamageChart.setRecords(records);
         leaderDamageChart.setChartUi(true);
-        setLeaderCard(records, xAxisNum);
+        setLeaderCard(records);
     }
 
-    private void setLeaderCard(List<Record> records, int xAxisNum) {
+    private void setLeaderCard(List<Record> records) {
         List<LeaderInfo> memberLeaderList = new ArrayList<>();
         for(Record r : records){
             boolean isMatched = false;
@@ -367,18 +340,8 @@ public class StatisticBossFragment extends Fragment {
         }
         Collections.sort(memberLeaderList);
 
-        adapter.setItems(memberLeaderList, xAxisNum);
+        adapter.setItems(memberLeaderList);
         adapter.notifyDataSetChanged();
-    }
-
-    private String getCV(long average, List<Record> records) {
-        long devSquared = 0;
-        for(Record r : records){
-            devSquared += ((r.getDamage() - average) * (r.getDamage() - average));
-        }
-        double stDev = Math.sqrt(devSquared / (double) records.size());
-
-        return String.format("%.2f", stDev / average * 100.0f);
     }
 
     private long getDamageFromList(List<Record> records) {

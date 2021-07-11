@@ -205,8 +205,8 @@ public class StatisticRankFragment extends Fragment {
                 Toast.makeText(getContext(), "데이터 없음", Toast.LENGTH_SHORT).show();
                 return;
             }
-            else if(excelDay1Switch.isChecked() == true && maxDay == 1){
-                Toast.makeText(getContext(), "1일차 적용 여부 스위치를 끄거나 범위를 늘려주세요.", Toast.LENGTH_SHORT).show();
+            else if(excelDay1Switch.isChecked() == false && maxDay == 1){
+                Toast.makeText(getContext(), "1일차 적용 여부 스위치를 키거나 범위를 늘려주세요.", Toast.LENGTH_SHORT).show();
                 return;
             }
             ProgressDialog mProgressDialog = ProgressDialog.show(getContext(), "잠시 대기","CSV 파일 생성 중...", true);

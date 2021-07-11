@@ -7,7 +7,28 @@
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/explanationTab"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/info_card_out"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/currentRaidCard">
+
+        <Button
+            android:id="@+id/updateButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:background="@drawable/bg_login_button"
+            android:text="완료"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/statTab"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#1B1B1B"
@@ -33,11 +54,11 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/currentRaidCard"
         android:layout_width="match_parent"
-        android:layout_height="120dp"
+        android:layout_height="100dp"
         app:cardElevation="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/explanationTab">
+        app:layout_constraintTop_toBottomOf="@+id/statTab">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -46,8 +67,8 @@
 
             <ImageView
                 android:id="@+id/raidThumbnail"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
                 android:layout_marginStart="10dp"
                 android:background="#FFC107"
                 android:padding="5dp"
@@ -63,8 +84,11 @@
                 android:layout_marginStart="15dp"
                 android:layout_marginTop="10dp"
                 android:background="#FFC107"
-                android:text="출동! 해양 구조대"
-                android:textSize="32sp"
+                android:hint="길드 이름 입력"
+                android:inputType="text"
+                android:maxLength="20"
+                android:maxLines="1"
+                android:textSize="28sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@+id/raidThumbnail"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -76,27 +100,15 @@
                 android:layout_marginEnd="15dp"
                 android:layout_marginBottom="10dp"
                 android:background="#FFC107"
+                android:focusable="false"
                 android:text="20-06-05 ~ 20-06-18"
                 android:textSize="18sp"
                 android:textStyle="italic"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:focusable="false"/>
+                app:layout_constraintEnd_toEndOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>
-
-    <Button
-        android:id="@+id/updateButton"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:background="@drawable/bg_login_button"
-        android:text="완료"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/currentRaidCard" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

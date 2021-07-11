@@ -7,7 +7,7 @@
     android:background="@color/background_color">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/explanationTab"
+        android:id="@+id/statTab"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#1B1B1B"
@@ -52,16 +52,16 @@
         android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/explanationTab" />
+        app:layout_constraintTop_toBottomOf="@+id/statTab" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/currentRaidCard"
         android:layout_width="match_parent"
-        android:layout_height="120dp"
+        android:layout_height="100dp"
         app:cardElevation="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/explanationTab">
+        app:layout_constraintTop_toBottomOf="@+id/statTab">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -70,8 +70,8 @@
 
             <ImageView
                 android:id="@+id/raidThumbnail"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
                 android:layout_marginStart="10dp"
                 android:background="#133C38"
                 android:padding="5dp"
@@ -86,8 +86,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"
                 android:layout_marginTop="10dp"
-                android:text="출동! 해양 구조대"
-                android:textSize="32sp"
+                android:hint="레이드 이름 입력"
+                android:textSize="28sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@+id/raidThumbnail"
                 app:layout_constraintTop_toTopOf="parent" />

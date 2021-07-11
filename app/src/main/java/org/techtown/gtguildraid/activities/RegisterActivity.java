@@ -27,6 +27,7 @@ public class RegisterActivity extends AppCompatActivity
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        setTitle("내 프로필 등록");
 
         editor = getSharedPreferences("pref", Activity.MODE_PRIVATE).edit();
 

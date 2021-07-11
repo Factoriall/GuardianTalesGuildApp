@@ -29,7 +29,7 @@ public class RankPoi extends PoiHelper {
     private final double lastHitValue;
 
     public RankPoi(Raid raid, RoomDB db, boolean isAdjusted, boolean isDay1Contained, int maxDay, double lastHitValue) {
-        super();
+        super(raid.getName());
         this.raid = raid;
         raidId = raid.getRaidId();
         database = db;
@@ -122,16 +122,16 @@ public class RankPoi extends PoiHelper {
         setCellValueAndStyle(getOrCreateRow(rowNum).createCell(colNum), subtitle2Style, "순위");
         setCellValueAndStyle(getOrCreateRow(rowNum + 1).createCell(colNum), subtitle2Style, "이름");
         setCellValueAndStyle(getOrCreateRow(rowNum + 2).createCell(colNum), subtitle2Style, "딜량");
-        for(int i=0; i<5; i++){
-            final int first = i*2+1;
-            final int second = i*2+2;
+        for(int i=0; i<5; i++) {
+            final int first = i * 2 + 1;
+            final int second = i * 2 + 2;
             CellStyle cellStyle = wb.createCellStyle();
             setCellStyle(cellStyle, true);
             int fontSize = 12;
-            HSSFColor color = wb.getCustomPalette().findSimilarColor(0, 0,0);
+            HSSFColor color = wb.getCustomPalette().findSimilarColor(0, 0, 0);
 
             int rank = rankOrder[i];
-            switch(rank){
+            switch (rank) {
                 case 5:
                 case 4:
                     color = ironColor;
@@ -151,17 +151,23 @@ public class RankPoi extends PoiHelper {
             setColorInStyle(cellStyle, color);
             setCellValueAndStyle(rowNum, rowNum, first, second, cellStyle, rankOrder[i] + "위");
 
-            IdLong idLong = idLongs.get(rank - 1);
+            if (idLongs.size() >= rank) {
+                IdLong idLong = idLongs.get(rank - 1);
 
-            cellStyle = wb.createCellStyle();
-            setCellStyle(cellStyle, true);
-            setFontInStyle(cellStyle, fontSize, color);
+                cellStyle = wb.createCellStyle();
+                setCellStyle(cellStyle, true);
+                setFontInStyle(cellStyle, fontSize, color);
 
-            String name = database.memberDao().getMember(idLong.memberId).getName();
-            setCellValueAndStyle(rowNum+1, rowNum+1, first, second, cellStyle, name);
+                String name = database.memberDao().getMember(idLong.memberId).getName();
+                setCellValueAndStyle(rowNum + 1, rowNum + 1, first, second, cellStyle, name);
 
-            long damage = idLong.value;
-            setCellValueAndStyle(rowNum+2, rowNum+2, first, second, cellStyle, calcHelper.getNumberFormat(damage));
+                long damage = idLong.value;
+                setCellValueAndStyle(rowNum + 2, rowNum + 2, first, second, cellStyle, calcHelper.getNumberFormat(damage));
+            }
+            else{
+                addBorder(rowNum + 1, rowNum + 1, first, second);
+                addBorder(rowNum + 2, rowNum + 2, first, second);
+            }
         }
 
         rowNum += 3;
@@ -170,6 +176,8 @@ public class RankPoi extends PoiHelper {
             setCellValueAndStyle(getOrCreateRow(rowNum + i - 1).createCell(colNum), subtitle2Style,
                     (i*5 + 1) + "~" + ((i+1)*5) );
         }
+        //남은 순위 border 추가
+        addBorder(5, 9, 1, 10);
 
         for(int i=0; i<5; i++){
             colNum = 1;
@@ -234,28 +242,45 @@ public class RankPoi extends PoiHelper {
             setColorInStyle(cellStyle, color);
             setCellValueAndStyle(BOSS, BOSS, firstCol, secondCol, cellStyle, boss.getName() + " - " + boss.getHardness() + "배율");
             List<IdLong> totalRank = database.recordDao().getRanksOfBossTotal(raidId, boss.getBossId(), startDay, maxDay);
-            List<IdLongCnt> avgRank;
-            int cnt = (maxDay - startDay + 1) / 2;
-            avgRank = database.recordDao().getRanksOfBossAverage(raidId, boss.getBossId(), cnt, startDay, maxDay);
+
+            int minCount = (maxDay - startDay + 1) / 2;
+            List<IdLongCnt> avgRank = database.recordDao().getRanksOfBossAverage(raidId, boss.getBossId(), minCount, startDay, maxDay);
 
             for(int r=0; r<5; r++) {
-                setCellValueAndStyle(getOrCreateRow(FIRST + r).createCell(firstCol), dataCellStyle, database.memberDao().getMember(totalRank.get(r).memberId).getName());
-                setCellValueAndStyle(getOrCreateRow(FIRST + r).createCell(secondCol), dataCellStyle, calcHelper.getPercentage(totalRank.get(r).value,
-                        database.recordDao().getTotalOfBoss(raidId, boss.getBossId(), startDay, maxDay)));
+                if (totalRank.size() > r) {
+                    setCellValueAndStyle(getOrCreateRow(FIRST + r).createCell(firstCol), dataCellStyle, database.memberDao().getMember(totalRank.get(r).memberId).getName());
+                    setCellValueAndStyle(getOrCreateRow(FIRST + r).createCell(secondCol), dataCellStyle, calcHelper.getPercentage(totalRank.get(r).value,
+                            database.recordDao().getTotalOfBoss(raidId, boss.getBossId(), startDay, maxDay)));
 
-                setCellValueAndStyle(getOrCreateRow(SECOND + r).createCell(firstCol), dataCellStyle, database.memberDao().getMember(avgRank.get(r).memberId).getName());
-                setCellValueAndStyle(getOrCreateRow(SECOND + r).createCell(secondCol), dataCellStyle, calcHelper.getNumberFormat(avgRank.get(r).value) + " (" + avgRank.get(r).count + ")");
+                    setCellValueAndStyle(getOrCreateRow(SECOND + r).createCell(firstCol), dataCellStyle, database.memberDao().getMember(avgRank.get(r).memberId).getName());
+                    setCellValueAndStyle(getOrCreateRow(SECOND + r).createCell(secondCol), dataCellStyle, calcHelper.getNumberFormat(avgRank.get(r).value) + " (" + avgRank.get(r).count + ")");
+                }
+                else{
+                    addBorder(FIRST + r, FIRST + r, firstCol, secondCol);
+                    addBorder(SECOND + r, SECOND + r, firstCol, secondCol);
+                }
             }
         }
 
         List<IdLong> lastRank = database.recordDao().getRanksOfLastHit(raidId, startDay, maxDay);
         List<IdDouble> growthRank = database.recordDao().getRanksOfAdjustGrowth(raidId, startDay, maxDay);
-        for(int i=0; i<5; i++){
-            setCellValueAndStyle(getOrCreateRow(FIRST + i).createCell(9), dataCellStyle, database.memberDao().getMember(lastRank.get(i).memberId).getName());
-            setCellValueAndStyle(getOrCreateRow(FIRST + i).createCell(10), dataCellStyle, lastRank.get(i).value + "회");
+        for(int i=0; i<5; i++) {
+            if (lastRank.size() > i) {
+                setCellValueAndStyle(getOrCreateRow(FIRST + i).createCell(9), dataCellStyle, database.memberDao().getMember(lastRank.get(i).memberId).getName());
+                setCellValueAndStyle(getOrCreateRow(FIRST + i).createCell(10), dataCellStyle, lastRank.get(i).value + "회");
+            }
+            else{
+                addBorder(FIRST + i, FIRST + i, 9, 10);
 
-            setCellValueAndStyle(getOrCreateRow(SECOND + i).createCell(9), dataCellStyle, database.memberDao().getMember(growthRank.get(i).memberId).getName());
-            setCellValueAndStyle(getOrCreateRow(SECOND + i).createCell(10), dataCellStyle, calcHelper.getPercentage(growthRank.get(i).value));
+            }
+
+            if (growthRank.size() > i) {
+                setCellValueAndStyle(getOrCreateRow(SECOND + i).createCell(9), dataCellStyle, database.memberDao().getMember(growthRank.get(i).memberId).getName());
+                setCellValueAndStyle(getOrCreateRow(SECOND + i).createCell(10), dataCellStyle, calcHelper.getPercentage(growthRank.get(i).value));
+            }
+            else{
+                addBorder(SECOND + i, SECOND + i, 9, 10);
+            }
         }
 
         return 0;

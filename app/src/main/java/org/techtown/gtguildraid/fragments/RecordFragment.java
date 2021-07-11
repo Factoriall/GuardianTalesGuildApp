@@ -61,7 +61,7 @@ public class RecordFragment extends Fragment {
 
         CalculateFormatHelper cHelper = new CalculateFormatHelper();
 
-        SharedPreferences pref = this.getActivity().getSharedPreferences("pref", Context.MODE_PRIVATE);
+        SharedPreferences pref = requireActivity().getSharedPreferences("pref", Context.MODE_PRIVATE);
         showToast("최근 기록: " + pref.getString("recentWrite" + raid.getRaidId(), "없음"));
 
         raidName.setText(raid.getName());
@@ -96,22 +96,19 @@ public class RecordFragment extends Fragment {
                 7500000, 9750000, 12000000, 16650000, 24000000,
                 35000000, 50000000, 72000000,
                 100000000, 140000000, 200000000};
-        checkFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                int raidId = raid.getRaidId();
-                int curRound = pref.getInt("currentRound" + raidId, 0);
-                List<Boss> bossList = database.raidDao().getBossesList(raidId);
-                String toastText = (curRound + 1) + "회차 남은 데미지\n";
-                for(Boss boss : bossList){
-                    int idx = curRound >= hpPerRound.length ? hpPerRound.length - 1 : curRound;
-                    long damage = database.recordDao().get1Boss1RoundSum(raidId, boss.getBossId(), curRound + 1);
-                    long remain = hpPerRound[idx] - damage;
-                    toastText += boss.getName() + ": " + cHelper.getNumberFormat(remain) + "\n";
-                }
-
-                Toast.makeText(getContext(), toastText, Toast.LENGTH_LONG).show();
+        checkFab.setOnClickListener(view1 -> {
+            int raidId = raid.getRaidId();
+            int curRound = pref.getInt("currentRound" + raidId, 0);
+            List<Boss> bossList = database.raidDao().getBossesList(raidId);
+            StringBuilder toastText = new StringBuilder((curRound + 1) + "회차 남은 데미지\n");
+            for(Boss boss : bossList){
+                int idx = curRound >= hpPerRound.length ? hpPerRound.length - 1 : curRound;
+                long damage = database.recordDao().get1Boss1RoundSum(raidId, boss.getBossId(), curRound + 1);
+                long remain = hpPerRound[idx] - damage;
+                toastText.append(boss.getName()).append(": ").append(cHelper.getNumberFormat(remain)).append("\n");
             }
+
+            Toast.makeText(getContext(), toastText.toString(), Toast.LENGTH_LONG).show();
         });
 
         return view;

@@ -1,5 +1,6 @@
 package org.techtown.gtguildraid.etc;
 
+import android.annotation.SuppressLint;
 import android.util.Log;
 
 import org.apache.poi.hssf.usermodel.HSSFOptimiser;
@@ -45,7 +46,7 @@ public class MemberPoi extends PoiHelper {
     CellStyle subtitle3Style;
 
     public MemberPoi(Raid raid, GuildMember member, RoomDB db){
-        super();
+        super(raid.getName());
         this.raid = raid;
         raidId = raid.getRaidId();
         this.member = member;
@@ -56,7 +57,7 @@ public class MemberPoi extends PoiHelper {
 
     @Override
     public void exportDataToExcel() {
-        File file = new File(directory,raid.getName() + "_" + member.getName() +  ".xls");
+        File file = new File(directory,raid.getName() + "_개인_" + member.getName() +  ".xls");
 
         //색깔 만들어주기
         titleColor = wb.getCustomPalette().findSimilarColor(220, 220, 220);
@@ -340,12 +341,15 @@ public class MemberPoi extends PoiHelper {
                 //Day 1 - 7 데이터 삽입
                 for (int t = 1; t <= 3; t++) {//데이터 수만큼 돌리기
                     if (dayRecords.get(day).size() < t) {//데이터 없으면 border만 추가
+                        addBorder(rowNum + t, rowNum + t, startCol, startCol + 2);
+                        continue;
+                        /*
                         CellRangeAddress region = new CellRangeAddress(rowNum + t, rowNum + t, startCol, startCol + 2);
                         RegionUtil.setBorderBottom(BorderStyle.THIN, region, sheet);
                         RegionUtil.setBorderTop(BorderStyle.THIN, region, sheet);
                         RegionUtil.setBorderLeft(BorderStyle.THIN, region, sheet);
                         RegionUtil.setBorderRight(BorderStyle.THIN, region, sheet);
-                        continue;
+                        continue;*/
                     }
 
                     //데이터 추가 작업
@@ -423,6 +427,7 @@ public class MemberPoi extends PoiHelper {
         return rowNum;
     }
 
+    @SuppressLint("DefaultLocale")
     private void setBossInfo(int rowNum, int memberId, Boss boss, boolean isLeft ) {
         int bossId = boss.getBossId();
         List<Record> allRecords = database.recordDao().get1BossRecordsWithExtra(raidId, bossId);

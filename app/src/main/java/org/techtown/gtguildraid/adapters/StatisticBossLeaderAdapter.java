@@ -22,7 +22,6 @@ import java.util.Locale;
 
 public class StatisticBossLeaderAdapter extends RecyclerView.Adapter<StatisticBossLeaderAdapter.ViewHolder> {
     private List<LeaderInfo> leaderList = new ArrayList<>();
-    private int xNum = 0;
 
     @NonNull
     @Override
@@ -36,12 +35,11 @@ public class StatisticBossLeaderAdapter extends RecyclerView.Adapter<StatisticBo
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         LeaderInfo leader = leaderList.get(position);
-        holder.setItem(leader, xNum);
+        holder.setItem(leader);
     }
 
-    public void setItems(List<LeaderInfo> records, int xAxisNum) {
+    public void setItems(List<LeaderInfo> records) {
         this.leaderList = records;
-        this.xNum = xAxisNum;
     }
 
     @Override
@@ -59,7 +57,6 @@ public class StatisticBossLeaderAdapter extends RecyclerView.Adapter<StatisticBo
         TextView hitNum;
         TextView totalDamage;
         TextView averageDamage;
-        TextView CV;
         Context context;
 
         public ViewHolder(@NonNull View itemView) {
@@ -71,11 +68,10 @@ public class StatisticBossLeaderAdapter extends RecyclerView.Adapter<StatisticBo
             hitNum = itemView.findViewById(R.id.hitNum);
             totalDamage = itemView.findViewById(R.id.totalDamage);
             averageDamage = itemView.findViewById(R.id.averageDamage);
-            CV = itemView.findViewById(R.id.CV);
             context = itemView.getContext();
         }
 
-        public void setItem(LeaderInfo info, int xAxisNum) {
+        public void setItem(LeaderInfo info) {
             Hero leader = info.getLeader();
             List<Record> records = info.getRecordList();
 
@@ -95,17 +91,6 @@ public class StatisticBossLeaderAdapter extends RecyclerView.Adapter<StatisticBo
             totalDamage.setText(getStandardNumberFormat(total));
             long average = total / records.size();
             averageDamage.setText(getStandardNumberFormat(average));
-            CV.setText(getCV(average, records));
-        }
-
-        private String getCV(long average, List<Record> records) {
-            long devSquared = 0;
-            for(Record r : records){
-                devSquared += ((r.getDamage() - average) * (r.getDamage() - average));
-            }
-            double stDev = Math.sqrt(devSquared / (double) records.size());
-
-            return String.format("%.2f", stDev / average * 100.0f);
         }
 
         private String getStandardNumberFormat(long num){

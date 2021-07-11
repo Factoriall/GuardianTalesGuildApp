@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -42,7 +43,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/damageCard"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_margin="5dp"
                 android:background="@drawable/bg_statistic_card">
 
@@ -50,7 +51,7 @@
                     android:id="@+id/textView12"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
+                    android:layout_marginStart="10dp"
                     android:layout_marginTop="5dp"
                     android:text="친 횟수"
                     android:textColor="#FFFFFF"
@@ -61,23 +62,22 @@
                     android:id="@+id/hitNum"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
                     android:layout_marginBottom="5dp"
                     android:text="24"
                     android:textSize="24sp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/textView12"
                     app:layout_constraintTop_toBottomOf="@+id/textView12" />
 
                 <TextView
                     android:id="@+id/damageText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="30dp"
+                    android:layout_marginStart="10dp"
                     android:layout_marginTop="5dp"
                     android:text="평균 딜량"
                     android:textColor="#FFFFFF"
-                    app:layout_constraintStart_toEndOf="@+id/textView12"
+                    app:layout_constraintStart_toStartOf="@+id/guideline5"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
@@ -91,35 +91,13 @@
                     app:layout_constraintStart_toStartOf="@+id/damageText"
                     app:layout_constraintTop_toBottomOf="@+id/damageText" />
 
-                <TextView
-                    android:id="@+id/textView15"
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guideline5"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:text="변동 계수"
-                    android:textColor="#FFFFFF"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/averageDamage"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <ImageView
-                    android:id="@+id/help"
-                    android:layout_width="15dp"
-                    android:layout_height="15dp"
-                    android:src="@drawable/help_icon"
-                    app:layout_constraintStart_toEndOf="@+id/textView15"
-                    app:layout_constraintTop_toTopOf="@+id/textView15" />
-
-                <TextView
-                    android:id="@+id/CV"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
-                    android:text="1"
-                    android:textSize="24sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/textView15"
-                    app:layout_constraintTop_toBottomOf="@+id/textView15" />
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_begin="190dp"
+                    app:layout_constraintGuide_percent="0.5" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
