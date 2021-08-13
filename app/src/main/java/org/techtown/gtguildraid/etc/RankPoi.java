@@ -85,7 +85,10 @@ public class RankPoi extends PoiHelper {
         int rowNum = 0;
         String dayText = maxDay == 14
                 ? "최종" : maxDay + "일차";
-        String titleName = raid.getName() + " - " + dayText + " 순위표";
+        String titleName = raid.getName() + " - " + dayText + " 순위표 / "
+                + "배율 " + (isAdjusted ? "ON" : "OFF") + ","
+                + "1일차 " + (startDay == 1 ? "포함" : "미포함") + ","
+                + "막타 배율 " + String.format("%.1f", lastHitValue) + "배";
         setCellValueAndStyle(0, 0, 0, MAX_COLUMN - 1, title, titleName);
         Row row = getOrCreateRow(rowNum);
         row.setHeightInPoints((short) 36);

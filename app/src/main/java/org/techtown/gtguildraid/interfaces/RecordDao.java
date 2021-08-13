@@ -61,23 +61,40 @@ public abstract class RecordDao {
     @Query("SELECT * FROM Hero WHERE heroId = :heroId")
     public abstract Hero getHero(int heroId);
 
-    @Query("SELECT (SELECT count(*) FROM " +
-            "(SELECT memberId, SUM(damage) as total from Record WHERE raidId = :raidId GROUP BY memberId) t2 " +
-            "WHERE t2.total >= t1.total)" +
-            " FROM (SELECT memberId, SUM(damage) as total from Record WHERE raidId = :raidId GROUP BY memberId) t1 " +
-            " WHERE memberId = :memberId")
-    public abstract int getRankFromAllRecords(int memberId, int raidId);
 
     @Query("SELECT (SELECT count(*) FROM " +
-            "(SELECT memberId, SUM(damage * hardness) as total " +
-            "from Record INNER JOIN Boss on Record.bossId = Boss.bossId " +
-            "WHERE Record.raidId = :raidId GROUP BY memberId) t2 " +
+            "(SELECT memberId, SUM(CASE WHEN isLastHit == 1 THEN (damage * :lastHitValue) ELSE (damage) END) " +
+            "as total from Record WHERE raidId = :raidId AND day >= :start GROUP BY memberId) t2 " +
             "WHERE t2.total >= t1.total)" +
-            " FROM (SELECT memberId, SUM(damage * hardness) as total " +
-            "from Record INNER JOIN Boss on Record.bossId = Boss.bossId " +
-            "WHERE Record.raidId = :raidId GROUP BY memberId) t1 " +
+            " FROM (SELECT memberId, SUM(CASE WHEN isLastHit == 1 THEN (damage * :lastHitValue) ELSE (damage) END) as total from Record " +
+            "WHERE raidId = :raidId AND day >= :start GROUP BY memberId) t1 " +
             " WHERE memberId = :memberId")
-    public abstract int getRankFromAllAdjustRecords(int memberId, int raidId);
+    public abstract int getRankFromAllRecords(int memberId, int raidId, int start, double lastHitValue);
+
+
+    /*
+        @Query("SELECT memberId, " +
+            "SUM(CASE WHEN isLastHit == 1 THEN (damage * hardness * :lastHitValue) " +
+            "ELSE (damage * hardness) END) as value " +
+            "from Record INNER JOIN Boss on Record.bossId = Boss.bossId " +
+            "WHERE Record.raidId = :raidId AND Record.day >= :start AND Record.day <= :end " +
+            "GROUP BY memberId ORDER BY value DESC LIMIT 30")
+    public abstract List<IdLong> getRanksOfAdjustRecords(int raidId, int start, int end, double lastHitValue);
+
+     */
+
+    @Query("SELECT (SELECT count(*) FROM " +
+            "(SELECT memberId, SUM(CASE WHEN isLastHit == 1 THEN (damage * hardness * :lastHitValue) " +
+            "ELSE (damage * hardness) END) as total " +
+            "from Record INNER JOIN Boss on Record.bossId = Boss.bossId " +
+            "WHERE Record.raidId = :raidId AND Record.day >= :start GROUP BY memberId) t2 " +
+            "WHERE t2.total >= t1.total)" +
+            " FROM (SELECT memberId, SUM(CASE WHEN isLastHit == 1 THEN (damage * hardness * :lastHitValue) " +
+            "ELSE (damage * hardness) END) as total " +
+            "from Record INNER JOIN Boss on Record.bossId = Boss.bossId " +
+            "WHERE Record.raidId = :raidId AND Record.day >= :start GROUP BY memberId) t1 " +
+            " WHERE memberId = :memberId")
+    public abstract int getRankFromAllAdjustRecords(int memberId, int raidId, int start, double lastHitValue);
 
     @Query("SELECT (SELECT COUNT(*) FROM " +
             "(SELECT memberId, SUM(damage) as total from Record " +
@@ -159,11 +176,6 @@ public abstract class RecordDao {
             "WHERE raidId = :raidId AND bossId = :bossId AND isLastHit = 0 AND day >= :start AND day <= :end " +
             "GROUP BY memberId HAVING count(memberId) >= :cnt ORDER BY value DESC LIMIT 5")
     public abstract List<IdLongCnt> getRanksOfBossAverage(int raidId, int bossId, int cnt, int start, int end);
-
-    @Query("SELECT memberId, AVG(damage) as value, COUNT(damage) as count FROM Record " +
-            "WHERE raidId = :raidId AND bossId = :bossId AND isLastHit = 0 " +
-            "GROUP BY memberId ORDER BY value DESC LIMIT 5")
-    public abstract List<IdLongCnt> getRanksOfBossAverageAll(int raidId, int bossId);
 
     @Query("UPDATE Record SET damage = :damage, bossId = :bossId, round = :round, leaderId = :leaderId, isLastHit = :isLastHit" +
             " WHERE recordID = :rId")
@@ -261,7 +273,4 @@ public abstract class RecordDao {
 
         return records;
     }
-
-
-
 }

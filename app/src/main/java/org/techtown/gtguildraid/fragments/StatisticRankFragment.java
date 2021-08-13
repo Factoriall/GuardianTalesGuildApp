@@ -1,8 +1,15 @@
 package org.techtown.gtguildraid.fragments;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.StrictMode;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +40,7 @@ import org.techtown.gtguildraid.models.Record;
 import org.techtown.gtguildraid.utils.AppExecutor;
 import org.techtown.gtguildraid.utils.RoomDB;
 
+import java.io.File;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -75,6 +83,9 @@ public class StatisticRankFragment extends Fragment {
         adapter = new StatisticRankCardAdapter();
         recyclerView.setAdapter(adapter);
         isDay1Contained = true;
+
+        StrictMode.VmPolicy.Builder build = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(build.build());
 
         if (getArguments() != null) {
             raidId = getArguments().getInt("raidId");
@@ -154,12 +165,22 @@ public class StatisticRankFragment extends Fragment {
             dialog.dismiss();
         });
 
+
         Raid raid = database.raidDao().getRaid(raidId);
         int maxDay = getMaxDay(raid.getStartDay());
         Switch excelAdjustSwitch = dialog.findViewById(R.id.excelAdjustSwitch);
         Switch excelDay1Switch = dialog.findViewById(R.id.excelDay1Switch);
         TextView maxDayValue = dialog.findViewById(R.id.maxDayValue);
         SeekBar maxDayBar = dialog.findViewById(R.id.maxDayBar);
+        SeekBar lastHitBar = dialog.findViewById(R.id.lastHitBar);
+        TextView lastHitValue = dialog.findViewById(R.id.lastHitValue);
+
+        SharedPreferences pref = getContext().getSharedPreferences("pref", Activity.MODE_PRIVATE);
+        excelAdjustSwitch.setChecked(pref.getBoolean("excelRankAdjust", false));
+        excelDay1Switch.setChecked(pref.getBoolean("excelRankDay1Contained", false));
+        int lhValue= pref.getInt("lastHitValue", 0);
+        lastHitBar.setProgress(lhValue);
+        lastHitValue.setText("x " + String.format("%.1f", 1f + lhValue * 0.1));
 
         maxDayBar.setMax(maxDay);
         maxDayBar.setProgress(maxDay);
@@ -182,8 +203,7 @@ public class StatisticRankFragment extends Fragment {
             public void onStopTrackingTouch(SeekBar seekBar) { }
         });
 
-        SeekBar lastHitBar = dialog.findViewById(R.id.lastHitBar);
-        TextView lastHitValue = dialog.findViewById(R.id.lastHitValue);
+
 
         lastHitBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -209,7 +229,7 @@ public class StatisticRankFragment extends Fragment {
                 Toast.makeText(getContext(), "1일차 적용 여부 스위치를 키거나 범위를 늘려주세요.", Toast.LENGTH_SHORT).show();
                 return;
             }
-            ProgressDialog mProgressDialog = ProgressDialog.show(getContext(), "잠시 대기","CSV 파일 생성 중...", true);
+            ProgressDialog mProgressDialog = ProgressDialog.show(getContext(), "잠시 대기","엑셀 파일 생성 중...", true);
 
             AppExecutor.getInstance().diskIO().execute(() -> {
                 RankPoi rp = new RankPoi(database.raidDao().getRaidWithBosses(raidId),
@@ -220,8 +240,31 @@ public class StatisticRankFragment extends Fragment {
                         1 + lastHitBar.getProgress() * 0.1);
                 rp.exportDataToExcel();
                 requireActivity().runOnUiThread(() -> {
+                    SharedPreferences.Editor editor = pref.edit();
+                    editor.putBoolean("excelRankAdjust", excelAdjustSwitch.isChecked());
+                    editor.putBoolean("excelRankDay1Contained", excelDay1Switch.isChecked());
+                    editor.putInt("lastHitValue", lastHitBar.getProgress());
+                    editor.apply();
                     mProgressDialog.dismiss();
-                    Toast.makeText(getContext(), "생성 완료", Toast.LENGTH_SHORT).show();
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+                    String dirName = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
+                            + "/가테_길레_" + raid.getName();
+                    builder.setMessage("내 파일 -> 내장 메모리 -> Documents -> 가테_길레_" + raid.getName() + " 에서 확인 가능"
+                            + "\n\n엑셀 파일을 보시겠습니까?")
+                            .setCancelable(false)
+                            .setPositiveButton("네", (dialog1, id) -> {
+                                File file = new File(dirName, raid.getName() + "_순위표.xls");
+                                Intent intent = new Intent(Intent.ACTION_VIEW);
+                                intent.setDataAndType(Uri.fromFile(file),"application/vnd.ms-excel");
+
+                                startActivity(intent);
+                                dialog1.dismiss();
+                            })
+                            .setNegativeButton("아니오", (dialog1, id) -> dialog1.dismiss());
+                    AlertDialog alert = builder.create();
+                    alert.setTitle("엑셀 생성 완료");
+                    alert.show();
                 });
             });
         });

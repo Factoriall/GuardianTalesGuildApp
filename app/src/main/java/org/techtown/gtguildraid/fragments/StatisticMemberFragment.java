@@ -1,6 +1,8 @@
 package org.techtown.gtguildraid.fragments;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -106,7 +108,11 @@ public class StatisticMemberFragment extends Fragment {
                     Toast.makeText(getContext(), "데이터 없음", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                MemberPoi mp = new MemberPoi(database.raidDao().getRaidWithBosses(raidId), membersInRaid.get(sMemberIdx), database);
+                SharedPreferences pref = getContext().getSharedPreferences("pref", Activity.MODE_PRIVATE);
+                boolean isDay1Contained = pref.getBoolean("excelRankDay1Contained", false);
+                double lhValue= 1f + 0.1 * pref.getInt("lastHitValue", 0);
+                MemberPoi mp = new MemberPoi(database.raidDao().getRaidWithBosses(raidId), membersInRaid.get(sMemberIdx), database,
+                        isDay1Contained, lhValue);
                 ProgressDialog mProgressDialog = ProgressDialog.show(getContext(), "잠시 대기","엑셀 파일 생성 중...", true);
 
                 AppExecutor.getInstance().diskIO().execute(() -> {

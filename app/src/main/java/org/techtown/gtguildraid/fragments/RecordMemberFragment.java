@@ -1,14 +1,18 @@
 package org.techtown.gtguildraid.fragments;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -53,6 +57,7 @@ import org.techtown.gtguildraid.models.Raid;
 import org.techtown.gtguildraid.models.Record;
 import org.techtown.gtguildraid.utils.RoomDB;
 
+import java.io.File;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -345,11 +350,11 @@ public class RecordMemberFragment extends Fragment {
                 },
                 (view, position) -> {
                     TextView textView = view.findViewById(R.id.bossName);
-                    textView.setTextColor(ContextCompat.getColor(getActivity(), android.R.color.white));
+                    textView.setTextColor(ContextCompat.getColor(requireActivity(), android.R.color.white));
                 },
                 (view, position) -> {
-                    TextView textView = (TextView) view.findViewById(R.id.bossName);
-                    textView.setTextColor(ContextCompat.getColor(getActivity(), R.color.gray));
+                    TextView textView = view.findViewById(R.id.bossName);
+                    textView.setTextColor(ContextCompat.getColor(requireActivity(), R.color.gray));
                 });
 
         selectedBossId = -1;
@@ -528,46 +533,34 @@ public class RecordMemberFragment extends Fragment {
             iHeroId = heroIds.get(elements.getSelectedItemPosition())
                     .get(heroNames.getSelectedItemPosition());
 
-            if (!sDamage.equals("") && selectedBossId != -1) {
-                dialog.dismiss();
-                if (isEditing) {//수정 중이면 업데이트
-                    database.recordDao().updateRecord(record.getRecordId(),
-                            Integer.parseInt(sDamage), selectedBossId,
-                            pickerIdx[0] + 1,
-                            iHeroId, isLastHit.isChecked());
-                } else {//새로운 데이터 생성
-                    //새로 생성할 때에만 preference에 저장
-                    SharedPreferences.Editor editor = pref.edit();
-                    editor.putInt("currentRound" + raidId, pickerIdx[0]);
-                    editor.putString("recentWrite" + raidId,
-                            "닉네임-" + memberList.get(sMemberIdx).getName() +
-                                    "/리더-"+ database.heroDao().getHero(iHeroId).getKoreanName());
-                    editor.apply();
-
-                    //새로운 데이터 저장
-                    Record record1 = new Record(memberList.get(sMemberIdx).getId(), raidId, day);
-                    record1.setDamage(Long.parseLong(sDamage));
-                    record1.setBossId(selectedBossId);
-                    record1.setLeaderId(iHeroId);
-                    record1.setRound(pickerIdx[0] + 1);
-
-                    Log.d("roundSpinnerPos", Integer.toString(
-                            pickerIdx[0] + 1));
-                    record1.setLastHit(isLastHit.isChecked());
-
-                    //recordList 갱신
-                    database.recordDao().insertRecord(record1);
+            int rId = isEditing ? record.getRecordId() : -1;
+            if(elements.getSelectedItemPosition() == 0){//normal 선택 상태
+                AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+                builder.setMessage("1성이 리더로 선택되어있습니다. 맞는 선택입니까?")
+                        .setCancelable(false)
+                        .setPositiveButton("네", (dialog1, id) -> {
+                            dialog1.dismiss();
+                            if (!sDamage.equals("") && selectedBossId != -1) {
+                                saveDataInDatabase(isEditing, rId, sDamage, pickerIdx[0], iHeroId, isLastHit.isChecked());
+                                dialog.dismiss();
+                            } else {
+                                showToast("상대 보스 및 데미지를 입력하세요!");
+                            }
+                        })
+                        .setNegativeButton("아니오", (dialog1, id) -> {
+                            dialog1.dismiss();
+                        });
+                AlertDialog alert = builder.create();
+                alert.setTitle("부자연스러운 데이터 발견");
+                alert.show();
+            }
+            else {
+                if (!sDamage.equals("") && selectedBossId != -1) {
+                    saveDataInDatabase(isEditing, rId, sDamage, pickerIdx[0], iHeroId, isLastHit.isChecked());
+                    dialog.dismiss();
+                } else {
+                    showToast("상대 보스 및 데미지를 입력하세요!");
                 }
-                recordList.clear();
-                recordList.addAll(getReverseList());
-
-                adapter.notifyDataSetChanged();
-
-                setFabVisibility();
-                setTotalDamage();
-                refreshSpinnerItem(sMemberIdx);
-            } else {
-                showToast("상대 보스 및 데미지를 입력하세요!");
             }
         });
 
@@ -576,6 +569,41 @@ public class RecordMemberFragment extends Fragment {
             adapter.notifyDataSetChanged();
             dialog.dismiss();
         });
+    }
+
+    private void saveDataInDatabase(boolean isEditing, int recordId, String damage, int pIdx, int heroId, boolean isChecked) {
+        if (isEditing) {//수정 중이면 업데이트
+            database.recordDao().updateRecord(recordId,
+                    Integer.parseInt(damage), selectedBossId,
+                    pIdx + 1,
+                    heroId, isChecked);
+        } else {//새로운 데이터 생성
+            //새로 생성할 때에만 preference에 저장
+            SharedPreferences.Editor editor = pref.edit();
+            editor.putInt("currentRound" + raidId, pIdx);
+            editor.putString("recentWrite" + raidId,
+                    "닉네임-" + memberList.get(sMemberIdx).getName() +
+                            "/리더-" + database.heroDao().getHero(heroId).getKoreanName());
+            editor.apply();
+
+            //새로운 데이터 저장
+            Record record1 = new Record(memberList.get(sMemberIdx).getId(), raidId, day);
+            record1.setDamage(Long.parseLong(damage));
+            record1.setBossId(selectedBossId);
+            record1.setLeaderId(heroId);
+            record1.setRound(pIdx + 1);
+            record1.setLastHit(isChecked);
+
+            //recordList 갱신
+            database.recordDao().insertRecord(record1);
+        }
+        recordList.clear();
+        recordList.addAll(getReverseList());
+        adapter.notifyDataSetChanged();
+
+        setFabVisibility();
+        setTotalDamage();
+        refreshSpinnerItem(sMemberIdx);
     }
 
     private void setFavoriteView(MySpinner elements, LinearLayout favoritesList) {

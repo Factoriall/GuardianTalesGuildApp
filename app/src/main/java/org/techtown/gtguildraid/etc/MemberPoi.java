@@ -34,6 +34,8 @@ public class MemberPoi extends PoiHelper {
     private final int raidId;
     private final RoomDB database;
     private final List<Boss> bosses;
+    private int startDay;
+    private double lhValue;
     private final CalculateFormatHelper calcHelper = new CalculateFormatHelper();
 
     HSSFColor titleColor;
@@ -45,7 +47,8 @@ public class MemberPoi extends PoiHelper {
     CellStyle subtitle2Style;
     CellStyle subtitle3Style;
 
-    public MemberPoi(Raid raid, GuildMember member, RoomDB db){
+    public MemberPoi(Raid raid, GuildMember member, RoomDB db,
+                     boolean isDay1Contained, double lhValue){
         super(raid.getName());
         this.raid = raid;
         raidId = raid.getRaidId();
@@ -53,6 +56,8 @@ public class MemberPoi extends PoiHelper {
         memberId = member.getID();
         database = db;
         bosses = raid.getBossList();
+        this.startDay = isDay1Contained ? 1 : 2;
+        this.lhValue = lhValue;
     }
 
     @Override
@@ -202,8 +207,8 @@ public class MemberPoi extends PoiHelper {
         //배율 OFF 데이터 넣기
         int pastRank;
         if(pastRaidId == -1) pastRank = -1;
-        else pastRank = database.recordDao().getRankFromAllRecords(memberId, pastRaidId);
-        int rank = database.recordDao().getRankFromAllRecords(memberId, raidId);
+        else pastRank = database.recordDao().getRankFromAllRecords(memberId, pastRaidId, startDay, lhValue);
+        int rank = database.recordDao().getRankFromAllRecords(memberId, raidId, startDay, lhValue);
 
         List<Record> beforeAll = new ArrayList<>();
         List<Record> beforeMember = new ArrayList<>();
@@ -238,8 +243,8 @@ public class MemberPoi extends PoiHelper {
 
         aRow += 2;
         //배율 ON 데이터 넣기
-        int rankAdjust = database.recordDao().getRankFromAllAdjustRecords(memberId, raidId);
-        int pastRankAdj = database.recordDao().getRankFromAllAdjustRecords(memberId, pastRaidId);
+        int rankAdjust = database.recordDao().getRankFromAllAdjustRecords(memberId, raidId, startDay, lhValue);
+        int pastRankAdj = database.recordDao().getRankFromAllAdjustRecords(memberId, pastRaidId, startDay, lhValue);
 
         long allDamageAdjust = calcHelper.getDamageFromList(allRecords, true);
         long memberDamageAdjust = calcHelper.getDamageFromList(memberRecords, true);

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -84,6 +85,7 @@ public class RecordFragment extends Fragment {
         viewPager.setUserInputEnabled(false);
 
         LinearLayout tabStrip = ((LinearLayout)tabLayout.getChildAt(0));
+        Log.d("recordFragment", "today: " + getIntegerFromToday());
         for(int i=getIntegerFromToday()+1; i<VIEWPAGER_NUM; i++){
             tabStrip.getChildAt(i).setBackgroundColor(Color.GRAY);
             tabStrip.getChildAt(i).setOnTouchListener((v, event) -> true);
@@ -101,11 +103,20 @@ public class RecordFragment extends Fragment {
             int curRound = pref.getInt("currentRound" + raidId, 0);
             List<Boss> bossList = database.raidDao().getBossesList(raidId);
             StringBuilder toastText = new StringBuilder((curRound + 1) + "회차 남은 데미지\n");
-            for(Boss boss : bossList){
+            int eliminatedNum = 0;
+            for(int i = 0; i < bossList.size(); i++){
                 int idx = curRound >= hpPerRound.length ? hpPerRound.length - 1 : curRound;
-                long damage = database.recordDao().get1Boss1RoundSum(raidId, boss.getBossId(), curRound + 1);
+                long damage = database.recordDao().get1Boss1RoundSum(raidId, bossList.get(i).getBossId(), curRound + 1);
                 long remain = hpPerRound[idx] - damage;
-                toastText.append(boss.getName()).append(": ").append(cHelper.getNumberFormat(remain)).append("\n");
+                if(remain == 0) eliminatedNum += 1;
+                toastText.append(bossList.get(i).getName()).append(": ").append(cHelper.getNumberFormat(remain));
+                if(i != bossList.size() - 1) toastText.append("\n");
+            }
+            if(eliminatedNum == 4){
+                toastText.append("\n" + (curRound + 1) + "회차 보스가 모두 처리됐습니다. 다음 회차로 자동 조정됍니다.");
+                SharedPreferences.Editor editor = pref.edit();
+                editor.putInt("currentRound" + raidId, curRound + 1);
+                editor.apply();
             }
 
             Toast.makeText(getContext(), toastText.toString(), Toast.LENGTH_LONG).show();
@@ -133,6 +144,7 @@ public class RecordFragment extends Fragment {
         Date startDate = raid.getStartDay();
 
         int differentDays = (int) ((today.getTime() - startDate.getTime()) / DAY_IN_SECONDS);
+        Log.d("dateDifference", "" + differentDays);
 
         return Math.max(differentDays, 0);
     }
