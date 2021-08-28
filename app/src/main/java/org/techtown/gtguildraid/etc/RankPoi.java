@@ -1,5 +1,6 @@
 package org.techtown.gtguildraid.etc;
 
+import android.content.Context;
 import android.util.Log;
 
 import org.apache.poi.hssf.util.HSSFColor;
@@ -28,8 +29,9 @@ public class RankPoi extends PoiHelper {
     private final int maxDay;
     private final double lastHitValue;
 
-    public RankPoi(Raid raid, RoomDB db, boolean isAdjusted, boolean isDay1Contained, int maxDay, double lastHitValue) {
-        super(raid.getName());
+
+    public RankPoi(Raid raid, RoomDB db, boolean isAdjusted, boolean isDay1Contained, int maxDay, double lastHitValue, Context context) {
+        super(raid.getName(), context);
         this.raid = raid;
         raidId = raid.getRaidId();
         database = db;
@@ -38,6 +40,7 @@ public class RankPoi extends PoiHelper {
         this.startDay = isDay1Contained ? 1 : 2;
         this.maxDay = maxDay;
         this.lastHitValue = lastHitValue;
+
     }
 
     HSSFColor subColor;
@@ -51,7 +54,6 @@ public class RankPoi extends PoiHelper {
 
     @Override
     public void exportDataToExcel() {
-        File file = new File(directory,raid.getName() + "_순위표.xls");
         subColor = wb.getCustomPalette().findSimilarColor(255, 255, 204);
         sub2Color = wb.getCustomPalette().findSimilarColor(204, 255, 204);
 
@@ -97,7 +99,7 @@ public class RankPoi extends PoiHelper {
         Log.d("rowNum", "" + rowNum);
         rowNum = addDetailRank(rowNum);
 
-        writeFile(file);
+        writeFile(raid.getName() + "_순위표.xls");
     }
 
     private int addTotalRank(int rowNum) {
@@ -254,12 +256,15 @@ public class RankPoi extends PoiHelper {
                     setCellValueAndStyle(getOrCreateRow(FIRST + r).createCell(firstCol), dataCellStyle, database.memberDao().getMember(totalRank.get(r).memberId).getName());
                     setCellValueAndStyle(getOrCreateRow(FIRST + r).createCell(secondCol), dataCellStyle, calcHelper.getPercentage(totalRank.get(r).value,
                             database.recordDao().getTotalOfBoss(raidId, boss.getBossId(), startDay, maxDay)));
-
+                }
+                else {
+                    addBorder(FIRST + r, FIRST + r, firstCol, secondCol);
+                }
+                if(avgRank.size() > r){
                     setCellValueAndStyle(getOrCreateRow(SECOND + r).createCell(firstCol), dataCellStyle, database.memberDao().getMember(avgRank.get(r).memberId).getName());
                     setCellValueAndStyle(getOrCreateRow(SECOND + r).createCell(secondCol), dataCellStyle, calcHelper.getNumberFormat(avgRank.get(r).value) + " (" + avgRank.get(r).count + ")");
                 }
                 else{
-                    addBorder(FIRST + r, FIRST + r, firstCol, secondCol);
                     addBorder(SECOND + r, SECOND + r, firstCol, secondCol);
                 }
             }
@@ -274,7 +279,6 @@ public class RankPoi extends PoiHelper {
             }
             else{
                 addBorder(FIRST + i, FIRST + i, 9, 10);
-
             }
 
             if (growthRank.size() > i) {

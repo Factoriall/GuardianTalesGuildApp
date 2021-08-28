@@ -7,6 +7,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
@@ -237,7 +238,8 @@ public class StatisticRankFragment extends Fragment {
                         excelAdjustSwitch.isChecked(),
                         excelDay1Switch.isChecked(),
                         maxDayBar.getProgress(),
-                        1 + lastHitBar.getProgress() * 0.1);
+                        1 + lastHitBar.getProgress() * 0.1,
+                        getContext());
                 rp.exportDataToExcel();
                 requireActivity().runOnUiThread(() -> {
                     SharedPreferences.Editor editor = pref.edit();
@@ -248,17 +250,28 @@ public class StatisticRankFragment extends Fragment {
                     mProgressDialog.dismiss();
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
-                    String dirName = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
+                    String dirName;
+                    if(android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                        dirName = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
                             + "/가테_길레_" + raid.getName();
-                    builder.setMessage("내 파일 -> 내장 메모리 -> Documents -> 가테_길레_" + raid.getName() + " 에서 확인 가능"
-                            + "\n\n엑셀 파일을 보시겠습니까?")
+                    else
+                        dirName = Environment.getExternalStorageDirectory() + "/가테_길레_" + raid.getName();
+
+
+                    builder.setMessage("내 파일 ->" + dirName + " 에서 확인 가능합니다."
+                            + "\n엑셀 파일을 보시겠습니까?")
                             .setCancelable(false)
                             .setPositiveButton("네", (dialog1, id) -> {
-                                File file = new File(dirName, raid.getName() + "_순위표.xls");
-                                Intent intent = new Intent(Intent.ACTION_VIEW);
-                                intent.setDataAndType(Uri.fromFile(file),"application/vnd.ms-excel");
+                                try {
+                                    File file = new File(dirName, raid.getName() + "_순위표.xls");
+                                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                                    intent.setDataAndType(Uri.fromFile(file), "application/vnd.ms-excel");
 
-                                startActivity(intent);
+                                    startActivity(intent);
+                                }catch(Exception e){
+                                    e.printStackTrace();
+                                    Toast.makeText(getContext(), "엑셀이 설치되지 않았습니다.", Toast.LENGTH_SHORT).show();
+                                }
                                 dialog1.dismiss();
                             })
                             .setNegativeButton("아니오", (dialog1, id) -> dialog1.dismiss());

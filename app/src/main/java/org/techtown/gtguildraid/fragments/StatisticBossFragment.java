@@ -47,7 +47,9 @@ import java.util.Map;
 
 import static androidx.core.content.ContextCompat.getColor;
 
-public class StatisticBossFragment extends Fragment {
+public class
+
+StatisticBossFragment extends Fragment {
     static final int ALL = 0;
     static final int BOSS_1 = 1;
     static final int BOSS_2 = 2;

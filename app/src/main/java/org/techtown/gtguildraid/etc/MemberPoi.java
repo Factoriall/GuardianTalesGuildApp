@@ -1,6 +1,7 @@
 package org.techtown.gtguildraid.etc;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.util.Log;
 
 import org.apache.poi.hssf.usermodel.HSSFOptimiser;
@@ -48,8 +49,8 @@ public class MemberPoi extends PoiHelper {
     CellStyle subtitle3Style;
 
     public MemberPoi(Raid raid, GuildMember member, RoomDB db,
-                     boolean isDay1Contained, double lhValue){
-        super(raid.getName());
+                     boolean isDay1Contained, double lhValue, Context context){
+        super(raid.getName(), context);
         this.raid = raid;
         raidId = raid.getRaidId();
         this.member = member;
@@ -62,7 +63,7 @@ public class MemberPoi extends PoiHelper {
 
     @Override
     public void exportDataToExcel() {
-        File file = new File(directory,raid.getName() + "_개인_" + member.getName() +  ".xls");
+        //File file = new File(directory,raid.getName() + "_개인_" + member.getName() +  ".xls");
 
         //색깔 만들어주기
         titleColor = wb.getCustomPalette().findSimilarColor(220, 220, 220);
@@ -108,7 +109,7 @@ public class MemberPoi extends PoiHelper {
         rowNum = addBossInfoToExcel(rowNum);
         addExplanationToExcel(rowNum);
 
-        writeFile(file);
+        writeFile(raid.getName() + "_개인_" + member.getName() +  ".xls");
     }
 
     private int addSummaryToExcel(int rowNum) {
@@ -208,6 +209,7 @@ public class MemberPoi extends PoiHelper {
         int pastRank;
         if(pastRaidId == -1) pastRank = -1;
         else pastRank = database.recordDao().getRankFromAllRecords(memberId, pastRaidId, startDay, lhValue);
+
         int rank = database.recordDao().getRankFromAllRecords(memberId, raidId, startDay, lhValue);
 
         List<Record> beforeAll = new ArrayList<>();

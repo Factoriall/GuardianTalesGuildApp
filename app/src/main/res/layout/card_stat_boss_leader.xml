@@ -57,7 +57,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:text="나나나나나나"
                 android:textColor="@color/bg_icon"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -90,7 +89,6 @@
                 android:id="@+id/hitNum"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="3"
                 app:layout_constraintStart_toStartOf="@+id/hitNumText"
                 app:layout_constraintTop_toBottomOf="@+id/hitNumText" />
 
@@ -111,7 +109,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="3,000,000"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/averageText"
                 app:layout_constraintTop_toBottomOf="@+id/averageText" />
@@ -138,7 +135,6 @@
                 android:id="@+id/totalDamage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="1,000,000,000"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/totalText"
                 app:layout_constraintTop_toBottomOf="@+id/totalText" />

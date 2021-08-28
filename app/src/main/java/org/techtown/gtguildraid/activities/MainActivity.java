@@ -1,8 +1,10 @@
 package org.techtown.gtguildraid.activities;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -13,6 +15,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.gun0912.tedpermission.PermissionListener;
+import com.gun0912.tedpermission.normal.TedPermission;
 
 import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.fragments.MemberFragment;
@@ -31,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     RaidRenewalFragment raidFragment;
     RecordFragment recordFragment;
     StatisticRenewalFragment statisticRenewalFragment;
+    private Toast myToast;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -59,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
         recordFragment = new RecordFragment();
         //statisticFragment = new StatisticFragment();
         statisticRenewalFragment = new StatisticRenewalFragment();
+        myToast = Toast.makeText(getApplicationContext(), null, Toast.LENGTH_SHORT);
 
         SharedPreferences pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
         boolean isRegistered = pref.getBoolean("isRegistered", false);
@@ -93,7 +99,8 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             }
                             if(!isElementAllExist){
-                                Toast.makeText(MainActivity.this, "보스 속성 정보를 모두 입력하세요!", Toast.LENGTH_LONG).show();
+                                myToast.setText("보스 속성 정보를 모두 입력하세요!");
+                                myToast.show();
                                 return false;
                             }
                             getSupportFragmentManager().beginTransaction().replace(R.id.container, recordFragment).commit();
@@ -116,5 +123,10 @@ public class MainActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction().replace(R.id.container, raidFragment).commit();
             bottomNavigationView.setSelectedItemId(R.id.raidTab);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 }

@@ -19,11 +19,11 @@
         android:layout_height="wrap_content"
         android:background="@android:drawable/editbox_background"
         android:gravity="top"
-        android:hint="최대 15글자"
+        android:hint="최대 10글자"
         android:inputType="text"
         android:imeOptions="actionDone"
         android:maxLines="1"
-        android:maxLength="15"
+        android:maxLength="10"
         android:padding="12dp"
         android:autofillHints="" />
 

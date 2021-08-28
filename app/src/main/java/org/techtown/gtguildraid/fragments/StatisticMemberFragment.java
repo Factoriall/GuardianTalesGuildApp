@@ -1,9 +1,14 @@
 package org.techtown.gtguildraid.fragments;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +28,7 @@ import org.techtown.gtguildraid.models.GuildMember;
 import org.techtown.gtguildraid.utils.AppExecutor;
 import org.techtown.gtguildraid.utils.RoomDB;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -112,7 +118,7 @@ public class StatisticMemberFragment extends Fragment {
                 boolean isDay1Contained = pref.getBoolean("excelRankDay1Contained", false);
                 double lhValue= 1f + 0.1 * pref.getInt("lastHitValue", 0);
                 MemberPoi mp = new MemberPoi(database.raidDao().getRaidWithBosses(raidId), membersInRaid.get(sMemberIdx), database,
-                        isDay1Contained, lhValue);
+                        isDay1Contained, lhValue, getContext());
                 ProgressDialog mProgressDialog = ProgressDialog.show(getContext(), "잠시 대기","엑셀 파일 생성 중...", true);
 
                 AppExecutor.getInstance().diskIO().execute(() -> {
@@ -120,7 +126,35 @@ public class StatisticMemberFragment extends Fragment {
                     mp.exportDataToExcel();
                     getActivity().runOnUiThread(() -> {
                         mProgressDialog.dismiss();
-                        Toast.makeText(getContext(), "생성 완료", Toast.LENGTH_SHORT).show();
+                        AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+                        String raidName = database.raidDao().getRaid(raidId).getName();
+                        String dirName;
+                        if(android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                            dirName = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
+                                    + "/가테_길레_" + raidName;
+                        else
+                            dirName = Environment.getExternalStorageDirectory() + "/가테_길레_" +raidName;
+
+                        builder.setMessage("내 파일 ->" + dirName + " 에서 확인 가능합니다."
+                                + "\n엑셀 파일을 보시겠습니까?")
+                                .setCancelable(false)
+                                .setPositiveButton("네", (dialog1, id) -> {
+                                    try {
+                                        File file = new File(dirName, raidName + "_개인_" + membersInRaid.get(sMemberIdx).getName() + ".xls");
+                                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                                        intent.setDataAndType(Uri.fromFile(file), "application/vnd.ms-excel");
+                                        startActivity(intent);
+                                    }catch(Exception e){
+                                        e.printStackTrace();
+                                        Toast.makeText(getContext(), "엑셀이 설치되지 않았습니다.", Toast.LENGTH_SHORT).show();
+                                    }
+                                    dialog1.dismiss();
+                                })
+                                .setNegativeButton("아니오", (dialog1, id) -> dialog1.dismiss());
+                        AlertDialog alert = builder.create();
+                        alert.setTitle("엑셀 생성 완료");
+                        alert.show();
+                        //Toast.makeText(getContext(), "생성 완료", Toast.LENGTH_SHORT).show();
                     });
                 });
             }

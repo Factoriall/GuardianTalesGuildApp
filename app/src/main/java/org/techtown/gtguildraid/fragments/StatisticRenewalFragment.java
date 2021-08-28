@@ -84,6 +84,8 @@ public class StatisticRenewalFragment
         RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
         LinearLayoutManager lm = new LinearLayoutManager(requireActivity());
         lm.setReverseLayout(true);
+        lm.setStackFromEnd(true);
+
         recyclerView.setLayoutManager(lm);
 
         adapter = new StatisticRaidCardAdapter(this, pastRaids);

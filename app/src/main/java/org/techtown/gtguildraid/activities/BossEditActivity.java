@@ -30,6 +30,7 @@ public class BossEditActivity extends AppCompatActivity
         implements BossBottomSheetDialog.BottomSheetListener {
     ImageView bossImage;
     Boss boss;
+    Toast toast;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -45,10 +46,10 @@ public class BossEditActivity extends AppCompatActivity
         bossImage = findViewById(R.id.bossImage);
         TextView bossName = findViewById(R.id.bossName);
         Spinner elementSpinner = findViewById(R.id.elementSpinner);
-        Switch isFuriousCheck = findViewById(R.id.isFurious);
         SeekBar hardness = findViewById(R.id.hardness);
         Button button = findViewById(R.id.button);
         TextView hardnessValue = findViewById(R.id.hardnessValue);
+        toast = Toast.makeText(getApplicationContext(), null, Toast.LENGTH_SHORT);
 
                 // spinner 설정
         setElementSpinner(elementSpinner);
@@ -66,14 +67,10 @@ public class BossEditActivity extends AppCompatActivity
         bossImage.setImageResource(getIdentifierFromResource("boss_" + boss.getImgName()));
         bossName.setText(boss.getName());
         elementSpinner.setSelection(boss.getElementId());
-        isFuriousCheck.setChecked(boss.isFurious());
 
         hardness.setProgress((int)(boss.getHardness() * 10));
         hardnessValue.setText("x " + boss.getHardness());
 
-        isFuriousCheck.setOnClickListener(view ->{
-            boss.setFurious(isFuriousCheck.isChecked());
-        });
 
         //boss 이미지 창 띄우고, 누른 것에 따라 이미지 및 이름 설정
         bossImage.setOnClickListener(view -> {
@@ -106,12 +103,12 @@ public class BossEditActivity extends AppCompatActivity
             double dHardness = hardness.getProgress() / 10.0;
             String imgName = (String) boss.getImgName();
             int elementIdx = elementSpinner.getSelectedItemPosition();
-            boolean isFurious = isFuriousCheck.isChecked();
             if(elementIdx == 0 || sName.equals("")){
-                Toast.makeText(this, "입력 부족, 다시 입력해주세요.", Toast.LENGTH_LONG).show();
+                toast.setText("입력 부족, 다시 입력해주세요.");
+                toast.show();
                 return;
             }
-            database.raidDao().updateBoss(bossId, sName, imgName, dHardness, elementIdx, isFurious);
+            database.raidDao().updateBoss(bossId, sName, imgName, dHardness, elementIdx, false);
             Intent retIntent = new Intent();
             retIntent.putExtra("position", position);
 

@@ -61,61 +61,61 @@ public abstract class RecordDao {
     @Query("SELECT * FROM Hero WHERE heroId = :heroId")
     public abstract Hero getHero(int heroId);
 
-
-    @Query("SELECT (SELECT count(*) FROM " +
+/*
+    @Query("SELECT " +
+            "(SELECT count(*) + 1 FROM " +
             "(SELECT memberId, SUM(CASE WHEN isLastHit == 1 THEN (damage * :lastHitValue) ELSE (damage) END) " +
             "as total from Record WHERE raidId = :raidId AND day >= :start GROUP BY memberId) t2 " +
-            "WHERE t2.total >= t1.total)" +
+            "WHERE t2.total > t1.total)" +
             " FROM (SELECT memberId, SUM(CASE WHEN isLastHit == 1 THEN (damage * :lastHitValue) ELSE (damage) END) as total from Record " +
             "WHERE raidId = :raidId AND day >= :start GROUP BY memberId) t1 " +
             " WHERE memberId = :memberId")
     public abstract int getRankFromAllRecords(int memberId, int raidId, int start, double lastHitValue);
+*/
 
+    @Query("WITH tt (memberId, total) as " +
+            "(SELECT memberId, SUM(CASE WHEN isLastHit == 1 THEN (damage * :lastHitValue) ELSE (damage) END) as total " +
+            "FROM Record WHERE raidId = :raidId AND day >= :start GROUP BY memberId) " +
+            "SELECT rank FROM (SELECT s.memberId, s.total, (1 + COUNT(lesser.total)) AS rank FROM tt as s " +
+            "LEFT JOIN tt as lesser " +
+            "ON s.total < lesser.total " +
+            "GROUP BY s.memberId " +
+            "ORDER BY s.total DESC)" +
+            "WHERE memberId = :memberId")
+    public abstract int getRankFromAllRecords(int memberId, int raidId, int start, double lastHitValue);
 
-    /*
-        @Query("SELECT memberId, " +
-            "SUM(CASE WHEN isLastHit == 1 THEN (damage * hardness * :lastHitValue) " +
-            "ELSE (damage * hardness) END) as value " +
-            "from Record INNER JOIN Boss on Record.bossId = Boss.bossId " +
-            "WHERE Record.raidId = :raidId AND Record.day >= :start AND Record.day <= :end " +
-            "GROUP BY memberId ORDER BY value DESC LIMIT 30")
-    public abstract List<IdLong> getRanksOfAdjustRecords(int raidId, int start, int end, double lastHitValue);
-
-     */
-
-    @Query("SELECT (SELECT count(*) FROM " +
-            "(SELECT memberId, SUM(CASE WHEN isLastHit == 1 THEN (damage * hardness * :lastHitValue) " +
-            "ELSE (damage * hardness) END) as total " +
-            "from Record INNER JOIN Boss on Record.bossId = Boss.bossId " +
-            "WHERE Record.raidId = :raidId AND Record.day >= :start GROUP BY memberId) t2 " +
-            "WHERE t2.total >= t1.total)" +
-            " FROM (SELECT memberId, SUM(CASE WHEN isLastHit == 1 THEN (damage * hardness * :lastHitValue) " +
-            "ELSE (damage * hardness) END) as total " +
-            "from Record INNER JOIN Boss on Record.bossId = Boss.bossId " +
-            "WHERE Record.raidId = :raidId AND Record.day >= :start GROUP BY memberId) t1 " +
-            " WHERE memberId = :memberId")
+    @Query("WITH tt (memberId, total) as" +
+            "(SELECT memberId, SUM(CASE WHEN isLastHit == 1 THEN (damage * hardness * :lastHitValue) ELSE (damage * hardness) END) as total " +
+            "FROM Record INNER JOIN Boss on Record.bossId = Boss.bossId " +
+            "WHERE Record.raidId = :raidId AND Record.day >= :start GROUP BY memberId) " +
+            "SELECT rank FROM (SELECT s.memberId, s.total, (1 + COUNT(lesser.total)) AS rank FROM tt as s " +
+            "LEFT JOIN tt as lesser " +
+            "ON s.total < lesser.total " +
+            "GROUP BY s.memberId " +
+            "ORDER BY s.total DESC) " +
+            "WHERE memberId = :memberId")
     public abstract int getRankFromAllAdjustRecords(int memberId, int raidId, int start, double lastHitValue);
 
-    @Query("SELECT (SELECT COUNT(*) FROM " +
-            "(SELECT memberId, SUM(damage) as total from Record " +
-            "WHERE raidId = :raidId AND bossId = :bossId " +
-            "GROUP BY memberId) t2 " +
-            "WHERE t2.total >= t1.total)" +
-            " FROM (SELECT memberId, SUM(damage) as total from Record " +
-            "WHERE raidId = :raidId AND bossId = :bossId " +
-            "GROUP BY memberId) t1 " +
-            " WHERE memberId = :memberId")
+    @Query("WITH tt (memberId, total) as" +
+            "(SELECT memberId, SUM(damage) as total " +
+            "FROM Record WHERE raidId = :raidId AND bossId = :bossId GROUP BY memberId) " +
+            "SELECT rank FROM (SELECT s.memberId, s.total, (1 + COUNT(lesser.total)) AS rank FROM tt as s " +
+            "LEFT JOIN tt as lesser " +
+            "ON s.total < lesser.total " +
+            "GROUP BY s.memberId " +
+            "ORDER BY s.total DESC) " +
+            "WHERE memberId = :memberId")
     public abstract int getTotalRankFromBossRecords(int memberId, int raidId, int bossId);
 
-    @Query("SELECT (SELECT COUNT(*) FROM " +
-            "(SELECT memberId, AVG(damage) as avg from Record " +
-            "WHERE raidId = :raidId AND bossId = :bossId " +
-            "GROUP BY memberId) t2 " +
-            "WHERE t2.avg >= t1.avg)" +
-            " FROM (SELECT memberId, AVG(damage) as avg " +
-            "from Record WHERE raidId = :raidId AND bossId = :bossId " +
-            "GROUP BY memberId) t1 " +
-            " WHERE memberId = :memberId")
+    @Query("WITH tt (memberId, total) as" +
+            "(SELECT memberId, AVG(damage) as total " +
+            "FROM Record WHERE raidId = :raidId AND bossId = :bossId GROUP BY memberId) " +
+            "SELECT rank FROM (SELECT s.memberId, s.total, (1 + COUNT(lesser.total)) AS rank FROM tt as s " +
+            "LEFT JOIN tt as lesser " +
+            "ON s.total < lesser.total " +
+            "GROUP BY s.memberId " +
+            "ORDER BY s.total DESC) " +
+            "WHERE memberId = :memberId")
     public abstract int getAvgRankFromBossRecords(int memberId, int raidId, int bossId);
 
     @Query("SELECT AVG(damage) FROM Record " +

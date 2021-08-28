@@ -31,7 +31,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:text="진행 중인 레이드 기록"
+            android:text="데이터 기록"
             android:textColor="@color/bg_icon"
             android:textSize="24sp"
             app:layout_constraintBottom_toBottomOf="parent"

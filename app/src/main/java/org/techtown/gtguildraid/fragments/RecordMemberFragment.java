@@ -3,16 +3,13 @@ package org.techtown.gtguildraid.fragments;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -57,7 +54,6 @@ import org.techtown.gtguildraid.models.Raid;
 import org.techtown.gtguildraid.models.Record;
 import org.techtown.gtguildraid.utils.RoomDB;
 
-import java.io.File;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -97,6 +93,7 @@ public class RecordMemberFragment extends Fragment {
     private boolean isCreateMode = true;
     private int sMemberIdx = 0;
     boolean isSetByRecord;
+    private Toast myToast;
 
     private SharedPreferences pref;
 
@@ -162,6 +159,7 @@ public class RecordMemberFragment extends Fragment {
 
         pref = this.getActivity().getSharedPreferences("pref", Context.MODE_PRIVATE);
         database = RoomDB.getInstance(getActivity());
+        myToast = Toast.makeText(getActivity(), null, Toast.LENGTH_SHORT);
 
         List<Hero> heroList = database.heroDao().getAllHeroes();
         //heroId 정보 생성
@@ -491,6 +489,8 @@ public class RecordMemberFragment extends Fragment {
         setFavoriteView(elements, favoritesList);
 
         addButton.setOnClickListener(view -> {
+            if(!isCreateMode) return;
+
             List<Favorites> favs = database.favoritesDao().getAllFavorites();
             if (favs.size() >= FAVORITE_MAX) {
                 showToast("최대 " + FAVORITE_MAX + "개까지 저장이 가능합니다");
@@ -510,10 +510,12 @@ public class RecordMemberFragment extends Fragment {
         deleteButton.setOnClickListener(view -> {
             if (isCreateMode) {
                 hsv.setBackgroundResource(R.color.delete_color);
+                addButton.setBackgroundResource(R.color.gray);
                 deleteButton.setImageResource(R.drawable.icon_undo);
                 deleteButton.setBackgroundResource(R.color.bg_icon);
             } else {
                 hsv.setBackgroundResource(R.color.bg_icon);
+                addButton.setBackgroundResource(R.color.create_color);
                 deleteButton.setImageResource(R.drawable.icon_delete);
                 deleteButton.setBackgroundResource(R.color.delete_color);
             }
@@ -534,34 +536,36 @@ public class RecordMemberFragment extends Fragment {
                     .get(heroNames.getSelectedItemPosition());
 
             int rId = isEditing ? record.getRecordId() : -1;
-            if(elements.getSelectedItemPosition() == 0){//normal 선택 상태
-                AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
-                builder.setMessage("1성이 리더로 선택되어있습니다. 맞는 선택입니까?")
-                        .setCancelable(false)
-                        .setPositiveButton("네", (dialog1, id) -> {
-                            dialog1.dismiss();
-                            if (!sDamage.equals("") && selectedBossId != -1) {
-                                saveDataInDatabase(isEditing, rId, sDamage, pickerIdx[0], iHeroId, isLastHit.isChecked());
-                                dialog.dismiss();
-                            } else {
-                                showToast("상대 보스 및 데미지를 입력하세요!");
-                            }
-                        })
-                        .setNegativeButton("아니오", (dialog1, id) -> {
-                            dialog1.dismiss();
-                        });
-                AlertDialog alert = builder.create();
-                alert.setTitle("부자연스러운 데이터 발견");
-                alert.show();
-            }
-            else {
-                if (!sDamage.equals("") && selectedBossId != -1) {
+
+
+            if (!sDamage.equals("") && selectedBossId != -1) {
+                if (elements.getSelectedItemPosition() == 0) {//normal 선택 상태
+                    AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+                    builder.setMessage("1성이 리더로 선택되어있습니다. 맞는 선택입니까?")
+                            .setCancelable(false)
+                            .setPositiveButton("네", (dialog1, id) -> {
+                                dialog1.dismiss();
+                                if (!sDamage.equals("") && selectedBossId != -1) {
+                                    saveDataInDatabase(isEditing, rId, sDamage, pickerIdx[0], iHeroId, isLastHit.isChecked());
+                                    dialog.dismiss();
+                                } else {
+                                    showToast("상대 보스 및 데미지를 입력하세요!");
+                                }
+                            })
+                            .setNegativeButton("아니오", (dialog1, id) -> {
+                                dialog1.dismiss();
+                            });
+                    AlertDialog alert = builder.create();
+                    alert.setTitle("부자연스러운 데이터 발견");
+                    alert.show();
+                } else {
                     saveDataInDatabase(isEditing, rId, sDamage, pickerIdx[0], iHeroId, isLastHit.isChecked());
                     dialog.dismiss();
-                } else {
-                    showToast("상대 보스 및 데미지를 입력하세요!");
                 }
+            } else {
+                showToast("상대 보스 및 데미지를 입력하세요!");
             }
+
         });
 
         Button exitButton = dialog.findViewById(R.id.exitButton);
@@ -806,6 +810,7 @@ public class RecordMemberFragment extends Fragment {
     }
 
     private void showToast(String msg) {
-        Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG).show();
+        myToast.setText(msg);
+        myToast.show();
     }
 }

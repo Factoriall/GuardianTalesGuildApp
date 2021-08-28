@@ -1,6 +1,16 @@
 package org.techtown.gtguildraid.interfaces;
 
+import android.content.ContentResolver;
+import android.content.ContentUris;
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
+import android.provider.MediaStore;
+import android.util.Log;
+import android.widget.Toast;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
@@ -17,30 +27,84 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.RegionUtil;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 public abstract class PoiHelper {
     protected HSSFWorkbook wb;
     protected Sheet sheet;
-    protected File directory;
+    protected String dirName;
+    protected Context context;
 
-    protected PoiHelper(String raidName){
+    protected PoiHelper(String raidName, Context context){
+        //System.setProperty("org.apache.poi.javax.xml.stream.XMLInputFactory", "com.fasterxml.aalto.stax.InputFactoryImpl");
+        //System.setProperty("org.apache.poi.javax.xml.stream.XMLOutputFactory", "com.fasterxml.aalto.stax.OutputFactoryImpl");
+        //System.setProperty("org.apache.poi.javax.xml.stream.XMLEventFactory", "com.fasterxml.aalto.stax.EventFactoryImpl");
+
         wb = new HSSFWorkbook();
         sheet = wb.createSheet("new sheet");
+        dirName = "가테_길레_" + raidName;
+        /*
         directory = new File(
                 Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS),
-                "가테_길레_" + raidName);
-        if(!directory.exists()) directory.mkdirs();
+                "가테_길레_" + raidName);*/
+
+        this.context = context;
     }
 
     protected abstract void exportDataToExcel();
 
-    protected void writeFile(File file) {
-        try {
-            FileOutputStream os = new FileOutputStream(file);
-            wb.write(os);
-        } catch (IOException e) { e.printStackTrace(); }
+    protected void writeFile(String fileName) {
+        File directory;
+        if(android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            directory = new File(
+                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS),
+                    dirName);
+        }
+        else directory = new File(Environment.getExternalStorageDirectory(), dirName);
+
+        if(android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            try {
+                FileOutputStream os = new FileOutputStream(new File(directory, fileName));
+                wb.write(os);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        else{
+            ContentResolver cr = context.getContentResolver();
+            String[] projection = {MediaStore.MediaColumns._ID};
+
+            String selection = MediaStore.MediaColumns.RELATIVE_PATH + "='" +
+                    Environment.DIRECTORY_DOCUMENTS + File.separator + dirName + File.separator
+                    + "' AND " + MediaStore.MediaColumns.DISPLAY_NAME+"='" + fileName + "'";
+
+            Cursor cur = cr.query(MediaStore.Files.getContentUri("external"),
+                    projection, selection, null, null);
+
+            Uri uri;
+            if (cur != null && cur.getCount()>0 && cur.moveToFirst()) {
+                long id = cur.getLong(cur.getColumnIndexOrThrow(MediaStore.MediaColumns._ID));
+                uri = ContentUris.withAppendedId(
+                        MediaStore.Files.getContentUri("external"),  id);
+            } else {
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, fileName);
+                contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "application/vnd.ms-excel");
+                contentValues.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOCUMENTS + "/" + dirName);
+                uri = cr.insert(MediaStore.Files.getContentUri("external"), contentValues);
+            }
+
+            cur.close();
+            try {
+                OutputStream os = cr.openOutputStream(uri, "wt");
+                wb.write(os);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     protected void setColumnWidth(int col, int width) {

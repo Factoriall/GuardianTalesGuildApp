@@ -12,7 +12,6 @@
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:gravity="center"
-        android:text="30"
         android:textSize="30sp" />
 
     <TextView
@@ -20,7 +19,6 @@
         android:layout_width="140dp"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:text="나는야벌레입니다"
         android:textColor="@color/bg_text"
         android:textSize="16sp"
         android:textStyle="bold" />
@@ -29,8 +27,7 @@
         android:id="@+id/hitNum"
         android:layout_width="60dp"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="100" />
+        android:gravity="center" />
 
     <TextView
         android:id="@+id/damage"
@@ -38,7 +35,6 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:gravity="center"
-        android:text="1,000,000,000"
         android:textStyle="bold" />
 
 </LinearLayout>

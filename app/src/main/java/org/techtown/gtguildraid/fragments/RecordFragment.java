@@ -42,6 +42,7 @@ public class RecordFragment extends Fragment {
     TabLayout tabLayout;
     ViewPager2 viewPager;
     RecordPagerAdapter vAdapter;
+    private Toast myToast;
 
     Raid raid;
 
@@ -56,6 +57,7 @@ public class RecordFragment extends Fragment {
         FloatingActionButton checkFab = view.findViewById(R.id.fabCheck);
         viewPager = view.findViewById(R.id.viewpager);
         tabLayout = view.findViewById(R.id.tabs);
+        myToast = Toast.makeText(getActivity(), null, Toast.LENGTH_LONG);
 
         database = RoomDB.getInstance(getActivity());
         raid = database.raidDao().getCurrentRaid(new Date());
@@ -119,7 +121,7 @@ public class RecordFragment extends Fragment {
                 editor.apply();
             }
 
-            Toast.makeText(getContext(), toastText.toString(), Toast.LENGTH_LONG).show();
+            showToast(toastText.toString());
         });
 
         return view;
@@ -159,6 +161,7 @@ public class RecordFragment extends Fragment {
     }
 
     private void showToast(String msg) {
-        Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG).show();
+        myToast.setText(msg);
+        myToast.show();
     }
 }
