@@ -20,6 +20,7 @@ import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.adapters.DialogImageSpinnerAdapter;
 import org.techtown.gtguildraid.etc.BossBottomSheetDialog;
 import org.techtown.gtguildraid.models.Boss;
+import org.techtown.gtguildraid.models.BossImage;
 import org.techtown.gtguildraid.utils.RoomDB;
 
 import java.util.ArrayList;
@@ -143,9 +144,8 @@ public class BossEditActivity extends AppCompatActivity
     }
 
     @Override
-    public void onImageClicked(String imgId) {
-        Log.d("onImageClicked", imgId);
-        bossImage.setImageResource(getIdentifierFromResource("boss_" + imgId));
-        boss.setImgName(imgId);
+    public void onImageClicked(BossImage bi) {
+        bossImage.setImageResource(bi.getImgId());
+        boss.setImgName(bi.getImgName());
     }
 }

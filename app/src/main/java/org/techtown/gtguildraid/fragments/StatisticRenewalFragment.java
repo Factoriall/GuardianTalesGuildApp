@@ -3,6 +3,7 @@ package org.techtown.gtguildraid.fragments;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,7 +54,9 @@ public class StatisticRenewalFragment
         ImageView currentThumbnail = view.findViewById(R.id.raidThumbnail);
         TextView isNotFound = view.findViewById(R.id.isNotFound);
         Raid currentRaid = database.raidDao().getCurrentRaid(new Date());
-        if(currentRaid == null || currentRaid.getStartDay().compareTo(new Date()) >= 0){
+        if(currentRaid != null)
+            Log.d("currentRaid", new SimpleDateFormat(dateFormat).format(currentRaid.getStartDay()));
+        if(currentRaid == null || currentRaid.getStartDay().getTime() - System.currentTimeMillis() >= 0){
             isNotFound.setVisibility(View.VISIBLE);
             currentName.setVisibility(View.GONE);
             currentTerm.setVisibility(View.GONE);

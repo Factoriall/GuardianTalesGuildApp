@@ -31,4 +31,9 @@ public class FirstActivity extends AppCompatActivity {
         };
         welcomeThread.start();
     }
+
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+    }
 }

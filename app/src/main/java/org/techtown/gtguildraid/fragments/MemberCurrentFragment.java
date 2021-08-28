@@ -35,6 +35,7 @@ public class MemberCurrentFragment extends Fragment {
     MemberCardAdapter adapter;
     TextView currentCnt;
     final int MAX_MEMBER = 29;
+    Toast toast;
 
     @Nullable
     @Override
@@ -44,6 +45,7 @@ public class MemberCurrentFragment extends Fragment {
         Button createButton = view.findViewById(R.id.createButton);
         currentCnt = view.findViewById(R.id.currentCnt);
         database = RoomDB.getInstance(getActivity());
+        toast = Toast.makeText(getActivity(), null, Toast.LENGTH_SHORT);
 
         linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView = view.findViewById(R.id.currentRecyclerView);
@@ -192,7 +194,8 @@ public class MemberCurrentFragment extends Fragment {
         adapter.notifyItemRangeChanged(pos, memberList.size());
     }
 
-    private void showToast(String msg){
-        Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG).show();
+    private void showToast(String msg) {
+        toast.setText(msg);
+        toast.show();
     }
 }

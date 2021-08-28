@@ -2,6 +2,8 @@ package org.techtown.gtguildraid.activities;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -62,9 +64,8 @@ public class MainActivity extends AppCompatActivity {
         memberFragment = new MemberFragment();
         raidFragment = new RaidRenewalFragment();
         recordFragment = new RecordFragment();
-        //statisticFragment = new StatisticFragment();
         statisticRenewalFragment = new StatisticRenewalFragment();
-        myToast = Toast.makeText(getApplicationContext(), null, Toast.LENGTH_SHORT);
+        myToast = Toast.makeText(getApplicationContext(), null, Toast.LENGTH_LONG);
 
         SharedPreferences pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
         boolean isRegistered = pref.getBoolean("isRegistered", false);
@@ -90,7 +91,8 @@ public class MainActivity extends AppCompatActivity {
                                 Toast.makeText(MainActivity.this, "레이드 정보를 입력하세요!", Toast.LENGTH_LONG).show();
                                 return false;
                             }
-                            List<Boss> bosses = database.raidDao().getCurrentRaidWithBosses(new Date()).getBossList();
+                            Raid raid = database.raidDao().getCurrentRaidWithBosses(new Date());
+                            List<Boss> bosses = raid.getBossList();
                             boolean isElementAllExist = true;
                             for(Boss boss : bosses){
                                 if(boss.getElementId() == 0){
@@ -99,10 +101,11 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             }
                             if(!isElementAllExist){
-                                myToast.setText("보스 속성 정보를 모두 입력하세요!");
-                                myToast.show();
+                                showToast("보스 속성 정보를 모두 입력하세요!");
                                 return false;
                             }
+                            showToast("최근 기록: " + pref.getString("recentWrite" + raid.getRaidId(), "없음"));
+
                             getSupportFragmentManager().beginTransaction().replace(R.id.container, recordFragment).commit();
                             return true;
                         case R.id.statisticTab:
@@ -114,7 +117,9 @@ public class MainActivity extends AppCompatActivity {
         );
 
         boolean isAccessible = database.raidDao().isCurrentRaidExist(new Date())
-                && database.raidDao().getCurrentRaid(new Date()).getStartDay().compareTo(new Date()) <= 0;
+                &&
+                (database.raidDao().getCurrentRaid(new Date()).getStartDay().getTime()
+                - System.currentTimeMillis() >= 0);
         if(isAccessible) {
             getSupportFragmentManager().beginTransaction().replace(R.id.container, recordFragment).commit();
             bottomNavigationView.setSelectedItemId(R.id.recordTab);
@@ -125,8 +130,25 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void showToast(String msg){
+        if(myToast != null) myToast.cancel();
+        myToast = Toast.makeText(getApplicationContext(), null, Toast.LENGTH_LONG);
+        myToast.setText(msg);
+        myToast.show();
+    }
+
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("종료하시겠습니까?")
+                .setPositiveButton("네", (dialog, id) -> {
+                    dialog.dismiss();
+                    finish();
+                })
+                .setNegativeButton("아니오", (dialog, id) -> {
+                    dialog.dismiss();
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 }

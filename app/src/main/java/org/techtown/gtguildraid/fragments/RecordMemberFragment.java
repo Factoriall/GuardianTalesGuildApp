@@ -94,6 +94,8 @@ public class RecordMemberFragment extends Fragment {
     private int sMemberIdx = 0;
     boolean isSetByRecord;
     private Toast myToast;
+    private boolean isDialogChecked;
+    private boolean isCheckedNow;
 
     private SharedPreferences pref;
 
@@ -160,6 +162,9 @@ public class RecordMemberFragment extends Fragment {
         pref = this.getActivity().getSharedPreferences("pref", Context.MODE_PRIVATE);
         database = RoomDB.getInstance(getActivity());
         myToast = Toast.makeText(getActivity(), null, Toast.LENGTH_SHORT);
+
+        isDialogChecked = pref.getBoolean("isDialogChecked", false);
+        isCheckedNow = false;
 
         List<Hero> heroList = database.heroDao().getAllHeroes();
         //heroId 정보 생성
@@ -376,12 +381,20 @@ public class RecordMemberFragment extends Fragment {
         final int[] pickerIdx = {pref.getInt("currentRound" + raidId, 0)};
         roundDisplay.setText(rounds.get(pickerIdx[0]));
         increment.setOnClickListener(view -> {
+            if(!isDialogChecked && !isCheckedNow){
+                showWarnDialog();
+                return;
+            }
             if (pickerIdx[0] >= rounds.size() - 1)
                 return;
             pickerIdx[0]++;
             roundDisplay.setText(rounds.get(pickerIdx[0]));
         });
         decrement.setOnClickListener(view -> {
+            if(!isDialogChecked && !isCheckedNow){
+                showWarnDialog();
+                return;
+            }
             if (pickerIdx[0] <= 0)
                 return;
             pickerIdx[0]--;
@@ -573,6 +586,28 @@ public class RecordMemberFragment extends Fragment {
             adapter.notifyDataSetChanged();
             dialog.dismiss();
         });
+    }
+
+    private void showWarnDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        LayoutInflater adbInflater = LayoutInflater.from(getContext());
+        View showLayout = adbInflater.inflate(R.layout.dialog_checkbox, null);
+
+        CheckBox notShowAgain = showLayout.findViewById(R.id.skip);
+        builder.setView(showLayout)
+                .setMessage("\n좌하단 체크 버튼을 이용해 기록 내의 보스들의 피를 확인이 가능하며, " +
+                "이번 회차 모든 보스 피가 0이 된 상태에서 버튼 클릭 시 자동으로 회차를 올려줍니다.\n기록 시 회차는 자동으로 저장됩니다.\n\n" +
+                "가급적이면 순서대로 기록하고 체크 버튼으로 자동 조정하시는 걸 추천하며, 불가피할 때만 수동 조정해주시길 바랍니다.")
+                .setCancelable(false)
+                .setPositiveButton("숙지했습니다.", (dialog1, id) -> {
+                    isCheckedNow = true;
+                    pref.edit().putBoolean("isDialogChecked", notShowAgain.isChecked()).apply();
+
+                    dialog1.dismiss();
+                });
+        AlertDialog alert = builder.create();
+        alert.setTitle("수동 조정 전 안내 사항");
+        alert.show();
     }
 
     private void saveDataInDatabase(boolean isEditing, int recordId, String damage, int pIdx, int heroId, boolean isChecked) {

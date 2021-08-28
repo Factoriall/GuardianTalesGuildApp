@@ -65,7 +65,6 @@ public class RecordFragment extends Fragment {
         CalculateFormatHelper cHelper = new CalculateFormatHelper();
 
         SharedPreferences pref = requireActivity().getSharedPreferences("pref", Context.MODE_PRIVATE);
-        showToast("최근 기록: " + pref.getString("recentWrite" + raid.getRaidId(), "없음"));
 
         raidName.setText(raid.getName());
         String dateFormat = "yy/MM/dd";
@@ -142,10 +141,9 @@ public class RecordFragment extends Fragment {
     }
 
     private int getIntegerFromToday() {
-        Date today = new Date();
         Date startDate = raid.getStartDay();
 
-        int differentDays = (int) ((today.getTime() - startDate.getTime()) / DAY_IN_SECONDS);
+        int differentDays = (int) ((System.currentTimeMillis() - startDate.getTime()) / DAY_IN_SECONDS);
         Log.d("dateDifference", "" + differentDays);
 
         return Math.max(differentDays, 0);
@@ -161,6 +159,8 @@ public class RecordFragment extends Fragment {
     }
 
     private void showToast(String msg) {
+        if(myToast != null) myToast.cancel();
+        myToast = Toast.makeText(getActivity(), null, Toast.LENGTH_LONG);
         myToast.setText(msg);
         myToast.show();
     }

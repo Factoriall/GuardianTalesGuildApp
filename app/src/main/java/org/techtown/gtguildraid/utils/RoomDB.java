@@ -288,6 +288,22 @@ public abstract class RoomDB extends RoomDatabase {
         }
     };
 
+    //카마엘 데이터 고치기 - 2021.08.29
+    static final Migration MIGRATION_28_29 = new Migration(28, 29) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            database.execSQL("UPDATE hero SET englishName = 'kamael' WHERE englishName = 'camael'");
+        }
+    };
+
+    //카마엘 데이터 고치기 - 2021.08.29
+    static final Migration MIGRATION_29_28 = new Migration(29, 28) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            database.execSQL("UPDATE hero SET englishName = 'camael' WHERE englishName = 'kamael'");
+        }
+    };
+
 
     public synchronized static RoomDB getInstance(Context context){//Singleton Pattern!
         if(database == null){//initialize
@@ -319,6 +335,8 @@ public abstract class RoomDB extends RoomDatabase {
                     .addMigrations(MIGRATION_25_26)
                     .addMigrations(MIGRATION_26_27)
                     .addMigrations(MIGRATION_27_28)
+                    .addMigrations(MIGRATION_28_29)
+                    .addMigrations(MIGRATION_29_28)
                     .build();
         }
         else{

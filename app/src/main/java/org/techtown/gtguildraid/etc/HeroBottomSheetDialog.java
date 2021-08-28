@@ -37,7 +37,6 @@ public class HeroBottomSheetDialog
     }
 
     public HeroBottomSheetDialog(Fragment fragment){
-        Log.d("info", String.valueOf(fragment));
         this.mListener = (BottomSheetListener) fragment;
     }
 
