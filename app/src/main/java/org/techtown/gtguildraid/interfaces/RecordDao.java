@@ -52,6 +52,10 @@ public abstract class RecordDao {
             "AND round = :round")
     public abstract long get1Boss1RoundSum(int raidId, int bossId, int round);
 
+    @Query("SELECT COUNT(*) FROM Record WHERE raidId = :raidId AND bossId = :bossId " +
+            "AND round = :round AND isLastHit = 1")
+    public abstract int get1Boss1RoundLastHit(int raidId, int bossId, int round);
+
     @Query("SELECT * FROM Record WHERE raidId = :raidId AND bossId = :bossId")
     public abstract List<Record> getAllMemberBossRecords(int raidId, int bossId);
 

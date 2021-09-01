@@ -101,23 +101,15 @@ public class RecordFragment extends Fragment {
                 100000000, 140000000, 200000000};
         checkFab.setOnClickListener(view1 -> {
             int raidId = raid.getRaidId();
-            int curRound = pref.getInt("currentRound" + raidId, 0);
+            int curRound = pref.getInt("currentRound", 0);
             List<Boss> bossList = database.raidDao().getBossesList(raidId);
             StringBuilder toastText = new StringBuilder((curRound + 1) + "회차 남은 데미지\n");
-            int eliminatedNum = 0;
             for(int i = 0; i < bossList.size(); i++){
                 int idx = curRound >= hpPerRound.length ? hpPerRound.length - 1 : curRound;
                 long damage = database.recordDao().get1Boss1RoundSum(raidId, bossList.get(i).getBossId(), curRound + 1);
                 long remain = hpPerRound[idx] - damage;
-                if(remain == 0) eliminatedNum += 1;
                 toastText.append(bossList.get(i).getName()).append(": ").append(cHelper.getNumberFormat(remain));
                 if(i != bossList.size() - 1) toastText.append("\n");
-            }
-            if(eliminatedNum == 4){
-                toastText.append("\n" + (curRound + 1) + "회차 보스가 모두 처리됐습니다. 다음 회차로 자동 조정됍니다.");
-                SharedPreferences.Editor editor = pref.edit();
-                editor.putInt("currentRound" + raidId, curRound + 1);
-                editor.apply();
             }
 
             showToast(toastText.toString());
@@ -160,7 +152,7 @@ public class RecordFragment extends Fragment {
 
     private void showToast(String msg) {
         if(myToast != null) myToast.cancel();
-        myToast = Toast.makeText(getActivity(), null, Toast.LENGTH_LONG);
+        myToast = Toast.makeText(getActivity(), null, Toast.LENGTH_SHORT);
         myToast.setText(msg);
         myToast.show();
     }

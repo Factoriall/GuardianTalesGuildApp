@@ -47,28 +47,55 @@
 
         </com.llollox.androidtoggleswitch.widgets.ToggleSwitch>
 
-        <TextView
-            android:id="@+id/roundText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:text="레벨(회차)"
-            android:textColor="@color/bg_icon"
-            android:textSize="20sp" />
 
-
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:id="@+id/roundText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:text="레벨(회차)"
+                android:textColor="@color/bg_icon"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.kyleduo.switchbutton.SwitchButton
+                android:id="@+id/manualSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:textColor="@color/bg_icon"
+                app:kswAnimationDuration="0"
+                app:kswTextExtra="10dp"
+                app:kswTextOff="수동 OFF"
+                app:kswTextOn="수동 ON"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
             <LinearLayout
                 android:id="@+id/numberPicker"
-                android:layout_width="180dp"
+                android:layout_width="wrap_content"
                 android:layout_height="50dp"
                 android:layout_marginStart="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
                 android:background="@drawable/bg_numberpicker"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <Button
                     android:id="@+id/decrement"
@@ -79,12 +106,14 @@
                     android:padding="0dp"
                     android:text="—"
                     android:textColor="@android:color/black"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/display"
                     android:layout_width="80dp"
                     android:layout_height="match_parent"
+                    android:layout_margin="5dp"
                     android:gravity="center"
                     android:inputType="number"
                     android:text="80(23)"
@@ -100,44 +129,55 @@
                     android:padding="0dp"
                     android:text="+"
                     android:textColor="@android:color/black"
-                    android:textSize="25sp" />
+                    android:textSize="25sp"
+                    android:visibility="gone" />
             </LinearLayout>
 
             <Button
                 android:id="@+id/oneCutButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:text="한방컷" />
-        </LinearLayout>
+                android:layout_marginStart="20dp"
+                android:text="한방컷"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/numberPicker"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:layout_height="match_parent">
 
             <TextView
                 android:id="@+id/leaderText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
                 android:text="리더 정보"
                 android:textColor="@color/bg_icon"
-                android:textSize="20sp" />
+                android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <com.kyleduo.switchbutton.SwitchButton
                 android:id="@+id/viewSwitch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:layout_marginStart="10dp"
-                android:showText="true"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="5dp"
                 android:textColor="@color/bg_icon"
                 app:kswAnimationDuration="0"
                 app:kswTextExtra="10dp"
                 app:kswTextOff="즐겨찾기"
-                app:kswTextOn="기록기반" />
-        </LinearLayout>
+                app:kswTextOn="기록기반"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/leaderFavorites"
@@ -251,7 +291,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:autofillHints=""
                 android:background="@android:drawable/editbox_background"
                 android:digits="0123456789"
                 android:gravity="top"

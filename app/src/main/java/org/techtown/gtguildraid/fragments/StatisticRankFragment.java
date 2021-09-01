@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
+import android.provider.DocumentsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -252,7 +253,7 @@ public class StatisticRankFragment extends Fragment {
                     AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
                     String dirName;
                     if(android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-                        dirName = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
+                        dirName = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
                             + "/가테_길레_" + raid.getName();
                     else
                         dirName = Environment.getExternalStorageDirectory() + "/가테_길레_" + raid.getName();
@@ -262,15 +263,14 @@ public class StatisticRankFragment extends Fragment {
                             + "\n엑셀 파일을 보시겠습니까?")
                             .setCancelable(false)
                             .setPositiveButton("네", (dialog1, id) -> {
+                                Intent intent = new Intent(Intent.ACTION_VIEW);
                                 try {
                                     File file = new File(dirName, raid.getName() + "_순위표.xls");
-                                    Intent intent = new Intent(Intent.ACTION_VIEW);
                                     intent.setDataAndType(Uri.fromFile(file), "application/vnd.ms-excel");
-
                                     startActivity(intent);
+                                    Toast.makeText(getContext(), "설치 장소: " + dirName, Toast.LENGTH_LONG).show();
                                 }catch(Exception e){
-                                    e.printStackTrace();
-                                    Toast.makeText(getContext(), "엑셀이 설치되지 않았습니다.", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getContext(), "엑셀이 설치되지 않았습니다.\n설치 장소: " + dirName, Toast.LENGTH_LONG).show();
                                 }
                                 dialog1.dismiss();
                             })

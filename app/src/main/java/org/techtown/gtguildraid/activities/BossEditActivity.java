@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.Spinner;
@@ -30,6 +31,7 @@ import java.util.List;
 public class BossEditActivity extends AppCompatActivity
         implements BossBottomSheetDialog.BottomSheetListener {
     ImageView bossImage;
+    EditText bossName;
     Boss boss;
     Toast toast;
 
@@ -45,7 +47,7 @@ public class BossEditActivity extends AppCompatActivity
         boss = database.bossDao().getBoss(bossId);
 
         bossImage = findViewById(R.id.bossImage);
-        TextView bossName = findViewById(R.id.bossName);
+        bossName = findViewById(R.id.bossName);
         Spinner elementSpinner = findViewById(R.id.elementSpinner);
         SeekBar hardness = findViewById(R.id.hardness);
         Button button = findViewById(R.id.button);
@@ -147,5 +149,6 @@ public class BossEditActivity extends AppCompatActivity
     public void onImageClicked(BossImage bi) {
         bossImage.setImageResource(bi.getImgId());
         boss.setImgName(bi.getImgName());
+        bossName.setText(bi.getBossName());
     }
 }

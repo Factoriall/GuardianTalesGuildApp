@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.DocumentsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +37,7 @@ import java.util.List;
 public class StatisticMemberFragment extends Fragment {
     private static int raidId;
     private static boolean isDetailMode;
-    private static List<GuildMember> membersInRaid = new ArrayList<>();
+    private static final List<GuildMember> membersInRaid = new ArrayList<>();
     private static int sMemberIdx = 0;
 
     RoomDB database;
@@ -56,9 +57,6 @@ public class StatisticMemberFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_statistic_member, container, false);
-        //System.setProperty("org.apache.poi.javax.xml.stream.XMLInputFactory", "com.fasterxml.aalto.stax.InputFactoryImpl");
-        //System.setProperty("org.apache.poi.javax.xml.stream.XMLOutputFactory", "com.fasterxml.aalto.stax.OutputFactoryImpl");
-        //System.setProperty("org.apache.poi.javax.xml.stream.XMLEventFactory", "com.fasterxml.aalto.stax.EventFactoryImpl");
 
         SwitchButton viewSwitch = view.findViewById(R.id.viewSwitch);
         Button csvButton = view.findViewById(R.id.csvButton);
@@ -107,57 +105,57 @@ public class StatisticMemberFragment extends Fragment {
         if(memberNameList.size() != 0)
             setView();
 
-        csvButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(memberNameList.size() == 0) {
-                    Toast.makeText(getContext(), "데이터 없음", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                SharedPreferences pref = getContext().getSharedPreferences("pref", Activity.MODE_PRIVATE);
-                boolean isDay1Contained = pref.getBoolean("excelRankDay1Contained", false);
-                double lhValue= 1f + 0.1 * pref.getInt("lastHitValue", 0);
-                MemberPoi mp = new MemberPoi(database.raidDao().getRaidWithBosses(raidId), membersInRaid.get(sMemberIdx), database,
-                        isDay1Contained, lhValue, getContext());
-                ProgressDialog mProgressDialog = ProgressDialog.show(getContext(), "잠시 대기","엑셀 파일 생성 중...", true);
-
-                AppExecutor.getInstance().diskIO().execute(() -> {
-                    //exportDataToCSV();
-                    mp.exportDataToExcel();
-                    getActivity().runOnUiThread(() -> {
-                        mProgressDialog.dismiss();
-                        AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
-                        String raidName = database.raidDao().getRaid(raidId).getName();
-                        String dirName;
-                        if(android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-                            dirName = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
-                                    + "/가테_길레_" + raidName;
-                        else
-                            dirName = Environment.getExternalStorageDirectory() + "/가테_길레_" +raidName;
-
-                        builder.setMessage("내 파일 ->" + dirName + " 에서 확인 가능합니다."
-                                + "\n엑셀 파일을 보시겠습니까?")
-                                .setCancelable(false)
-                                .setPositiveButton("네", (dialog1, id) -> {
-                                    try {
-                                        File file = new File(dirName, raidName + "_개인_" + membersInRaid.get(sMemberIdx).getName() + ".xls");
-                                        Intent intent = new Intent(Intent.ACTION_VIEW);
-                                        intent.setDataAndType(Uri.fromFile(file), "application/vnd.ms-excel");
-                                        startActivity(intent);
-                                    }catch(Exception e){
-                                        e.printStackTrace();
-                                        Toast.makeText(getContext(), "엑셀이 설치되지 않았습니다.", Toast.LENGTH_SHORT).show();
-                                    }
-                                    dialog1.dismiss();
-                                })
-                                .setNegativeButton("아니오", (dialog1, id) -> dialog1.dismiss());
-                        AlertDialog alert = builder.create();
-                        alert.setTitle("엑셀 생성 완료");
-                        alert.show();
-                        //Toast.makeText(getContext(), "생성 완료", Toast.LENGTH_SHORT).show();
-                    });
-                });
+        csvButton.setOnClickListener(view -> {
+            if(memberNameList.size() == 0) {
+                Toast.makeText(getContext(), "데이터 없음", Toast.LENGTH_SHORT).show();
+                return;
             }
+            SharedPreferences pref = requireContext().getSharedPreferences("pref", Activity.MODE_PRIVATE);
+            boolean isDay1Contained = pref.getBoolean("excelRankDay1Contained", false);
+            double lhValue= 1f + 0.1 * pref.getInt("lastHitValue", 0);
+            MemberPoi mp = new MemberPoi(database.raidDao().getRaidWithBosses(raidId), membersInRaid.get(sMemberIdx), database,
+                    isDay1Contained, lhValue, getContext());
+            ProgressDialog mProgressDialog = ProgressDialog.show(getContext(), "잠시 대기","엑셀 파일 생성 중...", true);
+
+            AppExecutor.getInstance().diskIO().execute(() -> {
+                //exportDataToCSV();
+                mp.exportDataToExcel();
+                requireActivity().runOnUiThread(() -> {
+                    mProgressDialog.dismiss();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+                    String raidName = database.raidDao().getRaid(raidId).getName();
+                    String dirName;
+                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                        dirName = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                                + "/가테_길레_" + raidName;
+                    else
+                        dirName = Environment.getExternalStorageDirectory() + "/가테_길레_" +raidName;
+
+                    builder.setMessage("내 파일 ->" + dirName + " 에서 확인 가능합니다."
+                            + "\n엑셀 파일을 보시겠습니까?")
+                            .setCancelable(false)
+                            .setPositiveButton("네", (dialog1, id) -> {
+                                Intent intent = new Intent(Intent.ACTION_VIEW);
+                                try {
+                                    File file = new File(dirName, raidName + "_개인_" + membersInRaid.get(sMemberIdx).getName() + ".xls");
+                                    intent.setDataAndType(Uri.fromFile(file), "application/vnd.ms-excel");
+                                    //intent.setDataAndType(Uri.fromFile(file), DocumentsContract.Document.MIME_TYPE_DIR);
+                                    startActivity(intent);
+                                }catch(Exception e){
+                                    Toast.makeText(getContext(), "엑셀이 설치되지 않았습니다.", Toast.LENGTH_SHORT).show();
+                                    Uri uri = Uri.parse(dirName);
+                                    intent.setDataAndType(uri, DocumentsContract.Document.MIME_TYPE_DIR);
+                                    startActivity(intent);
+                                }
+                                dialog1.dismiss();
+                            })
+                            .setNegativeButton("아니오", (dialog1, id) -> dialog1.dismiss());
+                    AlertDialog alert = builder.create();
+                    alert.setTitle("엑셀 생성 완료");
+                    alert.show();
+                    //Toast.makeText(getContext(), "생성 완료", Toast.LENGTH_SHORT).show();
+                });
+            });
         });
 
         return view;

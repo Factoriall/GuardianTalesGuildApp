@@ -55,16 +55,16 @@ public class BossBottomSheetDialog
 
     private void initData() {
         mImgIds = new BossImage[] {
-                new BossImage("1", R.drawable.boss_1), new BossImage("2", R.drawable.boss_2),
-                new BossImage("3", R.drawable.boss_3), new BossImage("4", R.drawable.boss_4),
-                new BossImage("bug", R.drawable.boss_bug), new BossImage("cyborg", R.drawable.boss_cyborg),
-                new BossImage("devil", R.drawable.boss_devil), new BossImage("fairy", R.drawable.boss_fairy),
-                new BossImage("gast", R.drawable.boss_gast), new BossImage("harvester", R.drawable.boss_harvester),
-                new BossImage("invader", R.drawable.boss_invader), new BossImage("madpanda", R.drawable.boss_madpanda),
-                new BossImage("mino", R.drawable.boss_mino), new BossImage("monster", R.drawable.boss_monster),
-                new BossImage("sapa", R.drawable.boss_sapa), new BossImage("shadow", R.drawable.boss_shadow),
-                new BossImage("slime", R.drawable.boss_slime), new BossImage("elpaba", R.drawable.boss_elpaba),
-                new BossImage("chief", R.drawable.boss_chief), new BossImage("marina", R.drawable.boss_marina)
+                new BossImage("1", R.drawable.boss_1, "보스1"), new BossImage("2", R.drawable.boss_2, "보스2"),
+                new BossImage("3", R.drawable.boss_3, "보스3"), new BossImage("4", R.drawable.boss_4, "보스4"),
+                new BossImage("bug", R.drawable.boss_bug, "황소벌레"), new BossImage("cyborg", R.drawable.boss_cyborg, "에리나"),
+                new BossImage("devil", R.drawable.boss_devil, "고대악마"), new BossImage("fairy", R.drawable.boss_fairy, "요정"),
+                new BossImage("gast", R.drawable.boss_gast, "가스트"), new BossImage("harvester", R.drawable.boss_harvester, "하베스터"),
+                new BossImage("invader", R.drawable.boss_invader, "인베이더"), new BossImage("madpanda", R.drawable.boss_madpanda, "매드팬더"),
+                new BossImage("mino", R.drawable.boss_mino,"미노타"), new BossImage("monster", R.drawable.boss_monster,"유사괴물"),
+                new BossImage("sapa", R.drawable.boss_sapa, "사파두령"), new BossImage("shadow", R.drawable.boss_shadow,"그림자마수"),
+                new BossImage("slime", R.drawable.boss_slime, "용암슬라임"), new BossImage("elpaba", R.drawable.boss_elpaba, "엘파바"),
+                new BossImage("chief", R.drawable.boss_chief, "고블린족장"), new BossImage("marina", R.drawable.boss_marina, "마리나")
         };
     }
 

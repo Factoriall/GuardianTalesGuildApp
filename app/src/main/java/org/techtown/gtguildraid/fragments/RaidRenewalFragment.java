@@ -1,9 +1,12 @@
 package org.techtown.gtguildraid.fragments;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -38,6 +41,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -159,20 +163,37 @@ public class RaidRenewalFragment
         };
 
         raidTermDialog.setOnClickListener(v -> {
-            // TODO Auto-generated method stub
-            DatePickerDialog datePickerDialog = new DatePickerDialog(
-                    getActivity(),
-                    date,
-                    myCalendar.get(Calendar.YEAR),
-                    myCalendar.get(Calendar.MONTH),
-                    myCalendar.get(Calendar.DAY_OF_MONTH));
+            if(isCurrentExist &&
+                    database.raidDao().getCurrentRaid(today).getStartDay().compareTo(new Date()) <= 0){
+                AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+                builder.setMessage("현재 날짜 기준 레이드가 이미 시작한 상태입니다.\n- 변경 시 예상 부작용\n" +
+                                "* 현 레이드 기록이 일찍 종료할 수 있습니다.\n" +
+                                "* N일차 기록이 어긋날 수 있습니다.\n" +
+                                "* 통계 기록이 정확히 표시되지 않을 수 있습니다.\n\n" +
+                                "그래도 변경하시겠습니까?")
+                                .setPositiveButton("네", (dialog1, id) -> {
+                                    dialog1.dismiss();
+                                    DatePickerDialog datePickerDialog = new DatePickerDialog(
+                                            getActivity(),
+                                            date,
+                                            myCalendar.get(Calendar.YEAR),
+                                            myCalendar.get(Calendar.MONTH),
+                                            myCalendar.get(Calendar.DAY_OF_MONTH));
 
-            datePickerDialog.getDatePicker().setMinDate(
-                    System.currentTimeMillis() - DAY_13);
-            datePickerDialog.getDatePicker().setMaxDate(
-                    System.currentTimeMillis() + DAY_13);
-            datePickerDialog.setMessage("시작 날짜를 입력해주세요.");
-            datePickerDialog.show();
+                                    datePickerDialog.getDatePicker().setMinDate(
+                                            System.currentTimeMillis() - DAY_13);
+                                    datePickerDialog.getDatePicker().setMaxDate(
+                                            System.currentTimeMillis() + DAY_13);
+                                    datePickerDialog.setMessage("시작 날짜를 입력해주세요.");
+                                    datePickerDialog.show();
+                                })
+                                .setNegativeButton("아니오", (dialog1, id) -> {
+                                    dialog1.dismiss();
+                                });
+                AlertDialog alert = builder.create();
+                alert.setTitle("날짜 이전 경고");
+                alert.show();
+            }
         });
 
         raidThumbnailDialog.setOnClickListener(view1 -> {
@@ -196,6 +217,12 @@ public class RaidRenewalFragment
                     raid.setStartDay(sDate);
                     raid.setEndDay(eDate);
                     raid.setThumbnail(sThumbnail);
+                    SharedPreferences.Editor editor = requireActivity().getSharedPreferences("pref", Context.MODE_PRIVATE).edit();
+                    editor.putInt("currentRound", 0);
+                    for(int i=0; i<4; i++) {
+                        editor.putBoolean("isEliminated" + i, false);
+                    }
+                    editor.apply();
 
                     List<Boss> bosses = new ArrayList<>();
                     for (int i = 1; i <= 4; i++) {
@@ -210,7 +237,7 @@ public class RaidRenewalFragment
                     }
                     database.raidDao().insertRaidWithBosses(raid, bosses);
                 } else {//업데이트
-                    database.raidDao().updateRaid(currentRaid.getRaidId(), sName, sDate, eDate, sThumbnail );
+                    database.raidDao().updateRaid(currentRaid.getRaidId(), sName, sDate, eDate, sThumbnail);
                 }
                 setCurrentRaidView();
             } else Toast.makeText(getContext(), "이름을 입력해주세요.", Toast.LENGTH_SHORT).show();

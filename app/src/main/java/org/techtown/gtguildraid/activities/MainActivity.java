@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
                                 showToast("보스 속성 정보를 모두 입력하세요!");
                                 return false;
                             }
-                            showToast("최근 기록: " + pref.getString("recentWrite" + raid.getRaidId(), "없음"));
+                            showToast("최근 기록: " + pref.getString("recentWrite", "없음"));
 
                             getSupportFragmentManager().beginTransaction().replace(R.id.container, recordFragment).commit();
                             return true;
@@ -118,8 +118,7 @@ public class MainActivity extends AppCompatActivity {
 
         boolean isAccessible = database.raidDao().isCurrentRaidExist(new Date())
                 &&
-                (database.raidDao().getCurrentRaid(new Date()).getStartDay().getTime()
-                - System.currentTimeMillis() >= 0);
+                (database.raidDao().getCurrentRaid(new Date()).getStartDay().compareTo(new Date()) <= 0);
         if(isAccessible) {
             getSupportFragmentManager().beginTransaction().replace(R.id.container, recordFragment).commit();
             bottomNavigationView.setSelectedItemId(R.id.recordTab);
@@ -132,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void showToast(String msg){
         if(myToast != null) myToast.cancel();
-        myToast = Toast.makeText(getApplicationContext(), null, Toast.LENGTH_LONG);
+        myToast = Toast.makeText(getApplicationContext(), null, Toast.LENGTH_SHORT);
         myToast.setText(msg);
         myToast.show();
     }

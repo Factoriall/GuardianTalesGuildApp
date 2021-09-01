@@ -145,6 +145,7 @@ public class MemberFragment extends Fragment implements HeroBottomSheetDialog.Bo
             bottomDialog.show(requireActivity().getSupportFragmentManager(), "bottomSheetDialog");
         });
 
+
         Button button = dialog.findViewById(R.id.updateButton);
         button.setOnClickListener(view -> {
             String sGuildName = dialogGuildName.getText().toString().trim();

@@ -1,5 +1,6 @@
 package org.techtown.gtguildraid.fragments;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -9,8 +10,8 @@ import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
+import android.graphics.Paint;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,7 +38,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.llollox.androidtoggleswitch.widgets.ToggleSwitch;
 
@@ -70,10 +70,15 @@ public class RecordMemberFragment extends Fragment {
 
     final String[] elementKoreanArray = new String[]{"1성", "화", "수", "지", "광", "암", "무"};
     final String[] elementEnglishArray = new String[]{"normal", "fire", "water", "earth", "light", "dark", "basic"};
+    final int[] hpPerRound = {1080000, 1080000,
+            1237500, 1237500,
+            1500000, 1500000,
+            2025000, 2640000, 3440000, 4500000, 5765625,
+            7500000, 9750000, 12000000, 16650000, 24000000,
+            35000000, 50000000, 72000000,
+            100000000, 140000000, 200000000};
 
-    private RecyclerView recyclerView;
     private DialogImageSpinnerAdapter elementAdapter;
-    private LinearLayoutManager linearLayoutManager;
     private RoomDB database;
     private RecordCardAdapter adapter;
     private TextView totalDamage;
@@ -83,6 +88,7 @@ public class RecordMemberFragment extends Fragment {
     ImageView deleteButton;
 
     private List<Record> recordList = new ArrayList<>();
+    private List<Boss> bosses = new ArrayList<>();
     private int raidId;
     private int day;
     private ArrayList<ArrayList<Integer>> heroIds;
@@ -94,14 +100,12 @@ public class RecordMemberFragment extends Fragment {
     private int sMemberIdx = 0;
     boolean isSetByRecord;
     private Toast myToast;
-    private boolean isDialogChecked;
-    private boolean isCheckedNow;
 
     private SharedPreferences pref;
 
     private static class MemberForSpinner implements Comparable<MemberForSpinner>{
-        private String name;
-        private int id;
+        private final String name;
+        private final int id;
         private int todayRemain;
 
         public MemberForSpinner(String name, int id, int todayRemain){
@@ -159,12 +163,9 @@ public class RecordMemberFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        pref = this.getActivity().getSharedPreferences("pref", Context.MODE_PRIVATE);
+        pref = requireActivity().getSharedPreferences("pref", Context.MODE_PRIVATE);
         database = RoomDB.getInstance(getActivity());
         myToast = Toast.makeText(getActivity(), null, Toast.LENGTH_SHORT);
-
-        isDialogChecked = pref.getBoolean("isDialogChecked", false);
-        isCheckedNow = false;
 
         List<Hero> heroList = database.heroDao().getAllHeroes();
         //heroId 정보 생성
@@ -188,7 +189,7 @@ public class RecordMemberFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (getArguments() != null) {
             raidId = getArguments().getInt("raidId");
             day = getArguments().getInt("day");
@@ -200,8 +201,8 @@ public class RecordMemberFragment extends Fragment {
 
         setMemberSpinner();
 
-        linearLayoutManager = new LinearLayoutManager(getActivity());
-        recyclerView = view.findViewById(R.id.recordRecyclerView);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        RecyclerView recyclerView = view.findViewById(R.id.recordRecyclerView);
         recordList = getReverseList();
 
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -322,6 +323,7 @@ public class RecordMemberFragment extends Fragment {
         HorizontalScrollView hsv = dialog.findViewById(R.id.favoriteScrollView);
         LinearLayout favoritesList = dialog.findViewById(R.id.favoriteList);
         SwitchButton switchButton = dialog.findViewById(R.id.viewSwitch);
+        SwitchButton manualButton = dialog.findViewById(R.id.manualSwitch);
 
         MySpinner elements;
         Spinner heroNames;
@@ -336,7 +338,9 @@ public class RecordMemberFragment extends Fragment {
         isSetByRecord = switchButton.isChecked();
 
         //bossSwitch 생성
-        List<Boss> bosses = database.raidDao().getBossesList(raid.getRaidId());
+        bosses = database.raidDao().getBossesList(raid.getRaidId());
+        int curRound = pref.getInt("currentRound", 0);
+
         bossSwitch.setView(
                 R.layout.dialog_record_boss_select,
                 bosses.size(),
@@ -350,11 +354,21 @@ public class RecordMemberFragment extends Fragment {
                     ImageView imageView = view.findViewById(R.id.bossImage);
                     imageView.setImageResource(
                             getIdentifierFromResource("boss_" + bosses.get(position).getImgName(), "drawable"));
-                },
+                    long d = database.recordDao().get1Boss1RoundSum(raidId, bosses.get(position).getBossId(), curRound + 1);
+                    long r = hpPerRound[curRound] - d;
+                    if(r <= 0){
+                        setGrayFilterOnImage(imageView);
+                        textView.setPaintFlags(textView.getPaintFlags()| Paint.STRIKE_THRU_TEXT_FLAG);
+                    }
+                    },
                 (view, position) -> {
                     TextView textView = view.findViewById(R.id.bossName);
                     textView.setTextColor(ContextCompat.getColor(requireActivity(), android.R.color.white));
-                },
+                    long d = database.recordDao().get1Boss1RoundSum(raidId, bosses.get(position).getBossId(), curRound + 1);
+                    long r = hpPerRound[curRound] - d;
+                    if(r == 0) showToast("이미 피가 0인 보스입니다.");
+                    else if(r < 0) showToast("피가 음수인 보스입니다.");
+                    },
                 (view, position) -> {
                     TextView textView = view.findViewById(R.id.bossName);
                     textView.setTextColor(ContextCompat.getColor(requireActivity(), R.color.gray));
@@ -378,28 +392,48 @@ public class RecordMemberFragment extends Fragment {
         Button increment = dialog.findViewById(R.id.increment);
         TextView roundDisplay = dialog.findViewById(R.id.display);
 
-        final int[] pickerIdx = {pref.getInt("currentRound" + raidId, 0)};
+        manualButton.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+            if(isChecked){
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setMessage("\n좌하단 체크 버튼을 이용해 기록 내의 보스들의 피를 확인이 가능하며, " +
+                        "이번 회차 모든 보스 피가 0이 된 상태로 데이터 갱신 시 회차는 자동 갱신됩니다.\n" +
+                        "가급적이면 순서대로 기록하고, 불가피할 때만 수동 조정해주시길 바랍니다.\n\n" +
+                        "그래도 수동 수정을 하시겠습니까?")
+                        .setCancelable(false)
+                        .setPositiveButton("네", (dialog1, id) -> {
+                            increment.setVisibility(View.VISIBLE);
+                            decrement.setVisibility(View.VISIBLE);
+                            dialog1.dismiss();
+                        })
+                        .setNegativeButton("아니오",(dialog1, id) -> {
+                            manualButton.setChecked(false);
+                            dialog1.dismiss();
+                        });
+                AlertDialog alert = builder.create();
+                alert.setTitle("수동 조정 전 안내 사항");
+                alert.show();
+            }
+            else{
+                increment.setVisibility(View.GONE);
+                decrement.setVisibility(View.GONE);
+            }
+        });
+
+        final int[] pickerIdx = {pref.getInt("currentRound", 0)};
         roundDisplay.setText(rounds.get(pickerIdx[0]));
         increment.setOnClickListener(view -> {
-            if(!isDialogChecked && !isCheckedNow){
-                showWarnDialog();
-                return;
-            }
             if (pickerIdx[0] >= rounds.size() - 1)
                 return;
             pickerIdx[0]++;
             roundDisplay.setText(rounds.get(pickerIdx[0]));
         });
         decrement.setOnClickListener(view -> {
-            if(!isDialogChecked && !isCheckedNow){
-                showWarnDialog();
-                return;
-            }
             if (pickerIdx[0] <= 0)
                 return;
             pickerIdx[0]--;
             roundDisplay.setText(rounds.get(pickerIdx[0]));
         });
+
 
         //원소 및 영웅 스피너 생성
         int elementId = getIdentifierFromResource("elementSpinner", "id");
@@ -455,13 +489,7 @@ public class RecordMemberFragment extends Fragment {
 
         oneCutButton.setOnClickListener(view -> {
             isLastHit.setChecked(true);
-            final int[] hpPerRound = {1080000, 1080000,
-                    1237500, 1237500,
-                    1500000, 1500000,
-                    2025000, 2640000, 3440000, 4500000, 5765625,
-                    7500000, 9750000, 12000000, 16650000, 24000000,
-                    35000000, 50000000, 72000000,
-                    100000000, 140000000, 200000000};
+
 
             int idx = pickerIdx[0] < hpPerRound.length ? pickerIdx[0] : hpPerRound.length - 1;
             damage.setText(Integer.toString(hpPerRound[idx]));
@@ -483,9 +511,10 @@ public class RecordMemberFragment extends Fragment {
 
             Hero leader = record.getLeader();
             selectedHeroId = leader.getHeroId();
+
             elements.setSelection(leader.getElement());
 
-            for (int i = 0; i < 4; i++) {
+            for (int i = 0; i < bosses.size(); i++) {
                 if (bossId == bosses.get(i).getBossId()) {
                     bossSwitch.setCheckedPosition(i);
                     selectedBossId = bossId;
@@ -541,6 +570,7 @@ public class RecordMemberFragment extends Fragment {
         else
             createButton.setText("생성");
 
+
         createButton.setOnClickListener(view -> {
             String sDamage = damage.getText().toString().trim();
 
@@ -558,21 +588,18 @@ public class RecordMemberFragment extends Fragment {
                             .setCancelable(false)
                             .setPositiveButton("네", (dialog1, id) -> {
                                 dialog1.dismiss();
-                                if (!sDamage.equals("") && selectedBossId != -1) {
-                                    saveDataInDatabase(isEditing, rId, sDamage, pickerIdx[0], iHeroId, isLastHit.isChecked());
-                                    dialog.dismiss();
-                                } else {
-                                    showToast("상대 보스 및 데미지를 입력하세요!");
-                                }
+                                saveDataInDatabase(isEditing, rId, sDamage, pickerIdx[0], iHeroId, isLastHit.isChecked());
+
+                                checkDamage(pickerIdx[0]);
+                                dialog.dismiss();
                             })
-                            .setNegativeButton("아니오", (dialog1, id) -> {
-                                dialog1.dismiss();
-                            });
+                            .setNegativeButton("아니오", (dialog1, id) -> dialog1.dismiss());
                     AlertDialog alert = builder.create();
                     alert.setTitle("부자연스러운 데이터 발견");
                     alert.show();
                 } else {
                     saveDataInDatabase(isEditing, rId, sDamage, pickerIdx[0], iHeroId, isLastHit.isChecked());
+                    checkDamage(pickerIdx[0]);
                     dialog.dismiss();
                 }
             } else {
@@ -588,26 +615,67 @@ public class RecordMemberFragment extends Fragment {
         });
     }
 
-    private void showWarnDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        LayoutInflater adbInflater = LayoutInflater.from(getContext());
-        View showLayout = adbInflater.inflate(R.layout.dialog_checkbox, null);
+    private void checkDamage(int curRound) {
+        Log.d("checkDamage", "current:" + pref.getInt("currentRound", -1));
+        if(curRound < pref.getInt("currentRound", 0)){
+            showToast("과거 기록 수정");
+            return;
+        }
+        if(curRound > pref.getInt("currentRound", 0)){
+            showToast("전 회차가 마무리되지 않았습니다.");
+            return;
+        }
 
-        CheckBox notShowAgain = showLayout.findViewById(R.id.skip);
-        builder.setView(showLayout)
-                .setMessage("\n좌하단 체크 버튼을 이용해 기록 내의 보스들의 피를 확인이 가능하며, " +
-                "이번 회차 모든 보스 피가 0이 된 상태에서 버튼 클릭 시 자동으로 회차를 올려줍니다.\n기록 시 회차는 자동으로 저장됩니다.\n\n" +
-                "가급적이면 순서대로 기록하고 체크 버튼으로 자동 조정하시는 걸 추천하며, 불가피할 때만 수동 조정해주시길 바랍니다.")
-                .setCancelable(false)
-                .setPositiveButton("숙지했습니다.", (dialog1, id) -> {
-                    isCheckedNow = true;
-                    pref.edit().putBoolean("isDialogChecked", notShowAgain.isChecked()).apply();
+        int idx = (curRound >= hpPerRound.length) ? hpPerRound.length - 1 : curRound;
+        long damage = database.recordDao().get1Boss1RoundSum(raidId, selectedBossId, curRound + 1);
+        long remain = hpPerRound[idx] - damage;
+        int lastHitNum = database.recordDao().get1Boss1RoundLastHit(raidId, selectedBossId, curRound + 1);
+        Log.d("checkDamage", "damage:" + damage + ",remain: " + remain);
 
-                    dialog1.dismiss();
-                });
-        AlertDialog alert = builder.create();
-        alert.setTitle("수동 조정 전 안내 사항");
-        alert.show();
+        StringBuilder toastStr = new StringBuilder();
+
+        if(remain == 0 && lastHitNum == 1){
+            List<String> notEliminated = new ArrayList<>();
+            List<String> lhNotCorrect = new ArrayList<>();
+            for(int i = 0; i < bosses.size(); i++){
+                long d = database.recordDao().get1Boss1RoundSum(raidId, bosses.get(i).getBossId(), curRound + 1);
+                long r = hpPerRound[idx] - d;
+                int lh = database.recordDao().get1Boss1RoundLastHit(raidId, bosses.get(i).getBossId(), curRound + 1);
+
+                if(r != 0) notEliminated.add(bosses.get(i).getName());
+                if(lh != 1) lhNotCorrect.add(bosses.get(i).getName());
+            }
+
+            if(notEliminated.isEmpty() && lhNotCorrect.isEmpty()){
+                SharedPreferences.Editor editor = pref.edit();
+                toastStr.append(curRound + 1).append("회차 보스가 모두 처리됐습니다. 다음 회차로 자동 조정됍니다.");
+                editor.putInt("currentRound", curRound + 1);
+                editor.apply();
+            }
+            else{
+                toastStr.append("보스가 처리되었습니다.\n[남은 체크리스트]\n");
+                toastStr.append("피 체크:");
+                for(String ne : notEliminated){
+                    toastStr.append(ne).append("/");
+                }
+                toastStr.append("\n막타 체크:");
+                for(String lnc : lhNotCorrect){
+                    toastStr.append(lnc).append("/");
+                }
+            }
+
+        }
+        else {
+            if(remain == 0) toastStr.append("보스 피가 0이 되었으나 막타 체크가 이뤄지지 않았습니다.");//showToast("보스 피가 0이 되었으나 막타 체크가 이뤄지지 않았습니다.");
+            else if (remain > 0) {
+                if (lastHitNum != 0) toastStr.append("막타를 쳤지만 아직 보스의 피가 0이 아닙니다.");
+            } else {
+                toastStr.append("보스 피가 음수가 되었습니다!");
+            }
+        }
+        if(lastHitNum > 1) toastStr.append("\n현 보스 막타 횟수가 2번 이상입니다.");//showToast("현 보스 막타 횟수가 2번 이상입니다.");
+
+        if(!toastStr.toString().equals("")) showToast(toastStr.toString());
     }
 
     private void saveDataInDatabase(boolean isEditing, int recordId, String damage, int pIdx, int heroId, boolean isChecked) {
@@ -619,8 +687,8 @@ public class RecordMemberFragment extends Fragment {
         } else {//새로운 데이터 생성
             //새로 생성할 때에만 preference에 저장
             SharedPreferences.Editor editor = pref.edit();
-            editor.putInt("currentRound" + raidId, pIdx);
-            editor.putString("recentWrite" + raidId,
+            editor.putInt("currentRound", pIdx);
+            editor.putString("recentWrite",
                     "닉네임-" + memberList.get(sMemberIdx).getName() +
                             "/리더-" + database.heroDao().getHero(heroId).getKoreanName());
             editor.apply();
@@ -664,7 +732,7 @@ public class RecordMemberFragment extends Fragment {
                 .getLeaderIdsDesc(memberList.get(sMemberIdx).getId(), raidId, selectedBossId);
         boolean isFirst = true;
         for(int id: leaderIds){
-            LayoutInflater vi = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater vi = (LayoutInflater) requireActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View v = vi.inflate(R.layout.card_favorites, null);
 
             ImageView heroImage = v.findViewById(R.id.heroImage);
@@ -692,9 +760,7 @@ public class RecordMemberFragment extends Fragment {
             }
             else{
                 setGrayFilterOnImage(heroImage);
-                heroImage.setOnClickListener(view -> {
-                    showToast("이미 사용된 리더입니다!");
-                });
+                heroImage.setOnClickListener(view -> showToast("이미 사용된 리더입니다!"));
             }
 
             favoritesList.addView(v);
@@ -709,8 +775,8 @@ public class RecordMemberFragment extends Fragment {
         List<Favorites> favs = database.favoritesDao().getAllFavoritesAndHero();
 
         for(Favorites fav : favs) {
-            LayoutInflater vi = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View v = vi.inflate(R.layout.card_favorites, null);
+            LayoutInflater vi = (LayoutInflater) requireActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            @SuppressLint("InflateParams") View v = vi.inflate(R.layout.card_favorites, null);
 
             ImageView heroImage = v.findViewById(R.id.heroImage);
             Hero hero = fav.getHero();
@@ -737,9 +803,9 @@ public class RecordMemberFragment extends Fragment {
                 });
             }
             else{
+                setGrayFilterOnImage(heroImage);
                 heroImage.setOnClickListener(view -> {
                     if (isCreateMode) {
-                        setGrayFilterOnImage(heroImage);
                         showToast("이미 사용된 리더입니다!");
                     } else {
                         deleteFilterOnImage(heroImage);
@@ -760,6 +826,7 @@ public class RecordMemberFragment extends Fragment {
     }
 
     private void setGrayFilterOnImage(ImageView image) {
+        Log.d("RecordMemberFragment", "setGrayFilterOnImage");
         ColorMatrix matrix = new ColorMatrix();
         matrix.setSaturation(0);
         // make color filter
@@ -786,22 +853,33 @@ public class RecordMemberFragment extends Fragment {
             int position = viewHolder.getAdapterPosition();
             switch (direction) {
                 case ItemTouchHelper.LEFT:
-                    Record selected = recordList.get(position);
-                    String deletedInfo = recordList.get(position).getDay() + "일차, 리더-" + selected.getLeader().getKoreanName() + " 삭제";
-                    database.recordDao().deleteRecord(selected);
-                    recordList.remove(position);
-                    adapter.notifyItemRemoved(position);
-                    setTotalDamage();
-                    refreshSpinnerItem(sMemberIdx);
-                    Snackbar.make(recyclerView, deletedInfo, 2000)
-                            .setAction("취소", view -> {
-                                database.recordDao().insertRecord(selected);
-                                recordList.add(position, selected);
-                                adapter.notifyItemInserted(position);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+                    builder.setMessage("정말로 삭제하시겠습니까?")
+                            .setCancelable(false)
+                            .setPositiveButton("네", (dialog1, id) -> {
+                                Record selected = recordList.get(position);
+                                database.recordDao().deleteRecord(selected);
+                                recordList.remove(position);
+                                adapter.notifyItemRemoved(position);
+
+                                for (int i = 0; i < 4; i++) {
+                                    if (selectedBossId == selected.getBoss().getBossId()) {
+                                        break;
+                                    }
+                                }
+                                checkDamage(selected.getRound() - 1);
+
                                 setTotalDamage();
                                 refreshSpinnerItem(sMemberIdx);
-                            }).show();
-                    new Handler().postDelayed(() -> setFabVisibility(), 2500);
+                                setFabVisibility();
+                                dialog1.dismiss();
+                            })
+                            .setNegativeButton("아니오", (dialog1, id) -> dialog1.dismiss());
+                    AlertDialog alert = builder.create();
+                    alert.setTitle("데이터 삭제");
+                    alert.show();
+                    adapter.notifyItemChanged(position);
+
                     break;
                 case ItemTouchHelper.RIGHT:
                     Record editRecord = recordList.get(position);
@@ -834,7 +912,7 @@ public class RecordMemberFragment extends Fragment {
 
     int getIdentifierFromResource(String name, String defType){
         return getResources().getIdentifier(
-                name, defType, getContext().getPackageName());
+                name, defType, requireContext().getPackageName());
     }
 
     private void setFabVisibility() {

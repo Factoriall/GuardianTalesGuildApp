@@ -46,11 +46,6 @@ public abstract class PoiHelper {
         wb = new HSSFWorkbook();
         sheet = wb.createSheet("new sheet");
         dirName = "가테_길레_" + raidName;
-        /*
-        directory = new File(
-                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS),
-                "가테_길레_" + raidName);*/
-
         this.context = context;
     }
 
@@ -60,10 +55,15 @@ public abstract class PoiHelper {
         File directory;
         if(android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             directory = new File(
-                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS),
+                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
                     dirName);
         }
         else directory = new File(Environment.getExternalStorageDirectory(), dirName);
+
+        if(!directory.exists()){
+            if(directory.mkdirs()) Log.d("PoiHelper" , "생성 성공");
+            else Log.d("PoiHelper", "생성 실패");
+        }
 
         if(android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
             try {
@@ -78,7 +78,7 @@ public abstract class PoiHelper {
             String[] projection = {MediaStore.MediaColumns._ID};
 
             String selection = MediaStore.MediaColumns.RELATIVE_PATH + "='" +
-                    Environment.DIRECTORY_DOCUMENTS + File.separator + dirName + File.separator
+                    Environment.DIRECTORY_DOWNLOADS + File.separator + dirName + File.separator
                     + "' AND " + MediaStore.MediaColumns.DISPLAY_NAME+"='" + fileName + "'";
 
             Cursor cur = cr.query(MediaStore.Files.getContentUri("external"),
@@ -93,7 +93,7 @@ public abstract class PoiHelper {
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, fileName);
                 contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "application/vnd.ms-excel");
-                contentValues.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOCUMENTS + "/" + dirName);
+                contentValues.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS + "/" + dirName);
                 uri = cr.insert(MediaStore.Files.getContentUri("external"), contentValues);
             }
 
