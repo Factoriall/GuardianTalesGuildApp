@@ -103,12 +103,14 @@ public class RecordFragment extends Fragment {
             int raidId = raid.getRaidId();
             int curRound = pref.getInt("currentRound", 0);
             List<Boss> bossList = database.raidDao().getBossesList(raidId);
-            StringBuilder toastText = new StringBuilder((curRound + 1) + "회차 남은 데미지\n");
+            StringBuilder toastText = new StringBuilder((curRound + 1) + "회차 남은 데미지/막타 체크\n");
             for(int i = 0; i < bossList.size(); i++){
                 int idx = curRound >= hpPerRound.length ? hpPerRound.length - 1 : curRound;
                 long damage = database.recordDao().get1Boss1RoundSum(raidId, bossList.get(i).getBossId(), curRound + 1);
                 long remain = hpPerRound[idx] - damage;
+                boolean lh = database.recordDao().get1Boss1RoundLastHit(raidId, bossList.get(i).getBossId(), curRound + 1) == 1;
                 toastText.append(bossList.get(i).getName()).append(": ").append(cHelper.getNumberFormat(remain));
+                toastText.append("/막타 " + (lh ? "O" : "X"));
                 if(i != bossList.size() - 1) toastText.append("\n");
             }
 

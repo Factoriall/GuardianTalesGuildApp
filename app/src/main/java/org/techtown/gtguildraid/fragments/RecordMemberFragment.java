@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
@@ -84,6 +85,7 @@ public class RecordMemberFragment extends Fragment {
     private TextView totalDamage;
     private FloatingActionButton fab;
     private NiceSpinner memberSpinner;
+    private SwitchButton manualButton;
     ImageView addButton;
     ImageView deleteButton;
 
@@ -323,7 +325,8 @@ public class RecordMemberFragment extends Fragment {
         HorizontalScrollView hsv = dialog.findViewById(R.id.favoriteScrollView);
         LinearLayout favoritesList = dialog.findViewById(R.id.favoriteList);
         SwitchButton switchButton = dialog.findViewById(R.id.viewSwitch);
-        SwitchButton manualButton = dialog.findViewById(R.id.manualSwitch);
+        manualButton = dialog.findViewById(R.id.manualSwitch);
+        TextView lhNotUse = dialog.findViewById(R.id.lhNotUse);
 
         MySpinner elements;
         Spinner heroNames;
@@ -340,6 +343,7 @@ public class RecordMemberFragment extends Fragment {
         //bossSwitch 생성
         bosses = database.raidDao().getBossesList(raid.getRaidId());
         int curRound = pref.getInt("currentRound", 0);
+        int idx = (curRound >= hpPerRound.length) ? hpPerRound.length - 1 : curRound;
 
         bossSwitch.setView(
                 R.layout.dialog_record_boss_select,
@@ -355,7 +359,7 @@ public class RecordMemberFragment extends Fragment {
                     imageView.setImageResource(
                             getIdentifierFromResource("boss_" + bosses.get(position).getImgName(), "drawable"));
                     long d = database.recordDao().get1Boss1RoundSum(raidId, bosses.get(position).getBossId(), curRound + 1);
-                    long r = hpPerRound[curRound] - d;
+                    long r = hpPerRound[idx] - d;
                     if(r <= 0){
                         setGrayFilterOnImage(imageView);
                         textView.setPaintFlags(textView.getPaintFlags()| Paint.STRIKE_THRU_TEXT_FLAG);
@@ -365,9 +369,21 @@ public class RecordMemberFragment extends Fragment {
                     TextView textView = view.findViewById(R.id.bossName);
                     textView.setTextColor(ContextCompat.getColor(requireActivity(), android.R.color.white));
                     long d = database.recordDao().get1Boss1RoundSum(raidId, bosses.get(position).getBossId(), curRound + 1);
-                    long r = hpPerRound[curRound] - d;
-                    if(r == 0) showToast("이미 피가 0인 보스입니다.");
-                    else if(r < 0) showToast("피가 음수인 보스입니다.");
+                    long r = hpPerRound[idx] - d;
+                    if(r <= 0) {
+                        if (r == 0) showToast("이미 피가 0인 보스입니다.");
+                        else showToast("피가 음수인 보스입니다.");
+                    }
+                    int lh = database.recordDao().get1Boss1RoundLastHit(raidId, bosses.get(position).getBossId(), curRound + 1);
+                    if(lh == 1){
+                        isLastHit.setChecked(false);
+                        isLastHit.setVisibility(View.GONE);
+                        lhNotUse.setVisibility(View.VISIBLE);
+                    }
+                    else {
+                        isLastHit.setVisibility(View.VISIBLE);
+                        lhNotUse.setVisibility(View.GONE);
+                    }
                     },
                 (view, position) -> {
                     TextView textView = view.findViewById(R.id.bossName);
@@ -489,9 +505,6 @@ public class RecordMemberFragment extends Fragment {
 
         oneCutButton.setOnClickListener(view -> {
             isLastHit.setChecked(true);
-
-
-            int idx = pickerIdx[0] < hpPerRound.length ? pickerIdx[0] : hpPerRound.length - 1;
             damage.setText(Integer.toString(hpPerRound[idx]));
         });
 
@@ -673,7 +686,6 @@ public class RecordMemberFragment extends Fragment {
                 toastStr.append("보스 피가 음수가 되었습니다!");
             }
         }
-        if(lastHitNum > 1) toastStr.append("\n현 보스 막타 횟수가 2번 이상입니다.");//showToast("현 보스 막타 횟수가 2번 이상입니다.");
 
         if(!toastStr.toString().equals("")) showToast(toastStr.toString());
     }

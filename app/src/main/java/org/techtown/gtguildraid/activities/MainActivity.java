@@ -127,6 +127,22 @@ public class MainActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction().replace(R.id.container, raidFragment).commit();
             bottomNavigationView.setSelectedItemId(R.id.raidTab);
         }
+
+        PermissionListener permissionlistener = new PermissionListener() {
+            @Override
+            public void onPermissionGranted() { }
+
+            @Override
+            public void onPermissionDenied(List<String> deniedPermissions) {
+                showToast("권한 거부\n" + deniedPermissions.toString());
+            }
+        };
+
+        TedPermission.create()
+                .setPermissionListener(permissionlistener)
+                .setDeniedMessage("권한 거부 시 레이드 정보를 종합해주는 엑셀 파일 출력이 안될 수 있습니다.\n\n[설정] > [권한] 에서 수동으로 권한 부여를 해주시길 바랍니다.")
+                .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+                .check();
     }
 
     public void showToast(String msg){

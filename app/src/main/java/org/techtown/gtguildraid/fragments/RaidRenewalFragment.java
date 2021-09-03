@@ -219,9 +219,6 @@ public class RaidRenewalFragment
                     raid.setThumbnail(sThumbnail);
                     SharedPreferences.Editor editor = requireActivity().getSharedPreferences("pref", Context.MODE_PRIVATE).edit();
                     editor.putInt("currentRound", 0);
-                    for(int i=0; i<4; i++) {
-                        editor.putBoolean("isEliminated" + i, false);
-                    }
                     editor.apply();
 
                     List<Boss> bosses = new ArrayList<>();
