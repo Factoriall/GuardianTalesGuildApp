@@ -654,7 +654,7 @@ public class RecordMemberFragment extends Fragment {
                 Record lh = database.recordDao().get1Boss1RoundLastHit(raidId, bosses.get(i).getBossId(), curRound + 1);
 
                 if(r != 0) notEliminated.add(bosses.get(i).getName());
-                if(lh != null) lhNotCorrect.add(bosses.get(i).getName());
+                if(lh == null) lhNotCorrect.add(bosses.get(i).getName());
             }
 
             if(notEliminated.isEmpty() && lhNotCorrect.isEmpty()){
