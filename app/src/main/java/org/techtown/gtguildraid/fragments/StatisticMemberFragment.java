@@ -25,7 +25,7 @@ import com.kyleduo.switchbutton.SwitchButton;
 import org.angmarch.views.NiceSpinner;
 import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.etc.MemberPoi;
-import org.techtown.gtguildraid.models.GuildMember;
+import org.techtown.gtguildraid.models.daos.GuildMember;
 import org.techtown.gtguildraid.utils.AppExecutor;
 import org.techtown.gtguildraid.utils.RoomDB;
 

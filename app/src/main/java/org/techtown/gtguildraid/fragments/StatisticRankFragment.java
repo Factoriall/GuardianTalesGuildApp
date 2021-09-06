@@ -11,7 +11,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
-import android.provider.DocumentsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,23 +33,20 @@ import com.llollox.androidtoggleswitch.widgets.ToggleSwitch;
 import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.adapters.StatisticRankCardAdapter;
 import org.techtown.gtguildraid.etc.RankPoi;
-import org.techtown.gtguildraid.models.Boss;
-import org.techtown.gtguildraid.models.GuildMember;
-import org.techtown.gtguildraid.models.Raid;
+import org.techtown.gtguildraid.models.daos.Boss;
+import org.techtown.gtguildraid.models.daos.GuildMember;
+import org.techtown.gtguildraid.models.daos.Raid;
 import org.techtown.gtguildraid.models.RankInfo;
-import org.techtown.gtguildraid.models.Record;
+import org.techtown.gtguildraid.models.daos.Record;
 import org.techtown.gtguildraid.utils.AppExecutor;
 import org.techtown.gtguildraid.utils.RoomDB;
 
 import java.io.File;
-import java.time.Duration;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 public class StatisticRankFragment extends Fragment {
     static int raidId;
@@ -66,6 +62,12 @@ public class StatisticRankFragment extends Fragment {
     StatisticRankCardAdapter adapter;
     RecyclerView recyclerView;
     Button excelButton;
+
+    int lp;
+    boolean iam;
+
+    SharedPreferences pref;
+
 
     public static Fragment newInstance(int raidId) {
         StatisticRankFragment fragment = new StatisticRankFragment();
@@ -85,6 +87,7 @@ public class StatisticRankFragment extends Fragment {
         adapter = new StatisticRankCardAdapter();
         recyclerView.setAdapter(adapter);
         isDay1Contained = true;
+        pref = getContext().getSharedPreferences("pref", Activity.MODE_PRIVATE);
 
         StrictMode.VmPolicy.Builder build = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(build.build());
@@ -146,23 +149,24 @@ public class StatisticRankFragment extends Fragment {
         ToggleSwitch levelSwitch = dialog.findViewById(R.id.toggleSwitchLevel);
         levelSwitch.setEntries(levelLabels);
         levelSwitch.setCheckedPosition(levelPosition);
-
-        levelSwitch.setOnChangeListener(i -> levelPosition = i);
+        levelSwitch.setOnChangeListener(i -> lp = i);
 
         ToggleSwitch avgSwitch = dialog.findViewById(R.id.toggleSwitchAvg);
         avgSwitch.setCheckedPosition(isAverageMode ? 1 : 0);
-        avgSwitch.setOnChangeListener(i -> isAverageMode = i == 1);
+        avgSwitch.setOnChangeListener(i -> iam = i == 1);
 
         Switch adjustSwitch = dialog.findViewById(R.id.adjustSwitch);
         adjustSwitch.setChecked(isAdjustMode);
-        adjustSwitch.setOnCheckedChangeListener((compoundButton, b) -> isAdjustMode = b);
 
         Switch day1AdjustSwitch = dialog.findViewById(R.id.day1AdjustSwitch);
         day1AdjustSwitch.setChecked(isDay1Contained);
-        day1AdjustSwitch.setOnCheckedChangeListener((compoundButton, b) -> isDay1Contained = b);
 
         Button completeButton = dialog.findViewById(R.id.completeButton);
         completeButton.setOnClickListener(view -> {
+            isDay1Contained = day1AdjustSwitch.isChecked();
+            isAdjustMode = adjustSwitch.isChecked();
+            isAverageMode = iam;
+            levelPosition = lp;
             setRankView();
             dialog.dismiss();
         });
@@ -177,7 +181,6 @@ public class StatisticRankFragment extends Fragment {
         SeekBar lastHitBar = dialog.findViewById(R.id.lastHitBar);
         TextView lastHitValue = dialog.findViewById(R.id.lastHitValue);
 
-        SharedPreferences pref = getContext().getSharedPreferences("pref", Activity.MODE_PRIVATE);
         excelAdjustSwitch.setChecked(pref.getBoolean("excelRankAdjust", false));
         excelDay1Switch.setChecked(pref.getBoolean("excelRankDay1Contained", false));
         int lhValue= pref.getInt("lastHitValue", 0);

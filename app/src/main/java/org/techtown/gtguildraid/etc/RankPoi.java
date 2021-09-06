@@ -8,15 +8,13 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.techtown.gtguildraid.interfaces.CalculateFormatHelper;
 import org.techtown.gtguildraid.interfaces.PoiHelper;
-import org.techtown.gtguildraid.models.Boss;
+import org.techtown.gtguildraid.models.daos.Boss;
 import org.techtown.gtguildraid.models.IdDouble;
 import org.techtown.gtguildraid.models.IdLong;
 import org.techtown.gtguildraid.models.IdLongCnt;
-import org.techtown.gtguildraid.models.Raid;
+import org.techtown.gtguildraid.models.daos.Raid;
 import org.techtown.gtguildraid.utils.RoomDB;
 
-import java.io.File;
-import java.util.Calendar;
 import java.util.List;
 
 public class RankPoi extends PoiHelper {

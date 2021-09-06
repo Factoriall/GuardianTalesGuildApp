@@ -1,6 +1,6 @@
 package org.techtown.gtguildraid.interfaces;
 
-import org.techtown.gtguildraid.models.Record;
+import org.techtown.gtguildraid.models.daos.Record;
 
 import java.text.NumberFormat;
 import java.util.List;

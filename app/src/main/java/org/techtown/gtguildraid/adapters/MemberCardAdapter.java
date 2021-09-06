@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.techtown.gtguildraid.R;
-import org.techtown.gtguildraid.models.GuildMember;
+import org.techtown.gtguildraid.models.daos.GuildMember;
 
 import java.util.List;
 

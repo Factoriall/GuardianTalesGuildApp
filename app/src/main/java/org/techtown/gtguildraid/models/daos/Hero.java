@@ -1,4 +1,4 @@
-package org.techtown.gtguildraid.models;
+package org.techtown.gtguildraid.models.daos;
 
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;

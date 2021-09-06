@@ -6,7 +6,7 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import org.techtown.gtguildraid.models.Boss;
+import org.techtown.gtguildraid.models.daos.Boss;
 
 import static androidx.room.OnConflictStrategy.REPLACE;
 

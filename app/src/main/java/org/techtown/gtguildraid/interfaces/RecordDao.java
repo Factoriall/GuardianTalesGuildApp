@@ -5,12 +5,12 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 
-import org.techtown.gtguildraid.models.Boss;
-import org.techtown.gtguildraid.models.Hero;
+import org.techtown.gtguildraid.models.daos.Boss;
+import org.techtown.gtguildraid.models.daos.Hero;
 import org.techtown.gtguildraid.models.IdDouble;
 import org.techtown.gtguildraid.models.IdLong;
 import org.techtown.gtguildraid.models.IdLongCnt;
-import org.techtown.gtguildraid.models.Record;
+import org.techtown.gtguildraid.models.daos.Record;
 
 import java.util.List;
 
@@ -52,9 +52,9 @@ public abstract class RecordDao {
             "AND round = :round")
     public abstract long get1Boss1RoundSum(int raidId, int bossId, int round);
 
-    @Query("SELECT COUNT(*) FROM Record WHERE raidId = :raidId AND bossId = :bossId " +
+    @Query("SELECT * FROM Record WHERE raidId = :raidId AND bossId = :bossId " +
             "AND round = :round AND isLastHit = 1")
-    public abstract int get1Boss1RoundLastHit(int raidId, int bossId, int round);
+    public abstract Record get1Boss1RoundLastHit(int raidId, int bossId, int round);
 
     @Query("SELECT * FROM Record WHERE raidId = :raidId AND bossId = :bossId")
     public abstract List<Record> getAllMemberBossRecords(int raidId, int bossId);

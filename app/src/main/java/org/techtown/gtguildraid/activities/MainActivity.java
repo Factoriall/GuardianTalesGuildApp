@@ -3,12 +3,9 @@ package org.techtown.gtguildraid.activities;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -25,8 +22,8 @@ import org.techtown.gtguildraid.fragments.MemberFragment;
 import org.techtown.gtguildraid.fragments.RaidRenewalFragment;
 import org.techtown.gtguildraid.fragments.RecordFragment;
 import org.techtown.gtguildraid.fragments.StatisticRenewalFragment;
-import org.techtown.gtguildraid.models.Boss;
-import org.techtown.gtguildraid.models.Raid;
+import org.techtown.gtguildraid.models.daos.Boss;
+import org.techtown.gtguildraid.models.daos.Raid;
 import org.techtown.gtguildraid.utils.RoomDB;
 
 import java.util.Date;

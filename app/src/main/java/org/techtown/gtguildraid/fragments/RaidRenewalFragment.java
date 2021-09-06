@@ -31,9 +31,9 @@ import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.activities.BossEditActivity;
 import org.techtown.gtguildraid.adapters.RaidBossRecyclerAdapter;
 import org.techtown.gtguildraid.etc.HeroBottomSheetDialog;
-import org.techtown.gtguildraid.models.Boss;
-import org.techtown.gtguildraid.models.Hero;
-import org.techtown.gtguildraid.models.Raid;
+import org.techtown.gtguildraid.models.daos.Boss;
+import org.techtown.gtguildraid.models.daos.Hero;
+import org.techtown.gtguildraid.models.daos.Raid;
 import org.techtown.gtguildraid.utils.RoomDB;
 
 import java.text.SimpleDateFormat;
@@ -41,7 +41,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import static android.app.Activity.RESULT_OK;
 

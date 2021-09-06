@@ -13,7 +13,7 @@ import com.google.android.material.tabs.TabLayoutMediator;
 
 import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.adapters.StatisticPagerAdapter;
-import org.techtown.gtguildraid.models.Raid;
+import org.techtown.gtguildraid.models.daos.Raid;
 import org.techtown.gtguildraid.utils.RoomDB;
 
 import java.text.SimpleDateFormat;

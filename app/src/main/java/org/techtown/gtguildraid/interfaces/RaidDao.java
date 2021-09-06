@@ -5,8 +5,8 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 
-import org.techtown.gtguildraid.models.Boss;
-import org.techtown.gtguildraid.models.Raid;
+import org.techtown.gtguildraid.models.daos.Boss;
+import org.techtown.gtguildraid.models.daos.Raid;
 
 import java.util.Date;
 import java.util.List;

@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
@@ -47,12 +46,12 @@ import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.adapters.DialogImageSpinnerAdapter;
 import org.techtown.gtguildraid.adapters.RecordCardAdapter;
 import org.techtown.gtguildraid.etc.MySpinner;
-import org.techtown.gtguildraid.models.Boss;
-import org.techtown.gtguildraid.models.Favorites;
-import org.techtown.gtguildraid.models.GuildMember;
-import org.techtown.gtguildraid.models.Hero;
-import org.techtown.gtguildraid.models.Raid;
-import org.techtown.gtguildraid.models.Record;
+import org.techtown.gtguildraid.models.daos.Boss;
+import org.techtown.gtguildraid.models.daos.Favorites;
+import org.techtown.gtguildraid.models.daos.GuildMember;
+import org.techtown.gtguildraid.models.daos.Hero;
+import org.techtown.gtguildraid.models.daos.Raid;
+import org.techtown.gtguildraid.models.daos.Record;
 import org.techtown.gtguildraid.utils.RoomDB;
 
 import java.text.NumberFormat;
@@ -167,7 +166,6 @@ public class RecordMemberFragment extends Fragment {
 
         pref = requireActivity().getSharedPreferences("pref", Context.MODE_PRIVATE);
         database = RoomDB.getInstance(getActivity());
-        myToast = Toast.makeText(getActivity(), null, Toast.LENGTH_SHORT);
 
         List<Hero> heroList = database.heroDao().getAllHeroes();
         //heroId 정보 생성
@@ -374,8 +372,8 @@ public class RecordMemberFragment extends Fragment {
                         if (r == 0) showToast("이미 피가 0인 보스입니다.");
                         else showToast("피가 음수인 보스입니다.");
                     }
-                    int lh = database.recordDao().get1Boss1RoundLastHit(raidId, bosses.get(position).getBossId(), curRound + 1);
-                    if(lh == 1){
+                    Record lh = database.recordDao().get1Boss1RoundLastHit(raidId, bosses.get(position).getBossId(), curRound + 1);
+                    if(lh != null){
                         isLastHit.setChecked(false);
                         isLastHit.setVisibility(View.GONE);
                         lhNotUse.setVisibility(View.VISIBLE);
@@ -642,21 +640,21 @@ public class RecordMemberFragment extends Fragment {
         int idx = (curRound >= hpPerRound.length) ? hpPerRound.length - 1 : curRound;
         long damage = database.recordDao().get1Boss1RoundSum(raidId, selectedBossId, curRound + 1);
         long remain = hpPerRound[idx] - damage;
-        int lastHitNum = database.recordDao().get1Boss1RoundLastHit(raidId, selectedBossId, curRound + 1);
+        Record lhr = database.recordDao().get1Boss1RoundLastHit(raidId, selectedBossId, curRound + 1);
         Log.d("checkDamage", "damage:" + damage + ",remain: " + remain);
 
         StringBuilder toastStr = new StringBuilder();
 
-        if(remain == 0 && lastHitNum == 1){
+        if(remain == 0 && lhr != null){
             List<String> notEliminated = new ArrayList<>();
             List<String> lhNotCorrect = new ArrayList<>();
             for(int i = 0; i < bosses.size(); i++){
                 long d = database.recordDao().get1Boss1RoundSum(raidId, bosses.get(i).getBossId(), curRound + 1);
                 long r = hpPerRound[idx] - d;
-                int lh = database.recordDao().get1Boss1RoundLastHit(raidId, bosses.get(i).getBossId(), curRound + 1);
+                Record lh = database.recordDao().get1Boss1RoundLastHit(raidId, bosses.get(i).getBossId(), curRound + 1);
 
                 if(r != 0) notEliminated.add(bosses.get(i).getName());
-                if(lh != 1) lhNotCorrect.add(bosses.get(i).getName());
+                if(lh != null) lhNotCorrect.add(bosses.get(i).getName());
             }
 
             if(notEliminated.isEmpty() && lhNotCorrect.isEmpty()){
@@ -681,7 +679,7 @@ public class RecordMemberFragment extends Fragment {
         else {
             if(remain == 0) toastStr.append("보스 피가 0이 되었으나 막타 체크가 이뤄지지 않았습니다.");//showToast("보스 피가 0이 되었으나 막타 체크가 이뤄지지 않았습니다.");
             else if (remain > 0) {
-                if (lastHitNum != 0) toastStr.append("막타를 쳤지만 아직 보스의 피가 0이 아닙니다.");
+                if (lhr != null) toastStr.append("막타를 쳤지만 아직 보스의 피가 0이 아닙니다.");
             } else {
                 toastStr.append("보스 피가 음수가 되었습니다!");
             }
@@ -886,11 +884,14 @@ public class RecordMemberFragment extends Fragment {
                                 setFabVisibility();
                                 dialog1.dismiss();
                             })
-                            .setNegativeButton("아니오", (dialog1, id) -> dialog1.dismiss());
+                            .setNegativeButton("아니오", (dialog1, id) -> {
+                                dialog1.dismiss();
+                                adapter.notifyDataSetChanged();
+                            });
                     AlertDialog alert = builder.create();
                     alert.setTitle("데이터 삭제");
                     alert.show();
-                    adapter.notifyItemChanged(position);
+
 
                     break;
                 case ItemTouchHelper.RIGHT:
@@ -935,6 +936,8 @@ public class RecordMemberFragment extends Fragment {
     }
 
     private void showToast(String msg) {
+        if(myToast != null) myToast.cancel();
+        myToast = Toast.makeText(getActivity(), null, Toast.LENGTH_SHORT);
         myToast.setText(msg);
         myToast.show();
     }

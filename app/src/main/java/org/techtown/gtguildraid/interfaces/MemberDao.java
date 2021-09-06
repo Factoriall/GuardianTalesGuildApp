@@ -5,7 +5,7 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 
-import org.techtown.gtguildraid.models.GuildMember;
+import org.techtown.gtguildraid.models.daos.GuildMember;
 
 import java.util.List;
 

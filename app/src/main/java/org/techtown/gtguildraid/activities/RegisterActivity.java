@@ -14,8 +14,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.etc.HeroBottomSheetDialog;
-import org.techtown.gtguildraid.models.GuildMember;
-import org.techtown.gtguildraid.models.Hero;
+import org.techtown.gtguildraid.models.daos.GuildMember;
+import org.techtown.gtguildraid.models.daos.Hero;
 import org.techtown.gtguildraid.utils.RoomDB;
 
 public class RegisterActivity extends AppCompatActivity

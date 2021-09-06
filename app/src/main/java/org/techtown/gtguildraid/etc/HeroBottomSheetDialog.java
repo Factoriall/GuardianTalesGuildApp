@@ -3,7 +3,6 @@ package org.techtown.gtguildraid.etc;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +17,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.adapters.HeroImageRecyclerAdapter;
-import org.techtown.gtguildraid.models.Hero;
+import org.techtown.gtguildraid.models.daos.Hero;
 import org.techtown.gtguildraid.utils.RoomDB;
 
 import java.util.List;

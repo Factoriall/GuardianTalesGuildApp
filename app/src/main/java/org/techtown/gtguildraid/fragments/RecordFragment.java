@@ -25,8 +25,9 @@ import com.google.android.material.tabs.TabLayoutMediator;
 import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.adapters.RecordPagerAdapter;
 import org.techtown.gtguildraid.interfaces.CalculateFormatHelper;
-import org.techtown.gtguildraid.models.Boss;
-import org.techtown.gtguildraid.models.Raid;
+import org.techtown.gtguildraid.models.daos.Boss;
+import org.techtown.gtguildraid.models.daos.Raid;
+import org.techtown.gtguildraid.models.daos.Record;
 import org.techtown.gtguildraid.utils.RoomDB;
 
 import java.text.SimpleDateFormat;
@@ -57,7 +58,6 @@ public class RecordFragment extends Fragment {
         FloatingActionButton checkFab = view.findViewById(R.id.fabCheck);
         viewPager = view.findViewById(R.id.viewpager);
         tabLayout = view.findViewById(R.id.tabs);
-        myToast = Toast.makeText(getActivity(), null, Toast.LENGTH_LONG);
 
         database = RoomDB.getInstance(getActivity());
         raid = database.raidDao().getCurrentRaid(new Date());
@@ -108,9 +108,12 @@ public class RecordFragment extends Fragment {
                 int idx = curRound >= hpPerRound.length ? hpPerRound.length - 1 : curRound;
                 long damage = database.recordDao().get1Boss1RoundSum(raidId, bossList.get(i).getBossId(), curRound + 1);
                 long remain = hpPerRound[idx] - damage;
-                boolean lh = database.recordDao().get1Boss1RoundLastHit(raidId, bossList.get(i).getBossId(), curRound + 1) == 1;
-                toastText.append(bossList.get(i).getName()).append(": ").append(cHelper.getNumberFormat(remain));
-                toastText.append("/막타 " + (lh ? "O" : "X"));
+                Record lhr = database.recordDao().get1Boss1RoundLastHit(raidId, bossList.get(i).getBossId(), curRound + 1);
+                toastText.append("[" + bossList.get(i).getName()).append("]\n");
+                toastText.append(cHelper.getNumberFormat(remain));
+                toastText.append(" / " + (lhr != null ?
+                        database.memberDao().getMember(lhr.getMemberId()).getName() +"-" + database.heroDao().getHero(lhr.getLeaderId()).getKoreanName()
+                        : "체크 X"));
                 if(i != bossList.size() - 1) toastText.append("\n");
             }
 

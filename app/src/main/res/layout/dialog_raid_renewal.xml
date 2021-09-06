@@ -84,7 +84,7 @@
                 android:layout_marginStart="15dp"
                 android:layout_marginTop="10dp"
                 android:background="#FFC107"
-                android:hint="길드 이름 입력"
+                android:hint="레이드 이름 입력"
                 android:inputType="text"
                 android:maxLength="20"
                 android:maxLines="1"

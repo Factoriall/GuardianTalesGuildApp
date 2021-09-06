@@ -1,4 +1,4 @@
-package org.techtown.gtguildraid.models;
+package org.techtown.gtguildraid.models.daos;
 
 import androidx.room.Entity;
 import androidx.room.Ignore;

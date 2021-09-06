@@ -14,7 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.techtown.gtguildraid.R;
-import org.techtown.gtguildraid.models.Record;
+import org.techtown.gtguildraid.models.daos.Record;
 
 import java.text.NumberFormat;
 import java.util.List;

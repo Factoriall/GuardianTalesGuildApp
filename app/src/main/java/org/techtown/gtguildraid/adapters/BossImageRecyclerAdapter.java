@@ -11,9 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.techtown.gtguildraid.R;
-import org.techtown.gtguildraid.models.Boss;
 import org.techtown.gtguildraid.models.BossImage;
-import org.techtown.gtguildraid.models.Hero;
 
 import java.util.List;
 

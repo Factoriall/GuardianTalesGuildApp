@@ -2,7 +2,6 @@ package org.techtown.gtguildraid.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -10,7 +9,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.Spinner;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,7 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.adapters.DialogImageSpinnerAdapter;
 import org.techtown.gtguildraid.etc.BossBottomSheetDialog;
-import org.techtown.gtguildraid.models.Boss;
+import org.techtown.gtguildraid.models.daos.Boss;
 import org.techtown.gtguildraid.models.BossImage;
 import org.techtown.gtguildraid.utils.RoomDB;
 

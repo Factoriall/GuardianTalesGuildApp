@@ -17,12 +17,12 @@ import org.techtown.gtguildraid.interfaces.HeroDao;
 import org.techtown.gtguildraid.interfaces.MemberDao;
 import org.techtown.gtguildraid.interfaces.RaidDao;
 import org.techtown.gtguildraid.interfaces.RecordDao;
-import org.techtown.gtguildraid.models.Boss;
-import org.techtown.gtguildraid.models.Favorites;
-import org.techtown.gtguildraid.models.GuildMember;
-import org.techtown.gtguildraid.models.Hero;
-import org.techtown.gtguildraid.models.Raid;
-import org.techtown.gtguildraid.models.Record;
+import org.techtown.gtguildraid.models.daos.Boss;
+import org.techtown.gtguildraid.models.daos.Favorites;
+import org.techtown.gtguildraid.models.daos.GuildMember;
+import org.techtown.gtguildraid.models.daos.Hero;
+import org.techtown.gtguildraid.models.daos.Raid;
+import org.techtown.gtguildraid.models.daos.Record;
 
 
 

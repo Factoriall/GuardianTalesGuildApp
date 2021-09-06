@@ -15,8 +15,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.adapters.BossHitCardAdapter;
 import org.techtown.gtguildraid.adapters.RecordCardAdapter;
-import org.techtown.gtguildraid.models.Boss;
-import org.techtown.gtguildraid.models.Record;
+import org.techtown.gtguildraid.models.daos.Boss;
+import org.techtown.gtguildraid.models.daos.Record;
 import org.techtown.gtguildraid.utils.AppExecutor;
 import org.techtown.gtguildraid.utils.RoomDB;
 
