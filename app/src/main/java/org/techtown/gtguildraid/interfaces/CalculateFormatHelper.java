@@ -1,6 +1,6 @@
 package org.techtown.gtguildraid.interfaces;
 
-import org.techtown.gtguildraid.models.daos.Record;
+import org.techtown.gtguildraid.models.entities.Record;
 
 import java.text.NumberFormat;
 import java.util.List;
@@ -27,6 +27,23 @@ public class CalculateFormatHelper {
             }
             else
                 damage += r.getDamage();
+        }
+
+        return damage;
+    }
+
+    public long getDamageFromList(List<Record> records, boolean isAdjusted, double lhValue) {
+        long damage = 0;
+        for(Record r: records) {
+            int sum = 0;
+            if(isAdjusted) {
+                double hardness = r.getBoss().getHardness();
+                sum += (r.getDamage()) * hardness;
+            }
+            else
+                sum += r.getDamage();
+            if(r.isLastHit()) sum *= lhValue;
+            damage += sum;
         }
 
         return damage;
@@ -71,6 +88,8 @@ public class CalculateFormatHelper {
 
         return cnt == 0 ? 0 : damage / cnt;
     }
+
+
 
     public long getAverageFromList(List<Record> records, boolean isAdjust) {
         long damage = 0;

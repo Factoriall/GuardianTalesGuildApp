@@ -25,7 +25,7 @@ import com.kyleduo.switchbutton.SwitchButton;
 import org.angmarch.views.NiceSpinner;
 import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.etc.MemberPoi;
-import org.techtown.gtguildraid.models.daos.GuildMember;
+import org.techtown.gtguildraid.models.entities.GuildMember;
 import org.techtown.gtguildraid.utils.AppExecutor;
 import org.techtown.gtguildraid.utils.RoomDB;
 
@@ -131,8 +131,8 @@ public class StatisticMemberFragment extends Fragment {
                     else
                         dirName = Environment.getExternalStorageDirectory() + "/가테_길레_" +raidName;
 
-                    builder.setMessage("내 파일 ->" + dirName + " 에서 확인 가능합니다."
-                            + "\n엑셀 파일을 보시겠습니까?")
+                    builder.setMessage("엑셀 파일을 보시겠습니까?" +
+                            "\n저장 경로는 상단 i 버튼으로 확인이 가능합니다.")
                             .setCancelable(false)
                             .setPositiveButton("네", (dialog1, id) -> {
                                 Intent intent = new Intent(Intent.ACTION_VIEW);

@@ -13,7 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.techtown.gtguildraid.R;
-import org.techtown.gtguildraid.models.daos.Boss;
+import org.techtown.gtguildraid.models.entities.Boss;
 
 import java.util.List;
 

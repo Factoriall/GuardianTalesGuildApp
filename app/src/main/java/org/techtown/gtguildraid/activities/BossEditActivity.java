@@ -18,7 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.adapters.DialogImageSpinnerAdapter;
 import org.techtown.gtguildraid.etc.BossBottomSheetDialog;
-import org.techtown.gtguildraid.models.daos.Boss;
+import org.techtown.gtguildraid.models.entities.Boss;
 import org.techtown.gtguildraid.models.BossImage;
 import org.techtown.gtguildraid.utils.RoomDB;
 

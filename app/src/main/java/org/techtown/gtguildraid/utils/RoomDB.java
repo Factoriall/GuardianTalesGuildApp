@@ -11,23 +11,23 @@ import androidx.room.TypeConverters;
 import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-import org.techtown.gtguildraid.interfaces.BossDao;
-import org.techtown.gtguildraid.interfaces.FavoritesDao;
-import org.techtown.gtguildraid.interfaces.HeroDao;
-import org.techtown.gtguildraid.interfaces.MemberDao;
-import org.techtown.gtguildraid.interfaces.RaidDao;
-import org.techtown.gtguildraid.interfaces.RecordDao;
-import org.techtown.gtguildraid.models.daos.Boss;
-import org.techtown.gtguildraid.models.daos.Favorites;
-import org.techtown.gtguildraid.models.daos.GuildMember;
-import org.techtown.gtguildraid.models.daos.Hero;
-import org.techtown.gtguildraid.models.daos.Raid;
-import org.techtown.gtguildraid.models.daos.Record;
+import org.techtown.gtguildraid.interfaces.daos.BossDao;
+import org.techtown.gtguildraid.interfaces.daos.FavoritesDao;
+import org.techtown.gtguildraid.interfaces.daos.HeroDao;
+import org.techtown.gtguildraid.interfaces.daos.MemberDao;
+import org.techtown.gtguildraid.interfaces.daos.RaidDao;
+import org.techtown.gtguildraid.interfaces.daos.RecordDao;
+import org.techtown.gtguildraid.models.entities.Boss;
+import org.techtown.gtguildraid.models.entities.Favorites;
+import org.techtown.gtguildraid.models.entities.GuildMember;
+import org.techtown.gtguildraid.models.entities.Hero;
+import org.techtown.gtguildraid.models.entities.Raid;
+import org.techtown.gtguildraid.models.entities.Record;
 
 
 
 //Add database entities
-@Database(entities = {GuildMember.class, Boss.class, Raid.class, Hero.class, Record.class, Favorites.class}, version = 28, exportSchema = false)
+@Database(entities = {GuildMember.class, Boss.class, Raid.class, Hero.class, Record.class, Favorites.class}, version = 29, exportSchema = false)
 @TypeConverters(DateConverter.class)
 public abstract class RoomDB extends RoomDatabase {
     private static RoomDB database;
@@ -304,6 +304,15 @@ public abstract class RoomDB extends RoomDatabase {
         }
     };
 
+    //카마엘 데이터 고치기 - 2021.09.29
+    static final Migration MIGRATION_28_29_2 = new Migration(28, 29) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            database.execSQL("INSERT INTO hero (koreanName, englishName, element, star, role) "
+                    + "VALUES ('Mk.2', 'mk2', 5, 3, 3)");
+        }
+    };
+
 
     public synchronized static RoomDB getInstance(Context context){//Singleton Pattern!
         if(database == null){//initialize
@@ -337,6 +346,7 @@ public abstract class RoomDB extends RoomDatabase {
                     .addMigrations(MIGRATION_27_28)
                     .addMigrations(MIGRATION_28_29)
                     .addMigrations(MIGRATION_29_28)
+                    .addMigrations(MIGRATION_28_29_2)
                     .build();
         }
         else{

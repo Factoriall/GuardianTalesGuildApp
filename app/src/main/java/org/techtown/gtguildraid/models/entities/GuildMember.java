@@ -1,4 +1,4 @@
-package org.techtown.gtguildraid.models.daos;
+package org.techtown.gtguildraid.models.entities;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;

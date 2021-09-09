@@ -33,11 +33,11 @@ import com.llollox.androidtoggleswitch.widgets.ToggleSwitch;
 import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.adapters.StatisticRankCardAdapter;
 import org.techtown.gtguildraid.etc.RankPoi;
-import org.techtown.gtguildraid.models.daos.Boss;
-import org.techtown.gtguildraid.models.daos.GuildMember;
-import org.techtown.gtguildraid.models.daos.Raid;
+import org.techtown.gtguildraid.models.entities.Boss;
+import org.techtown.gtguildraid.models.entities.GuildMember;
+import org.techtown.gtguildraid.models.entities.Raid;
 import org.techtown.gtguildraid.models.RankInfo;
-import org.techtown.gtguildraid.models.daos.Record;
+import org.techtown.gtguildraid.models.entities.Record;
 import org.techtown.gtguildraid.utils.AppExecutor;
 import org.techtown.gtguildraid.utils.RoomDB;
 
@@ -262,8 +262,8 @@ public class StatisticRankFragment extends Fragment {
                         dirName = Environment.getExternalStorageDirectory() + "/가테_길레_" + raid.getName();
 
 
-                    builder.setMessage("내 파일 ->" + dirName + " 에서 확인 가능합니다."
-                            + "\n엑셀 파일을 보시겠습니까?")
+                    builder.setMessage("엑셀 파일을 보시겠습니까?" +
+                            "\n저장 경로는 상단 i 버튼으로 확인이 가능합니다.")
                             .setCancelable(false)
                             .setPositiveButton("네", (dialog1, id) -> {
                                 Intent intent = new Intent(Intent.ACTION_VIEW);

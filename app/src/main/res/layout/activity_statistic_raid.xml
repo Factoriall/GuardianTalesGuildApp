@@ -95,6 +95,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <ImageButton
+            android:id="@+id/pathInfo"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@null"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/raidText"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@android:drawable/ic_menu_info_details" />
+
         <TextView
             android:id="@+id/raidText"
             android:layout_width="wrap_content"

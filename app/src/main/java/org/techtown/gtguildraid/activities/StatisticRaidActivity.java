@@ -1,6 +1,10 @@
 package org.techtown.gtguildraid.activities;
 
+import android.app.Dialog;
 import android.os.Bundle;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -13,7 +17,7 @@ import com.google.android.material.tabs.TabLayoutMediator;
 
 import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.adapters.StatisticPagerAdapter;
-import org.techtown.gtguildraid.models.daos.Raid;
+import org.techtown.gtguildraid.models.entities.Raid;
 import org.techtown.gtguildraid.utils.RoomDB;
 
 import java.text.SimpleDateFormat;
@@ -52,6 +56,18 @@ public class StatisticRaidActivity extends AppCompatActivity {
         adapter.setData(raidId);
         viewPager.setAdapter(adapter);
         viewPager.setOffscreenPageLimit(2);
+
+        ImageButton pathInfo = findViewById(R.id.pathInfo);
+        pathInfo.setOnClickListener(view -> {
+            Dialog di = new Dialog(this);
+            di.setContentView(R.layout.dialog_path);
+            di.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT
+                    , WindowManager.LayoutParams.WRAP_CONTENT);
+            di.show();
+
+            Button okButton = di.findViewById(R.id.okbutton);
+            okButton.setOnClickListener( v -> di.dismiss());
+        });
 
         ImageView exitButton = findViewById(R.id.exitButton);
         exitButton.setOnClickListener(view -> {

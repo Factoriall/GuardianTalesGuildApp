@@ -20,7 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.activities.StatisticRaidActivity;
 import org.techtown.gtguildraid.adapters.StatisticRaidCardAdapter;
-import org.techtown.gtguildraid.models.daos.Raid;
+import org.techtown.gtguildraid.models.entities.Raid;
 import org.techtown.gtguildraid.utils.RoomDB;
 
 import java.text.SimpleDateFormat;

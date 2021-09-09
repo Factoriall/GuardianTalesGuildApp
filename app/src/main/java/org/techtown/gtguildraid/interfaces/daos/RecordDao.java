@@ -1,16 +1,16 @@
-package org.techtown.gtguildraid.interfaces;
+package org.techtown.gtguildraid.interfaces.daos;
 
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 
-import org.techtown.gtguildraid.models.daos.Boss;
-import org.techtown.gtguildraid.models.daos.Hero;
+import org.techtown.gtguildraid.models.entities.Boss;
+import org.techtown.gtguildraid.models.entities.Hero;
 import org.techtown.gtguildraid.models.IdDouble;
 import org.techtown.gtguildraid.models.IdLong;
 import org.techtown.gtguildraid.models.IdLongCnt;
-import org.techtown.gtguildraid.models.daos.Record;
+import org.techtown.gtguildraid.models.entities.Record;
 
 import java.util.List;
 

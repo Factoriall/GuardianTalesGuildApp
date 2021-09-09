@@ -1,7 +1,7 @@
 package org.techtown.gtguildraid.models;
 
-import org.techtown.gtguildraid.models.daos.Hero;
-import org.techtown.gtguildraid.models.daos.Record;
+import org.techtown.gtguildraid.models.entities.Hero;
+import org.techtown.gtguildraid.models.entities.Record;
 
 import java.util.ArrayList;
 import java.util.List;

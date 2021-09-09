@@ -1,4 +1,4 @@
-package org.techtown.gtguildraid.interfaces;
+package org.techtown.gtguildraid.interfaces.daos;
 
 import androidx.room.Dao;
 import androidx.room.Delete;
@@ -6,7 +6,7 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import org.techtown.gtguildraid.models.daos.Boss;
+import org.techtown.gtguildraid.models.entities.Boss;
 
 import static androidx.room.OnConflictStrategy.REPLACE;
 

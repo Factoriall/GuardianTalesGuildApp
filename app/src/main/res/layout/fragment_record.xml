@@ -38,6 +38,16 @@
             app:layout_constraintStart_toEndOf="@+id/recordIcon"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <TextView
+            android:id="@+id/textView15"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:text="슬라이드로 데이터 수정/삭제"
+            android:textColor="#C8BA90"
+            app:layout_constraintBottom_toBottomOf="@+id/recordTitle"
+            app:layout_constraintEnd_toEndOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.cardview.widget.CardView

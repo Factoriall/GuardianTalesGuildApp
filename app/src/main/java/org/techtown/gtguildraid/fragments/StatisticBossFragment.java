@@ -31,9 +31,9 @@ import com.llollox.androidtoggleswitch.widgets.ToggleSwitch;
 
 import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.adapters.StatisticBossLeaderAdapter;
-import org.techtown.gtguildraid.models.daos.Boss;
+import org.techtown.gtguildraid.models.entities.Boss;
 import org.techtown.gtguildraid.models.LeaderInfo;
-import org.techtown.gtguildraid.models.daos.Record;
+import org.techtown.gtguildraid.models.entities.Record;
 import org.techtown.gtguildraid.utils.AppExecutor;
 import org.techtown.gtguildraid.utils.RoomDB;
 

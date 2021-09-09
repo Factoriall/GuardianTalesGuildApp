@@ -1,12 +1,12 @@
-package org.techtown.gtguildraid.interfaces;
+package org.techtown.gtguildraid.interfaces.daos;
 
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 
-import org.techtown.gtguildraid.models.daos.Favorites;
-import org.techtown.gtguildraid.models.daos.Hero;
+import org.techtown.gtguildraid.models.entities.Favorites;
+import org.techtown.gtguildraid.models.entities.Hero;
 
 import java.util.List;
 

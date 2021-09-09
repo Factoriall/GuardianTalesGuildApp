@@ -15,12 +15,12 @@ import org.apache.poi.ss.util.CellUtil;
 import org.apache.poi.ss.util.RegionUtil;
 import org.techtown.gtguildraid.interfaces.CalculateFormatHelper;
 import org.techtown.gtguildraid.interfaces.PoiHelper;
-import org.techtown.gtguildraid.models.daos.Boss;
-import org.techtown.gtguildraid.models.daos.GuildMember;
-import org.techtown.gtguildraid.models.daos.Hero;
+import org.techtown.gtguildraid.models.entities.Boss;
+import org.techtown.gtguildraid.models.entities.GuildMember;
+import org.techtown.gtguildraid.models.entities.Hero;
 import org.techtown.gtguildraid.models.LeaderInfo;
-import org.techtown.gtguildraid.models.daos.Raid;
-import org.techtown.gtguildraid.models.daos.Record;
+import org.techtown.gtguildraid.models.entities.Raid;
+import org.techtown.gtguildraid.models.entities.Record;
 import org.techtown.gtguildraid.utils.RoomDB;
 
 import java.util.ArrayList;
@@ -247,12 +247,12 @@ public class MemberPoi extends PoiHelper {
         int rankAdjust = database.recordDao().getRankFromAllAdjustRecords(memberId, raidId, startDay, lhValue);
         int pastRankAdj = database.recordDao().getRankFromAllAdjustRecords(memberId, pastRaidId, startDay, lhValue);
 
-        long allDamageAdjust = calcHelper.getDamageFromList(allRecords, true);
-        long memberDamageAdjust = calcHelper.getDamageFromList(memberRecords, true);
+        long allDamageAdjust = calcHelper.getDamageFromList(allRecords, true, lhValue);
+        long memberDamageAdjust = calcHelper.getDamageFromList(memberRecords, true, lhValue);
         long averageDamageAdjust = calcHelper.getAverageFromList(memberRecords, true);
 
-        long allBeforeDamageAdj = calcHelper.getDamageFromList(beforeAll, true);
-        long memberBeforeDamageAdj = calcHelper.getDamageFromList(beforeMember, true);
+        long allBeforeDamageAdj = calcHelper.getDamageFromList(beforeAll, true, lhValue);
+        long memberBeforeDamageAdj = calcHelper.getDamageFromList(beforeMember, true, lhValue);
         long averageBeforeDamageAdj = calcHelper.getAverageFromList(beforeMember, true);
 
         pRankText = pastRaidId != -1 ? Integer.toString(pastRankAdj) : "-";

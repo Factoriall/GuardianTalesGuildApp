@@ -22,8 +22,8 @@ import org.techtown.gtguildraid.fragments.MemberFragment;
 import org.techtown.gtguildraid.fragments.RaidRenewalFragment;
 import org.techtown.gtguildraid.fragments.RecordFragment;
 import org.techtown.gtguildraid.fragments.StatisticRenewalFragment;
-import org.techtown.gtguildraid.models.daos.Boss;
-import org.techtown.gtguildraid.models.daos.Raid;
+import org.techtown.gtguildraid.models.entities.Boss;
+import org.techtown.gtguildraid.models.entities.Raid;
 import org.techtown.gtguildraid.utils.RoomDB;
 
 import java.util.Date;

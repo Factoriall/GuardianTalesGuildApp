@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.techtown.gtguildraid.R;
-import org.techtown.gtguildraid.models.daos.Hero;
+import org.techtown.gtguildraid.models.entities.Hero;
 
 import java.util.List;
 

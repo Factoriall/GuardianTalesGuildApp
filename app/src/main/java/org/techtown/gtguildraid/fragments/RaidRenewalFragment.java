@@ -31,9 +31,9 @@ import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.activities.BossEditActivity;
 import org.techtown.gtguildraid.adapters.RaidBossRecyclerAdapter;
 import org.techtown.gtguildraid.etc.HeroBottomSheetDialog;
-import org.techtown.gtguildraid.models.daos.Boss;
-import org.techtown.gtguildraid.models.daos.Hero;
-import org.techtown.gtguildraid.models.daos.Raid;
+import org.techtown.gtguildraid.models.entities.Boss;
+import org.techtown.gtguildraid.models.entities.Hero;
+import org.techtown.gtguildraid.models.entities.Raid;
 import org.techtown.gtguildraid.utils.RoomDB;
 
 import java.text.SimpleDateFormat;

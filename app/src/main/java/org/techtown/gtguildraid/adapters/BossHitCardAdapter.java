@@ -11,7 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.techtown.gtguildraid.R;
-import org.techtown.gtguildraid.models.daos.Boss;
+import org.techtown.gtguildraid.models.entities.Boss;
 import org.techtown.gtguildraid.utils.RoomDB;
 
 import java.util.ArrayList;

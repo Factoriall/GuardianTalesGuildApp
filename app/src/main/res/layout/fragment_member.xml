@@ -186,11 +186,11 @@
             android:id="@+id/textView14"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
             android:text="자신은 현 멤버 포함 상태"
             android:textColor="#C8BA90"
             app:layout_constraintBottom_toBottomOf="@+id/memberTitle"
-            app:layout_constraintStart_toEndOf="@+id/memberTitle" />
+            app:layout_constraintEnd_toEndOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.appbar.AppBarLayout

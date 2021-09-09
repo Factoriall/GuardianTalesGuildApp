@@ -22,6 +22,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -46,12 +47,12 @@ import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.adapters.DialogImageSpinnerAdapter;
 import org.techtown.gtguildraid.adapters.RecordCardAdapter;
 import org.techtown.gtguildraid.etc.MySpinner;
-import org.techtown.gtguildraid.models.daos.Boss;
-import org.techtown.gtguildraid.models.daos.Favorites;
-import org.techtown.gtguildraid.models.daos.GuildMember;
-import org.techtown.gtguildraid.models.daos.Hero;
-import org.techtown.gtguildraid.models.daos.Raid;
-import org.techtown.gtguildraid.models.daos.Record;
+import org.techtown.gtguildraid.models.entities.Boss;
+import org.techtown.gtguildraid.models.entities.Favorites;
+import org.techtown.gtguildraid.models.entities.GuildMember;
+import org.techtown.gtguildraid.models.entities.Hero;
+import org.techtown.gtguildraid.models.entities.Raid;
+import org.techtown.gtguildraid.models.entities.Record;
 import org.techtown.gtguildraid.utils.RoomDB;
 
 import java.text.NumberFormat;
@@ -338,6 +339,19 @@ public class RecordMemberFragment extends Fragment {
 
         isSetByRecord = switchButton.isChecked();
 
+        //favoriteInfo 확인
+        ImageButton favoriteInfo = dialog.findViewById(R.id.favoriteInfo);
+        favoriteInfo.setOnClickListener(view -> {
+            Dialog di = new Dialog(requireActivity());
+            di.setContentView(R.layout.dialog_record_favorite);
+            di.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT
+                    , WindowManager.LayoutParams.WRAP_CONTENT);
+            di.show();
+
+            Button outButton = di.findViewById(R.id.outButton);
+            outButton.setOnClickListener( v -> di.dismiss());
+        });
+
         //bossSwitch 생성
         bosses = database.raidDao().getBossesList(raid.getRaidId());
         int curRound = pref.getInt("currentRound", 0);
@@ -394,7 +408,7 @@ public class RecordMemberFragment extends Fragment {
         //회차 넘버피커 생성
         List<String> rounds = new ArrayList<>();
         int[] levelPerRound = {50, 50, 55, 55, 60, 60};
-        for (int i = 1; i <= 40; i++) {
+        for (int i = 1; i <= 60; i++) {
             final int START_NUM = 65;
             final int START_IDX = 7;
             final int MAX_LEVEL = 80;
@@ -406,25 +420,55 @@ public class RecordMemberFragment extends Fragment {
         Button increment = dialog.findViewById(R.id.increment);
         TextView roundDisplay = dialog.findViewById(R.id.display);
 
+        ImageButton levelInfo = dialog.findViewById(R.id.levelInfo);
+        levelInfo.setOnClickListener(view -> {
+            Dialog di = new Dialog(requireActivity());
+            di.setContentView(R.layout.dialog_record_level);
+            di.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT
+                    , WindowManager.LayoutParams.WRAP_CONTENT);
+            di.show();
+
+            Button okButton = di.findViewById(R.id.okButton);
+            okButton.setOnClickListener( v -> {
+                pref.edit().putBoolean("levelInfoChecked", true).apply();
+                di.dismiss();
+            });
+        });
+
         manualButton.setOnCheckedChangeListener((compoundButton, isChecked) -> {
             if(isChecked){
+                if(!pref.getBoolean("levelInfoChecked", false)) {
+                    showToast("왼쪽 버튼을 눌러 레벨 조정 관련 주의사항을 확인해주세요.");
+                    manualButton.setChecked(false);
+                    return;
+                }
+
+                if(pref.getBoolean("notShowAgain", false)){
+                    increment.setVisibility(View.VISIBLE);
+                    decrement.setVisibility(View.VISIBLE);
+                    return;
+                }
+                LayoutInflater adbInflater = LayoutInflater.from(requireContext());
+                View eulaLayout = adbInflater.inflate(R.layout.checkbox, null);
+                CheckBox dontShowAgain = eulaLayout.findViewById(R.id.skip);
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setMessage("\n좌하단 체크 버튼을 이용해 기록 내의 보스들의 피를 확인이 가능하며, " +
-                        "이번 회차 모든 보스 피가 0이 된 상태로 데이터 갱신 시 회차는 자동 갱신됩니다.\n" +
-                        "가급적이면 순서대로 기록하고, 불가피할 때만 수동 조정해주시길 바랍니다.\n\n" +
+                builder.setMessage("주의사항을 충분히 숙지했습니다.\n" +
                         "그래도 수동 수정을 하시겠습니까?")
+                        .setView(eulaLayout)
                         .setCancelable(false)
                         .setPositiveButton("네", (dialog1, id) -> {
                             increment.setVisibility(View.VISIBLE);
                             decrement.setVisibility(View.VISIBLE);
+                            pref.edit().putBoolean("notShowAgain", dontShowAgain.isChecked()).apply();
                             dialog1.dismiss();
                         })
                         .setNegativeButton("아니오",(dialog1, id) -> {
                             manualButton.setChecked(false);
+                            pref.edit().putBoolean("notShowAgain", dontShowAgain.isChecked()).apply();
                             dialog1.dismiss();
                         });
                 AlertDialog alert = builder.create();
-                alert.setTitle("수동 조정 전 안내 사항");
+                alert.setTitle("확인");
                 alert.show();
             }
             else{

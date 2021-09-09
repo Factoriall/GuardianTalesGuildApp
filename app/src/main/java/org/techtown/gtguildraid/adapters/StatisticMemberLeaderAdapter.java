@@ -12,9 +12,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.techtown.gtguildraid.R;
-import org.techtown.gtguildraid.models.daos.Hero;
+import org.techtown.gtguildraid.models.entities.Hero;
 import org.techtown.gtguildraid.models.LeaderInfo;
-import org.techtown.gtguildraid.models.daos.Record;
+import org.techtown.gtguildraid.models.entities.Record;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;

@@ -26,8 +26,8 @@ import com.google.android.material.tabs.TabLayout;
 
 import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.etc.HeroBottomSheetDialog;
-import org.techtown.gtguildraid.models.daos.GuildMember;
-import org.techtown.gtguildraid.models.daos.Hero;
+import org.techtown.gtguildraid.models.entities.GuildMember;
+import org.techtown.gtguildraid.models.entities.Hero;
 import org.techtown.gtguildraid.utils.RoomDB;
 
 import static android.app.Activity.RESULT_OK;

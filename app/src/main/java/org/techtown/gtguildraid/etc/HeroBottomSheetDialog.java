@@ -17,7 +17,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import org.techtown.gtguildraid.R;
 import org.techtown.gtguildraid.adapters.HeroImageRecyclerAdapter;
-import org.techtown.gtguildraid.models.daos.Hero;
+import org.techtown.gtguildraid.models.entities.Hero;
 import org.techtown.gtguildraid.utils.RoomDB;
 
 import java.util.List;
