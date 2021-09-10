@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/info_card_out"
@@ -109,7 +110,7 @@
         android:textColor="@color/bg_icon"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/adjustSwitch" />
+        app:layout_constraintTop_toBottomOf="@+id/textView37" />
 
     <Button
         android:id="@+id/excelButton"
@@ -212,5 +213,38 @@
         app:layout_constraintBottom_toTopOf="@+id/lastHitBar"
         app:layout_constraintEnd_toEndOf="@+id/lastHitBar"
         app:layout_constraintStart_toStartOf="@+id/lastHitBar" />
+
+    <TextView
+        android:id="@+id/textView37"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="막타 배율"
+        android:textColor="#FFFFFF"
+        app:layout_constraintStart_toStartOf="@+id/adjustSwitch"
+        app:layout_constraintTop_toBottomOf="@+id/adjustSwitch" />
+
+    <SeekBar
+        android:id="@+id/lastHitSetBar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:max="10"
+        app:layout_constraintBottom_toBottomOf="@+id/textView37"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textView37"
+        app:layout_constraintTop_toTopOf="@+id/textView37" />
+
+    <TextView
+        android:id="@+id/lastHitSetValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="x 1.0"
+        android:textColor="#FFFFFF"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@+id/lastHitSetBar"
+        app:layout_constraintEnd_toEndOf="@+id/lastHitSetBar"
+        app:layout_constraintStart_toStartOf="@+id/lastHitSetBar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

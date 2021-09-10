@@ -49,15 +49,16 @@ import java.util.Date;
 import java.util.List;
 
 public class StatisticRankFragment extends Fragment {
-    static int raidId;
-    static View view;
-    static int bossPosition;
-    static int levelPosition;
-    static boolean isAverageMode;
-    static boolean isAdjustMode;
-    static boolean isDay1Contained;
-    static ArrayList<String> bossLabels = new ArrayList<>();
-    static ArrayList<String> levelLabels = new ArrayList<>();
+    private int raidId;
+    View view;
+    private int bossPosition;
+    private int levelPosition;
+    private int lhSetValue = 0;
+    private boolean isAverageMode;
+    private boolean isAdjustMode;
+    private boolean isDay1Contained;
+    private final ArrayList<String> bossLabels = new ArrayList<>();
+    private final ArrayList<String> levelLabels = new ArrayList<>();
     RoomDB database;
     StatisticRankCardAdapter adapter;
     RecyclerView recyclerView;
@@ -87,7 +88,7 @@ public class StatisticRankFragment extends Fragment {
         adapter = new StatisticRankCardAdapter();
         recyclerView.setAdapter(adapter);
         isDay1Contained = true;
-        pref = getContext().getSharedPreferences("pref", Activity.MODE_PRIVATE);
+        pref = requireContext().getSharedPreferences("pref", Activity.MODE_PRIVATE);
 
         StrictMode.VmPolicy.Builder build = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(build.build());
@@ -119,9 +120,7 @@ public class StatisticRankFragment extends Fragment {
         });
 
         ImageButton settingButton = view.findViewById(R.id.setting);
-        settingButton.setOnClickListener(view -> {
-            setSettingDialog();
-        });
+        settingButton.setOnClickListener(view -> setSettingDialog());
 
 
         setRankView();
@@ -146,6 +145,24 @@ public class StatisticRankFragment extends Fragment {
             levelLabels.add("Lv.80");
         }
 
+        SeekBar lastHitSetBar = dialog.findViewById(R.id.lastHitSetBar);
+        TextView lastHitSetValue = dialog.findViewById(R.id.lastHitSetValue);
+        lastHitSetBar.setProgress(lhSetValue);
+        lastHitSetValue.setText("x " + String.format("%.1f", 1f + lhSetValue * 0.1));
+        lastHitSetBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                double value = 1f + i * 0.1;
+                lastHitSetValue.setText("x " + String.format("%.1f", value));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) { }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) { }
+        });
+
         ToggleSwitch levelSwitch = dialog.findViewById(R.id.toggleSwitchLevel);
         levelSwitch.setEntries(levelLabels);
         levelSwitch.setCheckedPosition(levelPosition);
@@ -167,6 +184,7 @@ public class StatisticRankFragment extends Fragment {
             isAdjustMode = adjustSwitch.isChecked();
             isAverageMode = iam;
             levelPosition = lp;
+            lhSetValue = lastHitSetBar.getProgress();
             setRankView();
             dialog.dismiss();
         });
@@ -210,6 +228,8 @@ public class StatisticRankFragment extends Fragment {
 
 
 
+
+
         lastHitBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
@@ -230,7 +250,7 @@ public class StatisticRankFragment extends Fragment {
                 Toast.makeText(getContext(), "데이터 없음", Toast.LENGTH_SHORT).show();
                 return;
             }
-            else if(excelDay1Switch.isChecked() == false && maxDay == 1){
+            else if(!excelDay1Switch.isChecked() && maxDay == 1){
                 Toast.makeText(getContext(), "1일차 적용 여부 스위치를 키거나 범위를 늘려주세요.", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -337,11 +357,13 @@ public class StatisticRankFragment extends Fragment {
                         ri.setHitNum(ri.getHitNum() - 1);
                         continue;
                     }
-                    if(isAdjustMode) {
-                        ri.addDamage((long) (r.getDamage() * r.getBoss().getHardness()));
-                    }
-                    else
-                        ri.addDamage(r.getDamage());
+                    long recDamage = 0;
+                    if(isAdjustMode)
+                        recDamage += r.getDamage() * r.getBoss().getHardness();
+                    else recDamage += r.getDamage();
+                    if(r.isLastHit()) recDamage *= (1 + lhSetValue * 0.1);
+
+                    ri.addDamage(recDamage);
                 }
 
                 ri.setFinalDamage(isAverageMode);
@@ -370,10 +392,11 @@ public class StatisticRankFragment extends Fragment {
                     case 4:
                         levelInfo = "Lv.80";
                 }
-                conditionText.setText("회차 범위: " + levelInfo + " / 기준: "
+                conditionText.setText("레벨: " + levelInfo + " / 기준: "
                         + (isAverageMode ? "평균" : "총합")
-                        + "\n배율: " + (isAdjustMode ? "ON" : "OFF")
-                        + " / 1일차 적용: " + (isDay1Contained ? "ON" : "OFF"));
+                        + "\n배율 " + (isAdjustMode ? "ON" : "OFF")
+                        + " / 1일차 적용 " + (isDay1Contained ? "ON" : "OFF")
+                        + "\n막타 배율 x" + String.format("%.1f", 1f + lhSetValue * 0.1));
                 adapter.setItems(rankInfos);
                 adapter.notifyDataSetChanged();
             });
