@@ -6,6 +6,11 @@
 - 이에 단순 작업을 줄이고 일일히 컴퓨터로 작업하는 것이 아닌 단순한 휴대폰 입력 만으로 간단히 시트를 작성하고 이것과 관련된 통계자료를 보여줄 수 있는 앱을 만들겠다고 생각하게 되어 앱을 개발
 
 ## 사용 방법
+<a href="https://play.google.com/store/apps/details?id=org.techtown.gtguildraid">
+         <img alt="ToGoogle" src="./image/google_badge.png"
+         width=250">
+</a>
+
 - 소스 코드 확인:
 
       git clone https://github.com/Factoriall/GuardianTalesGuildApp.git
