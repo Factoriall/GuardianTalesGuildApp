@@ -193,6 +193,21 @@ public class RaidRenewalFragment
                 alert.setTitle("날짜 이전 경고");
                 alert.show();
             }
+            else if(isCurrentExist){
+                DatePickerDialog datePickerDialog = new DatePickerDialog(
+                        getActivity(),
+                        date,
+                        myCalendar.get(Calendar.YEAR),
+                        myCalendar.get(Calendar.MONTH),
+                        myCalendar.get(Calendar.DAY_OF_MONTH));
+
+                datePickerDialog.getDatePicker().setMinDate(
+                        System.currentTimeMillis() - DAY_13);
+                datePickerDialog.getDatePicker().setMaxDate(
+                        System.currentTimeMillis() + DAY_13);
+                datePickerDialog.setMessage("시작 날짜를 입력해주세요.");
+                datePickerDialog.show();
+            }
         });
 
         raidThumbnailDialog.setOnClickListener(view1 -> {

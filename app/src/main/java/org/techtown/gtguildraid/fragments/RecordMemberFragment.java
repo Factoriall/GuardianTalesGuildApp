@@ -677,7 +677,7 @@ public class RecordMemberFragment extends Fragment {
             return;
         }
         if(curRound > pref.getInt("currentRound", 0)){
-            showToast("전 회차가 마무리되지 않았습니다.");
+            //showToast("전 회차가 마무리되지 않았습니다.");
             return;
         }
 

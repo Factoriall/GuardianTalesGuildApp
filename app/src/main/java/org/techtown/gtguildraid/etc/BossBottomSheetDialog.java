@@ -64,7 +64,8 @@ public class BossBottomSheetDialog
                 new BossImage("mino", R.drawable.boss_mino,"미노타"), new BossImage("monster", R.drawable.boss_monster,"유사괴물"),
                 new BossImage("sapa", R.drawable.boss_sapa, "사파두령"), new BossImage("shadow", R.drawable.boss_shadow,"그림자마수"),
                 new BossImage("slime", R.drawable.boss_slime, "용암슬라임"), new BossImage("elpaba", R.drawable.boss_elpaba, "엘파바"),
-                new BossImage("chief", R.drawable.boss_chief, "고블린족장"), new BossImage("marina", R.drawable.boss_marina, "마리나")
+                new BossImage("chief", R.drawable.boss_chief, "고블린족장"), new BossImage("marina", R.drawable.boss_marina, "마리나"),
+                new BossImage("ninetail", R.drawable.boss_ninetail, "구미호")
         };
     }
 
