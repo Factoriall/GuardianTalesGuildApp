@@ -233,6 +233,7 @@ public class RaidRenewalFragment
                     raid.setThumbnail(sThumbnail);
                     SharedPreferences.Editor editor = requireActivity().getSharedPreferences("pref", Context.MODE_PRIVATE).edit();
                     editor.putInt("currentRound", 0);
+                    editor.putString("recentWrite", "없음");
                     editor.apply();
 
                     List<Boss> bosses = new ArrayList<>();

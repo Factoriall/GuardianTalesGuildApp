@@ -108,7 +108,7 @@ public class RecordCardAdapter extends RecyclerView.Adapter<RecordCardAdapter.Vi
             int[] levelPerRound = {50, 50, 55, 55, 60, 60};
             final int START_NUM = 65;
             final int START_IDX = 7;
-            final int MAX_LEVEL = 80;
+            final int MAX_LEVEL = 83;
 
             int level = (round <= levelPerRound.length ? levelPerRound[round - 1] : START_NUM + (round - START_IDX));
             if (level > MAX_LEVEL) level = MAX_LEVEL;

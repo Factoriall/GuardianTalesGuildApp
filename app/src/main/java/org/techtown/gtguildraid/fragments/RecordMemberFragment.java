@@ -411,7 +411,7 @@ public class RecordMemberFragment extends Fragment {
         for (int i = 1; i <= 60; i++) {
             final int START_NUM = 65;
             final int START_IDX = 7;
-            final int MAX_LEVEL = 80;
+            final int MAX_LEVEL = 83;
             int level = (i <= levelPerRound.length) ? levelPerRound[i - 1] : START_NUM + (i - START_IDX);
             if (level > MAX_LEVEL) level = MAX_LEVEL;
             rounds.add(level + "(" + i + ")");

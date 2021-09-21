@@ -113,10 +113,24 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
 
-        boolean isAccessible = database.raidDao().isCurrentRaidExist(new Date())
+
+        boolean isElementAllSelected = false;
+        if(database.raidDao().isCurrentRaidExist(new Date())) {
+            Raid raid = database.raidDao().getCurrentRaidWithBosses(new Date());
+            List<Boss> bosses = raid.getBossList();
+            boolean isElementAllExist = true;
+            for(Boss boss : bosses){
+                if(boss.getElementId() == 0){
+                    isElementAllExist = false;
+                    break;
+                }
+            }
+            if(isElementAllExist) isElementAllSelected = true;
+        }
+        boolean isStarted = database.raidDao().isCurrentRaidExist(new Date())
                 &&
                 (database.raidDao().getCurrentRaid(new Date()).getStartDay().compareTo(new Date()) <= 0);
-        if(isAccessible) {
+        if(isElementAllSelected && isStarted){
             getSupportFragmentManager().beginTransaction().replace(R.id.container, recordFragment).commit();
             bottomNavigationView.setSelectedItemId(R.id.recordTab);
         }
