@@ -36,11 +36,14 @@ public class RegisterActivity extends AppCompatActivity
         profileImage = findViewById(R.id.profileImage);
         profileImage.setImageResource(
                 getResources().getIdentifier("character_knight" , "drawable", getPackageName()));
+
+        //bottomSheetDialog를 통해 이미지 클릭하게 설정, BottomSheetDialogFragment 사용
         profileImage.setOnClickListener(view -> {
             HeroBottomSheetDialog dialog = new HeroBottomSheetDialog(this);
             dialog.show(getSupportFragmentManager(), "bottomSheetDialog");
         });
 
+        //설정 끝날 시 sharedPreference 통해 저장
         Button button = findViewById(R.id.button);
         button.setOnClickListener(view -> {
             String cNickname = nickname.getText().toString();
@@ -68,6 +71,7 @@ public class RegisterActivity extends AppCompatActivity
         });
     }
 
+    //back버튼 무효화
     @Override
     public void onBackPressed() {
         showToast("닉네임 및 길드 이름 삽입 후 시작 버튼을 눌러주세요");
@@ -77,6 +81,7 @@ public class RegisterActivity extends AppCompatActivity
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 
+    //onImageClick을 heroBottomSheetDialog에서 받아서 이미지 사진 바꾸기
     @Override
     public void onImageClicked(Hero hero) {
         editor.putString("profileImage", hero.getEnglishName());

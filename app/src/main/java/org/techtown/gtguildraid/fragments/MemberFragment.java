@@ -85,7 +85,7 @@ public class MemberFragment extends Fragment implements HeroBottomSheetDialog.Bo
         Button editButton = view.findViewById(R.id.editButton);
         editButton.setOnClickListener(view -> setDialogView());
 
-
+        //fragment 생성
         memberCurrentFragment = new MemberCurrentFragment();
         memberResignedFragment = new MemberResignedFragment();
 
@@ -95,7 +95,7 @@ public class MemberFragment extends Fragment implements HeroBottomSheetDialog.Bo
         TabLayout tabs = view.findViewById(R.id.tabs);
         tabs.addTab(tabs.newTab().setText("현재 멤버"));
         tabs.addTab(tabs.newTab().setText("탈퇴 멤버"));
-
+        //tab 선택 통해 fragment 선택
         tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -121,9 +121,11 @@ public class MemberFragment extends Fragment implements HeroBottomSheetDialog.Bo
         return view;
     }
 
+    //profile 변경 dialog
     private void setDialogView() {
         final Dialog dialog = new Dialog(getActivity());
 
+        //dialog 설정
         dialog.setContentView(R.layout.dialog_profile_edit);
         int width = WindowManager.LayoutParams.MATCH_PARENT;
         int height = WindowManager.LayoutParams.WRAP_CONTENT;

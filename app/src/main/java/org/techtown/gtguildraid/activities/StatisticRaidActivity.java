@@ -51,12 +51,13 @@ public class StatisticRaidActivity extends AppCompatActivity {
                 "drawable",
                 getPackageName()));
 
-
+        //pager 관련 어댑터
         StatisticPagerAdapter adapter = new StatisticPagerAdapter(getSupportFragmentManager(), getLifecycle());
         adapter.setData(raidId);
         viewPager.setAdapter(adapter);
-        viewPager.setOffscreenPageLimit(2);
+        viewPager.setOffscreenPageLimit(2);//양옆 로드할 page 리미트 생성
 
+        //path 정보를 담는 info 버튼
         ImageButton pathInfo = findViewById(R.id.pathInfo);
         pathInfo.setOnClickListener(view -> {
             Dialog di = new Dialog(this);
@@ -74,6 +75,7 @@ public class StatisticRaidActivity extends AppCompatActivity {
             finish();
         });
 
+        //ViewPager2와 TabLayout을 연결 및 tab 내용 설정
         new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
             if(position == 0)
                 tab.setText("순위표");

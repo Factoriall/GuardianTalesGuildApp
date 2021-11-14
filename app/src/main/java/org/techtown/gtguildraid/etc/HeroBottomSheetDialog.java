@@ -27,10 +27,12 @@ public class HeroBottomSheetDialog
         implements HeroImageRecyclerAdapter.BottomSheetListener {
     private final BottomSheetListener mListener;
 
+    //콜백 함수
     public interface BottomSheetListener{
         void onImageClicked(Hero hero);
     }
 
+    //이는 registerActivity 및 memberFragment에 사용하므로 둘다 선언
     public HeroBottomSheetDialog(Activity activity){
         this.mListener = (BottomSheetListener) activity;
     }
@@ -45,6 +47,7 @@ public class HeroBottomSheetDialog
         View view = inflater.inflate(R.layout.dialog_gallery, container, false);
         RoomDB database = RoomDB.getInstance(getActivity());
         List<Hero> heroList = database.heroDao().getAllHeroes();
+        //recyclerView를 활용해 이미지 선택
         RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new GridLayoutManager(view.getContext(), 3));
 
@@ -54,6 +57,7 @@ public class HeroBottomSheetDialog
         return view;
     }
 
+    //recyclerAdapter에서 클릭하면 mListener 통해 fragment 및 activity에 hero 정보를 전해줌
     @Override
     public void onImageClicked(Hero hero) {
         mListener.onImageClicked(hero);

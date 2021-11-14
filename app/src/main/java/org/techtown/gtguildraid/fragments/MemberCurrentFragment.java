@@ -179,6 +179,7 @@ public class MemberCurrentFragment extends Fragment {
         currentCnt.setText(
                 getString(R.string.member_numbers_current, memberList.size() + 1));
 
+        //recyclerview의 경우 notify를 통해 adapter에게 pos가 삭제되었음을 명시해 이를 실제 ui에 처리
         adapter.notifyItemRemoved(pos);
         adapter.notifyItemRangeChanged(pos, memberList.size());
     }

@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     StatisticRenewalFragment statisticRenewalFragment;
     private Toast myToast;
 
+    //RegisterActivity 이후로 fragment를 리셋시키는 용도로 넣음
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -58,21 +59,28 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
 
+        //필요한 fragment 초기화
         memberFragment = new MemberFragment();
         raidFragment = new RaidRenewalFragment();
         recordFragment = new RecordFragment();
         statisticRenewalFragment = new StatisticRenewalFragment();
         myToast = Toast.makeText(getApplicationContext(), null, Toast.LENGTH_LONG);
 
+        //sharedPreference를 통해 처음 register됐는지 확인, mode_private는 자신 앱에서만 사용하겠다는 의미
         SharedPreferences pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
         boolean isRegistered = pref.getBoolean("isRegistered", false);
         if(!isRegistered){
             startActivityForResult(new Intent(MainActivity.this, RegisterActivity.class), 101);
             overridePendingTransition( R.anim.slide_in_up, R.anim.slide_out_down );
+            //RegisterActivity 시작 및 끝날 시의 애니메이션 삽입
         }
 
         RoomDB database = RoomDB.getInstance(this);
 
+        /* BottomNavigationView
+        getSupportFragmentManager().beginTransaction().replace를 통해 tab 내용을 바꿀 수 있음
+        bottom_navigation에 menu 정보를 넣어 여기에 Tab 정보를 삽입할 수 있음
+         */
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(
                 item -> {
@@ -113,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
 
-
+        //처음에 보스 정보가 다 정해져있으면 raidTab을, 아니면 recordTab을 사용
         boolean isElementAllSelected = false;
         if(database.raidDao().isCurrentRaidExist(new Date())) {
             Raid raid = database.raidDao().getCurrentRaidWithBosses(new Date());
@@ -139,6 +147,7 @@ public class MainActivity extends AppCompatActivity {
             bottomNavigationView.setSelectedItemId(R.id.raidTab);
         }
 
+        //권한을 부여하는 library 사용.
         PermissionListener permissionlistener = new PermissionListener() {
             @Override
             public void onPermissionGranted() { }
@@ -163,6 +172,7 @@ public class MainActivity extends AppCompatActivity {
         myToast.show();
     }
 
+    //backPress 관련
     @Override
     public void onBackPressed() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);

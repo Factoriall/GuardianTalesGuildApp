@@ -27,7 +27,7 @@ import org.techtown.gtguildraid.models.entities.Record;
 
 
 //Add database entities
-@Database(entities = {GuildMember.class, Boss.class, Raid.class, Hero.class, Record.class, Favorites.class}, version = 30, exportSchema = false)
+@Database(entities = {GuildMember.class, Boss.class, Raid.class, Hero.class, Record.class, Favorites.class}, version = 31, exportSchema = false)
 @TypeConverters(DateConverter.class)
 public abstract class RoomDB extends RoomDatabase {
     private static RoomDB database;
@@ -322,6 +322,17 @@ public abstract class RoomDB extends RoomDatabase {
         }
     };
 
+    //칸나 및 하나 데이터 추가 - 2021.11.14
+    static final Migration MIGRATION_30_31 = new Migration(30, 31) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            database.execSQL("INSERT INTO hero (koreanName, englishName, element, star, role) "
+                    + "VALUES ('칸나', 'kanna', 6, 3, 1)");
+            database.execSQL("INSERT INTO hero (koreanName, englishName, element, star, role) "
+                    + "VALUES ('하나', 'hana', 2, 3, 1)");
+        }
+    };
+
 
     public synchronized static RoomDB getInstance(Context context){//Singleton Pattern!
         if(database == null){//initialize
@@ -357,6 +368,7 @@ public abstract class RoomDB extends RoomDatabase {
                     .addMigrations(MIGRATION_29_28)
                     .addMigrations(MIGRATION_28_29_2)
                     .addMigrations(MIGRATION_29_30)
+                    .addMigrations(MIGRATION_30_31)
                     .build();
         }
         else{

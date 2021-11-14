@@ -248,6 +248,7 @@ public class RaidRenewalFragment
                         bosses.add(boss);
                     }
                     database.raidDao().insertRaidWithBosses(raid, bosses);
+                    isCurrentExist = true;
                 } else {//업데이트
                     database.raidDao().updateRaid(currentRaid.getRaidId(), sName, sDate, eDate, sThumbnail);
                 }

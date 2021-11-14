@@ -53,7 +53,9 @@ public class MemberResignedFragment extends Fragment {
         resignCnt = view.findViewById(R.id.resignCnt);
         resignCnt.setText(getString(R.string.member_numbers_resign, memberList.size()));
 
+        //swipeHelper를 통해 swipe 구현
         new MySwipeHelper(getActivity(), recyclerView, 200) {
+            //instaiateMyButton 구현을 통해 button 관련 정보를 삽입
             @Override
             public void instantiateMyButton(List<MySwipeHelper.MyButton> buffer) {
                 buffer.add(new MyButton(getActivity(),
