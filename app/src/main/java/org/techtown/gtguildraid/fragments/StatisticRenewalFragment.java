@@ -77,9 +77,7 @@ public class StatisticRenewalFragment
         ));
 
         CardView raidCard = view.findViewById(R.id.raidCard);
-        raidCard.setOnClickListener(v1 ->{
-            startStatisticActivity(currentRaid.getRaidId());
-        });
+        raidCard.setOnClickListener(v1 -> startStatisticActivity(currentRaid.getRaidId()));
     }
 
     private void setPastRaidsView() {
