@@ -282,7 +282,7 @@
             android:layout_marginTop="5dp"
             android:orientation="horizontal">
 
-            <org.techtown.gtguildraid.etc.MySpinner
+            <org.techtown.gtguildraid.common.MySpinner
                 android:id="@+id/elementSpinner"
                 style="@style/spinner_normal_style"
                 android:layout_width="0dp"

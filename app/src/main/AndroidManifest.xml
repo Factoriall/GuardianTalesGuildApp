@@ -12,7 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activities.FirstActivity"
+        <activity android:name=".FirstActivity"
             android:screenOrientation="portrait"
             android:exported="true">
             <intent-filter>
@@ -21,16 +21,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.MainActivity"
+        <activity android:name=".MainActivity"
             android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".activities.RegisterActivity"
+        <activity android:name=".RegisterActivity"
             android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".activities.BossEditActivity"
+        <activity android:name=".raid.BossEditActivity"
             android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".activities.StatisticRaidActivity"
+        <activity android:name=".statistics.StatisticRaidActivity"
             android:screenOrientation="portrait">
         </activity>
     </application>

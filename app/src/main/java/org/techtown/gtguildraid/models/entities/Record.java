@@ -7,7 +7,7 @@ import androidx.room.Index;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
-import org.techtown.gtguildraid.utils.DateConverter;
+import org.techtown.gtguildraid.common.DateConverter;
 
 import java.io.Serializable;
 
